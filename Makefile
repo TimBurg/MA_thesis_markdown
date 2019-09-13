@@ -35,8 +35,9 @@ pdf:
 	-V fontsize=12pt \
 	-V papersize=a4paper \
 	-V documentclass=report \
-	-N \
 	--pdf-engine=xelatex \
+	--pdf-engine-opt=-shell-escape \
+	-N \
 	--verbose
 
 tex:
@@ -49,7 +50,8 @@ tex:
 	-V documentclass=report \
 	-N \
 	--csl="$(STYLEDIR)/ref_format.csl" \
-	--latex-engine=xelatex
+	--latex-engine=xelatex \
+	--latex-engine-opt=-shell-escape
 
 docx:
 	pandoc "$(INPUTDIR)"/*.md \

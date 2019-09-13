@@ -4,8 +4,9 @@
 This could be a list of papers by the author for example 
 -->
 
-Add appendix 1 here. Vivamus hendrerit rhoncus interdum. Sed ullamcorper et augue at porta. Suspendisse facilisis imperdiet urna, eu pellentesque purus suscipit in. Integer dignissim mattis ex aliquam blandit. Curabitur lobortis quam varius turpis ultrices egestas.
+# Non manifold-errors of meshes
 
+Triangluar meshes can have a multitude of minor errors that unfortunately are very much tolerated in cad-programs and 3D-software but can cause issues with 
 
 
 

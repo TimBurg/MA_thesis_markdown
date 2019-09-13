@@ -2,7 +2,13 @@
 
 <!-- This is the abstract -->
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam et turpis gravida, lacinia ante sit amet, sollicitudin erat. Aliquam efficitur vehicula leo sed condimentum. Phasellus lobortis eros vitae rutrum egestas. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec at urna imperdiet, vulputate orci eu, sollicitudin leo. Donec nec dui sagittis, malesuada erat eget, vulputate tellus. Nam ullamcorper efficitur iaculis. Mauris eu vehicula nibh. In lectus turpis, tempor at felis a, egestas fermentum massa.
+This work deals with a novel approach to remesh trianglular meshes that facilitates a surface interpolation by Radial Basis Fuctions (RBFs). 
+While serving a representation of the surface for remeshing this interpolation also allows to obtain a normalvector to the surface which is used in a higher-dimensional embedding sheme to yield a curvature adapted mesh ie. smaller triangle-sizes where the curvature is larger.
+
+A remeshing-program that incorporates the resulting algorithm was implemented and a parameter study for the interpolation conducted.
+
+Consequently the program was used to remesh the isosurfaces obtained from several phase-field topology optimizations.
+
 
 \pagenumbering{roman}
 \setcounter{page}{1}
