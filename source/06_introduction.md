@@ -7,8 +7,9 @@
 <!--keywords: [Markdown, Example]-->
 <!--lang: "en"-->
 <!--bibliography: ./bibliography/tot.bib-->
-<!--link-citations: true-->
 <!--...-->
+
+\pagenumbering{arabic}
 
 # Introduction & Overview 
 
@@ -35,7 +36,6 @@ Here implicit surface descriptions, ie. $F(x)=0$ for an interpolating space-func
 as they  only depend on the space-dimensions through the associated vectornorm.
 The interpolant is given as a simple sum over basis funtions centered at the data points $i$:
 $$F(x) = \sum_i \alpha_i \varphi(\lVert x-x_i\rVert)$$
-The norm chosen is usually the standard euclidian norm.
 
 
 

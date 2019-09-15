@@ -54,7 +54,7 @@ $$A\alpha = F$$
 ### Existence and Uniqueness results
 The invertbility of the interpolation matrix has been investigated thoroughly in the 1970's and 1980's.
 Key results rely on complete monotonicity of the Radial-Basis-function, ie. the property:
-$$(-1)^l g^l(t) \ge 0 \forall l \in \mathbb{N} \forall t>0$$
+$$(-1)^l g^l(t) \ge 0 \quad \forall l \in \mathbb{N} \quad \forall t>0$$
 Then it can be shown that the interpolation matrix is always positive definite.
 The proof relies on the Bernstein representation theorem for monotone functions. [see @buhmann_radial_nodate pp. 11-14 for the case of multiquadratics ]
 A weaker reeqirement is that only one of the derivatives must be completely monotone.
@@ -88,6 +88,111 @@ $(1-r)_+^8(32r^3+25r^2+8r+1)$    $\varphi_{3,3}(r)$           pd
 
 Table: Local RBF functions introduced by Wendland [@wendland_piecewise_1995]
 
+### surface interpolation
+Surface descriptions are either explicit or implicit. Explicit usually means that the surface is the graph of a function
+$F:\Omega\subset\mathbb{R}^2 \mapsto \mathbb{R}^3$ which can be very complicated to construct.
+Implicit surfaces on the other hand are defined via a functions level set (usually the zero level) ie. $F(x) = 0$ which might be 
+easier to construct but is harder to visualise. Usually then for visualization either marching-cubes or raytracing methods are used.
+
+For the surface interpolation this translates to the interpolant being zero at the datasites: $S(x_i) = 0$.
+Since the zero function would be a trivial solution to this as well off-surface constraints must be given.
+This is usually done with off-surface points generated from normalvectors to the surface given the value of the signed distance function ie. the value of the distance to the surface:
+
+\begin{equation} S(\mathbf{x}_i + \epsilon \mathbf{n}_i) = F(\mathbf{x}_i+\epsilon \mathbf{n}_i) = \epsilon  
+\label{eq:off_surface_points}
+\end{equation}
+
+If not given, those normalvectors can be generated from a cotangent plane that is constructed via  a principal component analysis of nearest neighbors. 
+This however is a nontrivial problem.
+In my case the vectors could be obtained from an average of the normals of the adjacent triangles scaled with the inverse of the corresponding edgelengths.
+These offset-points were generated for every vertex of the original mesh and in both directions (on the inside and on the outside) such as to give the interpolant a constant slope of one around the surface.
+This is done to have an area of convergence for a simple gradient-descent projection algorithm.
+
+
+
 ## Remeshing operations
+Different approaches exist to remesh a surface. Most fall into one of the following categories:
+- triangulate a commpletely new mesh, usually with delauney triangulation and go from there
+- incremental triangulation, with new nodes inserted or removed one at a time. 
+- local mesh modifications / pliant remeshing 
+
+Additionally most methods utilize some form of vertex-smoothing as this is an straightforward iterative procedure that improves themesh globally and is guaranteed to converge. 
+
+The approach used here falls into the latter category and uses consecutive loops of local mesh modifications of the following kinds:
+- Edge collapse
+- Edge split
+- Edge flip
+- Vertex smoothing
+
+Which of the modification is applied depends on an edges length in comparison to a target-edge-length.
+
+
+### Edge collapse
+
+Edge collapse, as the name suggests removes an edge from the mesh thereby deleting two adjacent triangles and removing one point.
+Special conditions have to be checked as there are certain configurations that would result in an illegal triangulation.
+See figures \ref{fig:collapse_e2} and \ref{fig:collapse_e1}
+To avoid having to project a new midpoint to the surface, the two vertices of the edge are joined at either one of them.
+
+![Edge collapse with the new point at one of the endpoints \label{fig:collapse}](source/figures/edge_collapse.svg){width=100%}
+
+![Illegal edge collapse with more than two common neighbors for the edges endpoints \label{fig:collapse_e2}](source/figures/edge_collapse_error2.svg){width=95%}
+
+![Illegal edge collapse with a triangle flip \label{fig:collapse_e1}](source/figures/edge_collapse_error1.svg){width=100%}
+
+### Edge split
+The edge split is a straightforward operation as no special cases have to be taken care of. 
+A new vertex is put at the surface projected midpoint of the existing edge and 4 new edges as well as 4 new triangles replace the split edge and it's adjacent triangles.
+
+### Edge flip
+
+![Edge flip \label{fig:edge_fip}](source/figures/edge_flip.svg){width=100%}
+
+An edge flip can dramatically increase the aspect ratio of a triangle if the right conditions are met.
+Consider the edge in figure \ref{fig:edge_flip}
+Such an edge is flippable if:
+
+- The edge does not belong to the boundary of the mesh
+- The edge CD does not already belong to the mesh
+- $\phi_{ABC} + \phi_{ABD} < \pi \quad \text{and} \quad \phi_{BAC}+ \phi_{BAD} < \pi$  
+- The angle between the normals of the triangles is not too big to not cast "ridges"
+
+I do a flip based on the following criteria:
+
+
+### Vertex smoothing
+
+![Vertex smoothing \label{fig:vertex_smooth}](source/figures/vertex_smoothing.svg){width=70%}
+
+Vertex smoothing finds a new position for a given vertex based on the distance to its neighbors
+according to the following formula:
+$$\vec{p}' = \vec{p} + \alpha \sum_{j \in \mathcal{N}} f(\lVert\vec{p} - \vec{p}_j \rVert) (\vec{p}-\vec{p}_j)$$
+
+Wherein $\mathcal{N}$ stands for the neighbors, $\alpha$ is a normalization constant and $f$ is a weight function.
+Different weights have been investigated in [@bossen_pliant_nodate] where they constructed a well performing weight function.
+Given a target edge length $t$ and an actual edge length $l$ a normalized edge length is defined as $d=l/t$ and the weight function reads:
+$$f(d) = (1-d^4)\cdot e^{-d^4}$$
+
+This function pushes if $l < t$ and slightly pulls if $t>l$.
+The function is plotted in figure \ref{fig:smoothing_weights} versus the frequently used laplace weights.
+Additionally, I clipped the movedistance to 80% of the minium of the  adjacent triangles heights.
+This is done because moves that exceed this distance are likely to cause unacceptable triangles. 
+What unacceptable means is defined in the algorithm section but is basically implemented as triangles with excess tilt versus the surface normal.
+
+
+![The weight function used compared to the laplace weights \label{fig:smoothing_weights}](source/figures/weight_funcs.png){width=70%}
+
+
+
+### Projection of vertices onto the surface
+
+Both in an edge split as well as in vertex smoothing a constructed new vertex must be projected onto the surface.
+To this end I use a simple gradient descent with a fixed steplength of one. This is a rather heuristical result
+that has proven much better convergence than the exact steplength.
+This is most probably due to the fact that around the surface the slope of the function is one by construction.
+
+
 
 ## Higher dimensional embedding 
+
+
