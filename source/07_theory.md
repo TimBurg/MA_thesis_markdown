@@ -57,8 +57,8 @@ Key results rely on complete monotonicity of the Radial-Basis-function, ie. the 
 $$(-1)^l g^l(t) \ge 0 \quad \forall l \in \mathbb{N} \quad \forall t>0$$
 Then it can be shown that the interpolation matrix is always positive definite.
 The proof relies on the Bernstein representation theorem for monotone functions. [see @buhmann_radial_nodate pp. 11-14 for the case of multiquadratics ]
-A weaker reeqirement is that only one of the derivatives must be completely monotone.
-This then leads to the concept of conditonally positive definiteness of a function in which polynomial is added to the interpolant. 
+A weaker requirement is that only one of the derivatives must be completely monotone.
+This then leads to the concept of conditonally positive definiteness of a function in which a polynomial is added to the interpolant. 
 
 - complete monotonicity yields a positive definite A (result due to Michelli 1986)
 - weaker concept: complete monotonicity of some derivative: $(-1)^k \frac{d^k}{dt^k} \varphi(\sqrt{t})$
@@ -74,8 +74,8 @@ Now commonly used are the Wendland functions [see @wendland_piecewise_1995] whic
 function             name                     definiteness 
 -----------------   ------------------------ -------------
 $e^{-r^2}$          gaussian                         pd
-$\sqrt{1+r^2}$	    multiquadratics	             pd 
-$1/\sqrt{1+r^2}$    inverse multiquadratics          pd 
+$\sqrt{r^2 +1}$	    multiquadratics	             pd 
+$1/\sqrt{r^2+1}$    inverse multiquadratics          pd 
 $r^3$               polyharmonic spline	            cpd
 
 Table: RBF functions with global support
@@ -88,23 +88,43 @@ $(1-r)_+^8(32r^3+25r^2+8r+1)$    $\varphi_{3,3}(r)$           pd
 
 Table: Local RBF functions introduced by Wendland [@wendland_piecewise_1995]
 
+![Comparison of different RBF functions. Note that a convergence to zero is not mandatory.
+However, the Wendland functions become zero after r=1](source/figures/rbf_functions.png){#fig:rbf_funcs width=70%}
+
+### Scaling of RBF functions, ambiguities and interpolation properties
+The normal RBF functions have a fixed spread as seen in @fig:rbf_funcs.
+Since spacing of the interpolation data is not fixed,
+a scale needs to be introduced that scales r such that the RBFs
+ extend into the space between the datasites. Otherwise the interpolant might just have, in the exteme case, spikes at the sites to attain the required values.
+To this end I scale r by $r' = r/c$ with a scale parameter $c$ since that makes the Wendland functions extend to exactly the value of this parameter.
+
+This scaling parameter, in general can be nonuniform over the interpolated values but this comes with uncertainty for the solvability of the interpolation system.
+
+Moreover, it cannot be generally stated which value of a scale parameter is more accurate in an interpolation unless there is a target to which the interpolant can be compared. See @fig:wendland_scales
+
+![Wendland C2 functions for different scaling parameters c. The interpolation values were set to (1,2,1,2,1) at (0,1,2,3,4).
+](source/figures/wendland_scale_factors.png){#fig:wendland_scales width=90%}
+
+![Different Radial-Basis-Funtions have different behaviours for off-site values. Multiquadratics grow toward infinity.
+Displayed is a 1-2 comb in two dimensions](source/figures/MQ_2D_comb.png){#fig:wendland_scales width=90%}
+
 ### surface interpolation
-Surface descriptions are either explicit or implicit. Explicit usually means that the surface is the graph of a function
+Surface descriptions are either explicit or implicit. Explicit means that the surface is the graph of a function
 $F:\Omega\subset\mathbb{R}^2 \mapsto \mathbb{R}^3$ which can be very complicated to construct.
-Implicit surfaces on the other hand are defined via a functions level set (usually the zero level) ie. $F(x) = 0$ which might be 
+Especially complicated topologies this can usually be only done via 2d-parametric patches of the surface which have their own difficulties for remeshing.
+Implicit surfaces on the other hand are defined via a functions level set (usually the zero level) ie. $F(x) = 0$ which is 
 easier to construct but is harder to visualise. Usually then for visualization either marching-cubes or raytracing methods are used.
 
-For the surface interpolation this translates to the interpolant being zero at the datasites: $S(x_i) = 0$.
-Since the zero function would be a trivial solution to this as well off-surface constraints must be given.
-This is usually done with off-surface points generated from normalvectors to the surface given the value of the signed distance function ie. the value of the distance to the surface:
+For the surface interpolation with an implicit function this translates to the interpolant being zero at the datasites: $S(x_i) = 0$.
+Since the zero function would be a trivial solution to this, off-surface constraints must be given.
+This is usually done with points generated from normalvectors to the surface that are given the value of the signed distance function ie. the value of the distance to the surface:
 
-\begin{equation} S(\mathbf{x}_i + \epsilon \mathbf{n}_i) = F(\mathbf{x}_i+\epsilon \mathbf{n}_i) = \epsilon  
-\label{eq:off_surface_points}
-\end{equation}
-
-If not given, those normalvectors can be generated from a cotangent plane that is constructed via  a principal component analysis of nearest neighbors. 
+$$ S(\mathbf{x}_i + \epsilon \mathbf{n}_i) = F(\mathbf{x}_i+\epsilon \mathbf{n}_i) = \epsilon  
+$${#eq:off_surface_points}
+If not available, the normalvectors can be generated from a cotangent plane that is constructed via  a principal component analysis of nearest neighbors. 
 This however is a nontrivial problem.
-In my case the vectors could be obtained from an average of the normals of the adjacent triangles scaled with the inverse of the corresponding edgelengths.
+In my case the vectors could be obtained from an average of the normals of the adjacent triangles scaled with the inverse of the corresponding edgelengths:
+$$\vec{n} = \sum_{T \in \mathcal{N}_T} \frac{1}{\lVert \vec{n}_T \rVert} \vec{n}_T$$
 These offset-points were generated for every vertex of the original mesh and in both directions (on the inside and on the outside) such as to give the interpolant a constant slope of one around the surface.
 This is done to have an area of convergence for a simple gradient-descent projection algorithm.
 
@@ -131,12 +151,12 @@ Which of the modification is applied depends on an edges length in comparison to
 
 Edge collapse, as the name suggests removes an edge from the mesh thereby deleting two adjacent triangles and removing one point.
 Special conditions have to be checked as there are certain configurations that would result in an illegal triangulation.
-See figures \ref{fig:collapse_e2} and \ref{fig:collapse_e1}
+See figures @fig:collapse_e2 and \ref{fig:collapse_e1}
 To avoid having to project a new midpoint to the surface, the two vertices of the edge are joined at either one of them.
 
 ![Edge collapse with the new point at one of the endpoints \label{fig:collapse}](source/figures/edge_collapse.svg){width=100%}
 
-![Illegal edge collapse with more than two common neighbors for the edges endpoints \label{fig:collapse_e2}](source/figures/edge_collapse_error2.svg){width=95%}
+![Illegal edge collapse with more than two common neighbors for the edges endpoints \label{fig:collapse_e2}](source/figures/edge_collapse_error2.svg){#fig:collapse_e2 width=95%}
 
 ![Illegal edge collapse with a triangle flip \label{fig:collapse_e1}](source/figures/edge_collapse_error1.svg){width=100%}
 
@@ -194,5 +214,20 @@ This is most probably due to the fact that around the surface the slope of the f
 
 
 ## Higher dimensional embedding 
+
+The term higher dimensional embedding may sound a bit exaggerated for what is actually done. 
+Namely, the pointnormals are included in an edges length calculation as to enlarge the edge when the normals differ.
+Thereby, the the enlarged edges are remeshed more finely. 
+Formally this reads as follows.
+Given a vertex $x$ on the surface, it is concatenated with the surface normal $n$ at this point:
+
+$$\Psi(x) = (x,y,z, \sigma n_x, \sigma n_y, \sigma n_z)^T$$
+
+Here $\sigma$ is a parameter of the embedding and in effect controls how much an edge will be enlarged.
+With this new $\Psi$ the edgelength between two points $a$ and $b$ will now be defined as:
+$$l_{ab}^{6d}= \lVert \Psi(a) - \Psi(b)\rVert = \sqrt{(\Psi(a)-\Psi(b), \Psi(a)-\Psi(b))}$$
+
+And in the same manner an angle between the points $a,b,c$ is defined via:
+$$cos(\theta^{6d}_{abc})= \frac{(\Psi(a)-\Psi(c), \Psi(b)-\Psi(c))_{6d}}{l_{ac}^{6d}l_{bc}^{6d}}$$
 
 
