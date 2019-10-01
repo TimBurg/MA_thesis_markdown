@@ -3,9 +3,121 @@
 
 ## Topology optimization via the phase-field method
 
-### The equations of linear elasticity
+### The equations of static elasticity
+Mathematical elasticity can be considered a branch of continuum dynamics whose research reaches as far back as the late 16th century.
+I only give a short outline of the stepstones to linear elasticity and refer mostly to  
+the book mathematical elasticity by Ciarlet which is a comprehensive standard piece on the topic.
 
-### Compliane minimization
+Continuum dynamics deals with a body occupying a lipschitz-continuous reference configuration $\overline{\Omega}\subset \mathbb{R}^3$ under rest which is deformed to a
+configuration $\Omega \subset \mathbb{R}^3$ by applied forces.
+The deformation is then described by an injective mapping $\varphi$ which contains a displacement field $u:\overline{\Omega} \mapsto \Omega$:
+$$\varphi:\overline{\Omega} \mapsto \Omega \qquad \varphi=id+u$$
+The deformation and displacement mappings are required to be two times continuously differentiable but this reqirement can be relaxed in the variational formulation of the equations. 
+I denote the coordinates in the reference configuration with $x$ and and those in the deformed configuration with $x^\varphi = \varphi(x)$. 
+In engineering Textbooks those coordinates are sometimes referred to as Lagrange- and Euler-coordinates respectively.
+
+The elasticity theory is then build on the follwowing two contibutions from Cauchy of which the second is fundamental to continuum dynamics:
+
+1. Axiom of force balance:
+
+   Given volume- and surface-force-densities as $f^\varphi$ and $g^\varphi$  in the deformed configuration then for every subset
+   $A^\varphi \subset \Omega$ the following equality holds:
+   $$\int_{A^\varphi} f^\varphi(x^\varphi) dx^\varphi + \int_{\partial A^\varphi} t^\varphi(x^\varphi,n^\varphi)da^\varphi = 0$$
+   Here, $dx^\varphi$ and $da^\varphi$ are the volume and surface elements in the deformed configuration, $n^\varphi$ is the surface-unit-normal and $t^\varphi$ is the cauchy stress vectorfield:
+   $$t^\varphi:\Omega \times \mathbb{S}_1 \mapsto \mathbb{R}^3 \quad where \quad \mathbb{S}_1 := \{v \in \mathbb{R}^3\:|\: \lVert v \rVert = 1 \}$$
+   Note cauchy stress vector $t^\varphi$ depends on the given Volume $A$ only through the normal vector at a surface point and
+   that any surface-force dictated on part of $\partial A \cap \partial\Omega$ must be dispersed through 
+   the remaining part of $\partial A$.
+
+2. Stress Tensor theorem:
+
+   Assuming that $f^\varphi$ is continuous and 
+   ${t^\varphi \in \textrm{C}^1(\Omega) \cap \textrm{C}(\mathbb{S}_1)}$,
+   then $t^\varphi$ is linear w.r.t. 
+   to the second argument ie.:
+   \begin{subequations}\label{eq:equilibrium}
+   \begin{align}
+   t^\varphi (x^\varphi, n) &= T^\varphi (x^\varphi)n \qquad \forall x^\varphi \in \Omega, \! &\forall n \in \mathbb{S}_1\\
+   &\text{and} \nonumber\\
+     -\text{div}^\varphi T^\varphi (x^\varphi) &= f^\varphi   &\forall x^\varphi \in \Omega \label{eq:divT} \\
+     T^\varphi (x^\varphi) &= T^\varphi (x^\varphi)^T         &\forall x^\varphi \in \Omega \\
+     T^\varphi (x^\varphi) n^\varphi &= g^\varphi(x^\varphi)  &\forall x^\varphi \in \Gamma^\varphi 
+   \end{align}\end{subequations}
+   where $\Gamma^\varphi$ is the part of $\partial \Omega$ where the boundary condition $g$ is prescribed.
+   [See @philippe_ciarlet_mathematical_1990 p.63-65 for the proof]  
+
+Notice that the forumulation above uses the stress tensor in the deformed configuration.
+The pullback of the tensor onto the reference configuration is achieved with the piola-transform after which it needs 
+to be symmetrized again. This then yields the so-called first and second Piola-Kirchhoff-Stress-Tensors denoted with $\Sigma$.
+The densities in the  pullback of the forces is often ignored. These are then called dead loads
+[see @philippe_ciarlet_mathematical_1990 chapter 2.7].
+
+They are omitted here for brevity but the second Piola-Kirchhoff-Stress is the stress tensor to be determined in the next chapter.
+
+### Stess, strain and the equations of equilibrium in the linear case
+So far the theory is valid for all continuums but there are also nine unknown functions, namely the three components of the deformation and the six components of the stress tensor tensor.
+Luckily, several simplifictaions can be made in case of isotropic and homogeneous media that lead to a remarkably simple form of the tensor.
+
+To this end the chauchy strain tensor $C$ and its difference from unity $E$ is introduced.
+They describes the first order local change in length-scale under a deformation and are via the 
+fréchet derivative of the mapping $\varphi\mathrm{,} \: \nabla \varphi$:
+
+$$\nabla \varphi = \begin{pmatrix}
+			\partial_1 u_1 & \partial_2 u_1 &  \partial_3 u_1 \\
+			\partial_1 u_2 & \partial_2 u_2 &  \partial_3 u_2 \\
+			\partial_1 u_3 & \partial_2 u_3 &  \partial_3 u_3 \\
+			\end{pmatrix}
+			$$
+
+$$C=\nabla \varphi^T \nabla \varphi = I + \nabla u^T + \nabla u + \nabla u^T \nabla u = I + 2 E  $$
+Viewed in a different light, the deformed state can be considered a manifold with $C$ as the metric-tensor.
+
+The simplification of the second Piola-Kichhoff-Stress-tensor follows these steps:
+
+1. The stress tensor can only depend on $\varphi$ through its derivative $\nabla \varphi$ (Elasticity) 
+2. Material-Frame Indifference
+3. Isotropy
+4. Rivlin-Ericksen representation theorem
+5. Homogeneity
+
+Details on these steps can again be found in [@philippe_ciarlet_mathematical_1990 chapter 3].
+After following these steps, $\Sigma$ takes on the following form:
+$$\Sigma(C) = \lambda (\mathrm{tr}E)I + 2\mu E + o(\lVert E \rVert)$$
+
+Here, $\lambda$ and $\mu$ are the lamé coefficients of the material.
+In the linear theory that is used as the basis for the topology optimization, the strain $E$ is replaced with 
+the linearized version $\varepsilon$: 
+$$\varepsilon = \frac{1}{2} \nabla u^T + \nabla u$$
+
+which yields the following even simpler form of the tensor which is referred to as $\sigma$:
+
+$$\sigma = \lambda ( \nabla u) I + \mu \left(\nabla u + \nabla u^T \right)$$
+This is called Hooks-law and usually written with an additional tensor $c$:
+<!--$$\sigma = c: \varepsilon \quad \text{or} \quad \sigma = c \varepsilson $$-->
+Where the last form is written in vector form for the components of the tensors.
+
+### Variational formulation
+For finite-element simulations and reduced smoothness requirements of the displacement, a variatonal formulation of the equilibrium equations \ref{eq:equilibrium} must be formulated.
+
+Multiplying equation \ref{eq:divT} with a test function $\theta$ on both sidesa and intgrating yields:
+$$\int_{\Omega^\varphi} \text{div}^\varphi T^\varphi \cdot \theta^\varphi dx^\varphi = -\int_{\Omega^\varphi} f^\varphi
+\theta^\varphi dx^\varphi + \int_{\Gamma^\varphi} g^\varphi \theta^\varphi$$
+
+Using the Greens-fomula for Tensor fields:
+$$\int_{\bar{\Omega}} \text{div} H \cdot \theta dx = - \int_{\bar{\Omega}} H:\nabla \theta dx + \int_\Gamma Hn\cdot \theta da $$
+and applying the pullback to the reference configuration with the second Piola-Kirchhoff-Stress-tensor then gives:
+
+$$\int_{\bar{\Omega}} \nabla \varphi : \Sigma \nabla \theta dx = \int_{\bar{\Omega}} f \cdot \theta dx + \int_\Gamma g \cdot \theta da $$
+
+For All sufficiently regular vector fields $\theta: \bar{\Omega} \mapsto \mathbb{R}^3$.
+This is also called the 'principle of virtual work' (in the reference configuration).
+
+
+
+
+
+
+### Compliance minimization
 
 ### Phase-field formulation and advancing-front algorithms
 
