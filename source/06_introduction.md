@@ -9,8 +9,6 @@
 <!--bibliography: ./bibliography/tot.bib-->
 <!--...-->
 
-\pagenumbering{arabic}
-
 # Introduction & Overview 
 
 
@@ -23,7 +21,12 @@ If this is the case then remeshing techniques can be used to yield a better mesh
 One such case which is the one treated here arises after the extraction of an isosurface-mesh of a scalar-valued function defined on a finite-element mesh.
 The isovalue-intersections may cut the Finite-element-simplices close to corners and edges resulting in very small and possibly distorted ie. non-equilateral triangles.
 
-The Finite-element application considered in this work is a topology optimization with the phase-field method. The phase-field distinguishes material from void but has a continuous range from 0 to 1 where 0 is void and 1 is material. 
+The application considered in this work is a topology optimization with the phase-field method.
+Often a certain minimum stiffness or maximum give in a structure is required for it to perform its target application.
+Topology optimization then can yield designs that need less material or give better 
+stiffness and hence a better performing part for the same material.
+
+The phase-field distinguishes material from void but has a continuous range from 0 to 1 where 0 is void and 1 is material. 
 Usually then the isosurface to the value 0.5 is used to determine the boundary of the solid-body.
 
 ## common approaches for remeshing

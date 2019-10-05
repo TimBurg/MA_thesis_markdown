@@ -1,7 +1,7 @@
 
 # Theoretical backgrounds
 
-## Topology optimization via the phase-field method
+## Linear elasticity
 
 ### The equations of static elasticity
 Mathematical elasticity can be considered a branch of continuum dynamics whose research reaches as far back as the late 16th century.
@@ -12,6 +12,7 @@ Continuum dynamics deals with a body occupying a lipschitz-continuous reference 
 configuration $\Omega \subset \mathbb{R}^3$ by applied forces.
 The deformation is then described by an injective mapping $\varphi$ which contains a displacement field $u:\overline{\Omega} \mapsto \Omega$:
 $$\varphi:\overline{\Omega} \mapsto \Omega \qquad \varphi=id+u$$
+For the static case treated here, the deformation is time independant.
 The deformation and displacement mappings are required to be two times continuously differentiable but this reqirement can be relaxed in the variational formulation of the equations. 
 I denote the coordinates in the reference configuration with $x$ and and those in the deformed configuration with $x^\varphi = \varphi(x)$. 
 In engineering Textbooks those coordinates are sometimes referred to as Lagrange- and Euler-coordinates respectively.
@@ -43,7 +44,8 @@ The elasticity theory is then build on the follwowing two contibutions from Cauc
      T^\varphi (x^\varphi) &= T^\varphi (x^\varphi)^T         &\forall x^\varphi \in \Omega \\
      T^\varphi (x^\varphi) n^\varphi &= g^\varphi(x^\varphi)  &\forall x^\varphi \in \Gamma^\varphi 
    \end{align}\end{subequations}
-   where $\Gamma^\varphi$ is the part of $\partial \Omega$ where the boundary condition $g$ is prescribed.
+   where $\Gamma^\varphi$ is the part of $\partial \Omega$ where the boundary condition $g$ is prescribed 
+   and $\text{div}T = \partial_j T_{ij}, e_i$
    [See @philippe_ciarlet_mathematical_1990 p.63-65 for the proof]  
 
 Notice that the forumulation above uses the stress tensor in the deformed configuration.
@@ -89,21 +91,23 @@ In the linear theory that is used as the basis for the topology optimization, th
 the linearized version $\varepsilon$: 
 $$\varepsilon = \frac{1}{2} \nabla u^T + \nabla u$$
 
-which yields the following even simpler form of the tensor which is referred to as $\sigma$:
+this yields the following even simpler form of the tensor which is referred to as $\sigma$:
 
 $$\sigma = \lambda ( \nabla u) I + \mu \left(\nabla u + \nabla u^T \right)$$
-This is called Hooks-law and usually written with an additional tensor $c$:
-<!--$$\sigma = c: \varepsilon \quad \text{or} \quad \sigma = c \varepsilson $$-->
+The more prominent form however is called Hooks-law and written with the so-called stiffness tensor $c$:
+\begin{equation} \sigma = c : \varepsilon \qquad \text{or} \qquad \sigma = c \varepsilon \end{equation}
 Where the last form is written in vector form for the components of the tensors.
 
 ### Variational formulation
 For finite-element simulations and reduced smoothness requirements of the displacement, a variatonal formulation of the equilibrium equations \ref{eq:equilibrium} must be formulated.
+To simplify the writing, the following tensoroperation for rank 2 tensors  is introduced:
+$$G:V :=  \sum_{i,j} G_{ij} V_{ij}$$
 
-Multiplying equation \ref{eq:divT} with a test function $\theta$ on both sidesa and intgrating yields:
+Multiplying equation \ref{eq:divT} with a test function $\theta$ on both sides and integrating yields:
 $$\int_{\Omega^\varphi} \text{div}^\varphi T^\varphi \cdot \theta^\varphi dx^\varphi = -\int_{\Omega^\varphi} f^\varphi
 \theta^\varphi dx^\varphi + \int_{\Gamma^\varphi} g^\varphi \theta^\varphi$$
 
-Using the Greens-fomula for Tensor fields:
+Using the Greens-formula for Tensor fields:
 $$\int_{\bar{\Omega}} \text{div} H \cdot \theta dx = - \int_{\bar{\Omega}} H:\nabla \theta dx + \int_\Gamma Hn\cdot \theta da $$
 and applying the pullback to the reference configuration with the second Piola-Kirchhoff-Stress-tensor then gives:
 
@@ -112,14 +116,97 @@ $$\int_{\bar{\Omega}} \nabla \varphi : \Sigma \nabla \theta dx = \int_{\bar{\Ome
 For All sufficiently regular vector fields $\theta: \bar{\Omega} \mapsto \mathbb{R}^3$.
 This is also called the 'principle of virtual work' (in the reference configuration).
 
+For very small strains the deformation gradient in front of $\Sigma$ can be dropped since the 
+diplacement gradient multiplied with the stress-tensor is of second order in $\nabla u$. [see @braess_finite_2013 p.280] 
+
+Furthermore, since the product of a symmetric tensor with an antisymmetric one is zero, we split $\nabla \theta$ into:
+$\left[ \frac{1}{2}(\nabla \theta + \nabla \theta^T) + \frac{1}{2}  (\nabla \theta - \nabla \theta^T)\right]$
+
+And thus we write the equation in the following form:
+\begin{equation}
+\int_{\bar{\Omega}} \sigma \frac{1}{2}(\nabla \theta + \nabla \theta^T) = \int_{\bar{\Omega}} \sigma \varepsilon(\theta) =
+\int_{\bar{\Omega}} f \cdot \theta dx + \int_\Gamma g \cdot \theta da \end{equation}
 
 
+For the following sections we write this as the following shorthand notation using the inner product 
+$\langle A,B \rangle_C = \int_{\bar{\Omega}} A: CB$ :
 
+\begin{equation}\langle \varepsilon(u) \varepsilon(\theta)\rangle_{C(\varphi)} = \int_{\bar{\Omega}} f \cdot \theta + \int_\Gamma g \cdot \theta =: F(\theta)\label{eq:compliance}\end{equation}
 
+For an actual deformation rather than a virtual one, the functional $F$ is called the compliance of the structure.
+This compliance is what is to be optimized in the following section. 
+
+## Topology optimization
+
+The topology optimization procedure used in this work is a direct implementation the works of ... 
+As a result of this I frequently refer to these papers. 
+Topology optimization is a relativly new technique and was first 
+
+The term topology optimization was coined in the context of optimizing mechanical structures.
+It is not bound to a certain implementation but to the requirement that a structure under load that is optimized via a certain functional may change its topology under that optimization.
+This is generally understood in the sense as to allow the nucleation of holes in a previously filled material rather than forming new 
+strucutres in the void.
+
+The method used throuout this work that accomplishes this uses the compliance minimization functional with a phase field description of the structure.
+In effect, compliance minimization maximizes the stiffness of the structure under a mass- or volume constraint while the phase field describes where material is placed in the domain. 
+
+The use of a phase-function description allows to incorporate a computationally cheap perimeter regularization via an additional term in the optimization functional.
+This is needed since the compliance minimization in itself is not well posed and allows high variaton in the microstructure of a part that cannot be manufactured and is not numerically stable.
 
 ### Compliance minimization
 
-### Phase-field formulation and advancing-front algorithms
+Compliance is a very common goal function for topology optimization and defined as in equation \ref{eq:compliance}:
+$$F(u) = \int_{\bar{\Omega}} f \cdot u + \int_\Gamma g \cdot u $$
+
+Here, $u$ is the displacement solution of the mechanical system in the left-hand side of equation \ref{eq:compliance}
+
+However, it is still open at this time how the compliance depends on the structure of the part.
+This dependence is actually encoded in the Stiffness-tensor $c$ of the mechanical system that will be constructed from the 
+phase field after this has been rigorously defined.
+
+### The phase-field description and regularization energy
+
+For the modeling of structures either a level set method or a phase field description is viable.
+In case of the phase-field a continuous function is chosen 
+that here can take on values in the range from 0 to 1 where 0 represents the void and 1 the material:
+$$ 0 < \varphi < 1$$
+
+A penalty term is then added to the optimization to force the phasefield to condensate to either 0 or 1 depending on a forcing term from the compliance minimization.
+Consequently an interface forms that can expand or retract and this falls into the category of advancing front algorithms. For details see [@barles_front_1993].
+The resulting equation driving the interface is an Allan-Cahn Equation as discussed in [@blank_phase-field_2010].
+However, for the general understanding the optimality conditions are of more avail.
+
+
+Firstly, since integrating a value of 1 over a region, a volume constraint is easily added with a parameter $m$ that dictates how much of the design domain is to be void:
+$$\int_\Omega \varphi dx = m \cdot \text{vol}(\Omega)$$
+
+Notice that values in the intermediate range of $\varphi$ contribute a lesser volume. 
+However, these values, as they only occur in the interfacial region, will be forced to occupy a small portion of the domain.
+
+We explicitly stipulate the requirements on $\varphi$ in the following space:
+$$\mathcal{G}^m = \big\{\varphi \in H^1(\Omega, \mathbb{R})) \quad \big| \quad 0\leq \varphi \leq 1 \quad \text{and} \quad \int_\Omega \varphi dx = m \cdot \text{vol}(\Omega) \big\}$$
+
+As stated, an additional term has to be added to the compliance functional as to force condensation of the phasefield and 
+regularize the occurence of jumps. The term used is due to [@takezawa_shape_2010]:
+
+$$ E^\varepsilon = \int_\Omega \frac{\varepsilon}{2} |\nabla \varphi|^2 + \frac{1}{\varepsilon} \Psi(\varphi) dx $$
+
+The potential $\Psi(\varphi)$ serves as the condensation potential that forces the phase field to either 0 or 1.
+Here, an obstacle potential is used while for the analysis, a differentiable double-well potential is employed:
+$$\Psi_\text{dw}(\varphi) = \frac{1}{4} (\varphi^2 - \varphi)^2$$
+
+$$\Psi_\text{obs} = \begin{cases} (1-\varphi)\varphi,  \quad \text{if}\ \varphi \in [0,1]\\
+			           \infty \quad \text{else}
+\end{cases}$$
+The two potentials are displayed in figure \ref{fig:potentials}
+
+![The two potentials in the Ginzburg-Landau energy term \label{fig:potentials}](source/figures/double_well.png){width=70%}
+
+### Interpolation of the stiffness tensor
+The stiffness tensor in the void is modeled by a very soft material $C_\text{void}$.
+For the interpolation in the interfacial region towards the material tensor $C_\text{mat}$ a linear interpolation with a superimposed 
+transition function $t(\varphi) = \varphi^3$ is used:
+$$C(\varphi) = C_\text{mat} t(\varphi) + C_{void} (1- t(\varphi)) $$
 
 ### Isosurface extraction
 Since the Finite-Element-Mesh is providing a 3D-tesselation of the domain, which in this case consists of tetrahedra, the generation of an isosurface is handled as in the marching-tetrahedra algorithm. 
