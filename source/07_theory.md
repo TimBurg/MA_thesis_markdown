@@ -133,13 +133,15 @@ $\langle A,B \rangle_C = \int_{\bar{\Omega}} A: CB$ :
 
 \begin{equation}\langle \varepsilon(u) \varepsilon(\theta)\rangle_{C(\varphi)} = \int_{\bar{\Omega}} f \cdot \theta + \int_\Gamma g \cdot \theta =: F(\theta)\label{eq:compliance}\end{equation}
 
+The well posedness of the weak formulation is proved using the Lax-Milgram Lemma and Korns Inequality in [@blank_relating_2014]
+
 For an actual deformation rather than a virtual one, the functional $F$ is called the compliance of the structure.
 This compliance is what is to be optimized in the following section. 
 
 ## Topology optimization
 
-The topology optimization procedure used in this work is a direct implementation the works of ... 
-As a result of this I frequently refer to these papers. 
+The topology optimization procedure used in this work is a direct implementation the works of [@blank_relating_2014]
+As a result of this I frequently refer to these papers and only strive to give a compact summary of the steps.
 Topology optimization is a relativly new technique and was first 
 
 The term topology optimization was coined in the context of optimizing mechanical structures.
@@ -183,8 +185,9 @@ $$\int_\Omega \varphi dx = m \cdot \text{vol}(\Omega)$$
 Notice that values in the intermediate range of $\varphi$ contribute a lesser volume. 
 However, these values, as they only occur in the interfacial region, will be forced to occupy a small portion of the domain.
 
-We explicitly stipulate the requirements on $\varphi$ in the following space:
+For the reading convenience we stipulate the requirements on $\varphi$ in the following space:
 $$\mathcal{G}^m = \big\{\varphi \in H^1(\Omega, \mathbb{R})) \quad \big| \quad 0\leq \varphi \leq 1 \quad \text{and} \quad \int_\Omega \varphi dx = m \cdot \text{vol}(\Omega) \big\}$$
+These requirements are later taken care of by complementary slackness and a lagrange multiplier respectively.
 
 As stated, an additional term has to be added to the compliance functional as to force condensation of the phasefield and 
 regularize the occurence of jumps. The term used is due to [@takezawa_shape_2010]:
@@ -202,11 +205,180 @@ The two potentials are displayed in figure \ref{fig:potentials}
 
 ![The two potentials in the Ginzburg-Landau energy term \label{fig:potentials}](source/figures/double_well.png){width=70%}
 
-### Interpolation of the stiffness tensor
+### Interpolation of the stiffness tensor and gravitational force
 The stiffness tensor in the void is modeled by a very soft material $C_\text{void}$.
 For the interpolation in the interfacial region towards the material tensor $C_\text{mat}$ a linear interpolation with a superimposed 
 transition function $t(\varphi) = \varphi^3$ is used:
 $$C(\varphi) = C_\text{mat} t(\varphi) + C_{void} (1- t(\varphi)) $$
+
+Also, the force $f$ occuring in the mechanical system can now be made concrete.
+Namely the phase-field acts as a direct scaling factor for the mass density and excludes the void from contributing any forces:
+
+$$f = \varphi \cdot \rho_\text{mat} \cdot g \quad \text{with} \  g=9.81 \cdot [0, 0, 1]^T$$
+
+$$F(u, \varphi) = \int_{\bar{\Omega}} \varphi \cdot \rho_\text{mat} \cdot u + \int_\Gamma g \cdot u $$
+
+### The optimal control problem
+We are now ready to state the optimality system including the first order necessary condition for a minimum.
+
+As indicdated before, the goal is to minimize the functional made up of the compliance and the Ginzburg-Landau term:
+$$ \text{min}\ J(u, \varphi) := E(\varphi) + F(u, \varphi) \quad \text{with} \ \varphi \in \mathcal{G}^m \text{ and } u\ 
+\text{ forfills eq }\ref{eq:compliance}$$ 
+
+To write down the optimality conditions in a concise form, consider the control-to-state operator 
+$S(\varphi) = u$ defined implicitly by equation \ref{eq:compliance}. 
+It's directional derivative $S'(\varphi)h = p$ is given by the solution to:
+
+\begin{equation}\langle \varepsilon(p) \varepsilon(\eta)\rangle_{C(\varphi)} =
+ \langle \varepsilon(u) \varepsilon(\eta)\rangle_{C'(\varphi)h} - \int_{\bar{\Omega}} h \cdot f \cdot \eta  \quad \forall \eta \in H^1_D
+ \label{eq:control_to_state}
+ \end{equation}
+
+[see @blank_relating_2014 theorem 3.3]
+
+It follows from the definition of the total differential and the chain rule that the reduced functional 
+$\widetilde{J}(\varphi)= J(S(\varphi), \varphi)$ is
+fréchet-differentiable with the derivative:
+$$\tilde{J}'(\varphi) h = \frac{\partial}{\partial u} J(u,\varphi) p + \frac{\partial}{\partial \varphi} J (u, \varphi) h$$
+
+Since $E(\varphi)$ is independant of $u$, the partial derivative with respect to $u$ is just the right-hand side of the state equation:
+
+$$\frac{\partial}{\partial u} J(u, \varphi) p = F(p,\varphi) $$
+
+
+Which is, since $p \in H^1_D(\Omega, \mathbb{R}^d)$ is an admissible test function, equal to the left hand side of the state equation.
+Note that if this was not the case, an auxillary state $q \in H^1_D$ could have been introduced which would solve a system sometimes called the adjoint system as to make the following equality hold. 
+
+Now using equation \ref{eq:control_to_state} with $u$ as a test function this can be written as:
+
+\begin{align}
+\frac{\partial}{\partial u} J(u, \varphi) p &= F(p,\varphi)=\langle \varepsilon(u) \varepsilon(p)\rangle_{C(\varphi)} 
+&= -\langle \varepsilon(u) \varepsilon(u)\rangle_{C'(\varphi)h} -  \int_{\bar{\Omega}} h \cdot f \cdot u
+\end{align}
+
+The calculation of the partial derivative of $J$ with respect to $\varphi$ is straightforward:
+
+$$\frac{\partial}{\partial \varphi}J(u,\varphi) \xi = \varepsilon \int_\Omega \nabla \varphi : \nabla \xi +
+\int_\Omega \frac{1}{\varepsilon} \Psi'(\varphi) \xi dx  + F(u,\xi)$$
+
+Summing up, the reduced functional has the following directional derivative:
+\begin{equation}
+\frac{d}{d \varphi} \tilde{J}(\varphi) = 2 \cdot F(u, \xi) +\int_\Omega \varepsilon \nabla \varphi \nabla \xi +
+\frac{1}{\varepsilon} \Psi'(\varphi) \xi \ dx 
+ - \langle \varepsilon(u) \varepsilon(\eta)\rangle_{C'(\varphi)\xi}
+\end{equation}
+
+To incorporate the constraints on $\varphi$ we now follow the Karush-Kush-Tucker theory.
+For this to work we have to make sure a constraint qualification is satisfied.
+Here we consider the slater condition that, for a an itermediate density material distribution in the whole domain 
+is obviously satisfied. Thus we can assume strong duality and the complentarity follows.
+
+To reconsider, we have the following additional requirements
+
+\begin{align}
+\int_\Omega \varphi - m \ dx &=& 0 \\
+\varphi -1 &\leq& 0 \\
+-\varphi   &\leq& 0 
+\end{align}
+
+Introducing lagrange multipliers $\eta, \mu, \lambda$ the KKT-first order necessary optimality conditions then read:
+
+\begin{align}
+\frac{d}{d\varphi} \tilde{J}(\tilde{\varphi}) \omega + \eta \int_\Omega \omega \ dx + \mu \omega - \lambda \omega  &= 0 \quad \forall \omega \in H^1_D \label{eq:gradient}\\
+\langle \varepsilon(\tilde{u}) \varepsilon(v)\rangle_{C(\varphi)} &= F(\tilde{u}, v)  \quad \forall v \in H^1_D \\
+\int_\Omega \tilde{\varphi} - m \ dx &= 0 \\
+\mu \geq 0,& \quad \lambda \geq 0 \\
+(\mu, \tilde{\varphi} -1) &= 0 \quad \text {a.e. in } \Omega \label{eq:complementary1}\\
+(\lambda, -\tilde{\varphi}) &= 0 \quad \text {a.e. in } \Omega \label{eq:complementary2}
+\end{align}
+
+Where the last three conditions arise due to complementarity.
+
+
+
+$$\mathcal{L}(u, \varphi, p) = F(u,\varphi)  + E^\varepsilon(\varphi) - \langle \varepsilon(u) \varepsilon(p)\rangle_{C(\varphi)} 
+	+ F(p, \varphi) - \eta \int_\Omega \varphi - m \ dx $$
+
+Notice that $p$ is the lagrange multiplier to the mechanical system and the 
+lagrange multiplier $\eta$ is introduced to take care of the volume-contraint as required in $\mathcal{G}^m$
+We derive the Lagrange funtion formally to obtain the optimality system:
+\begin{align}
+(\partial_u \mathcal{L}) q &= F(q, \varphi) - \langle \varepsilon(q) \varepsilon(\eta)\rangle_{C(\varphi)}   \\
+\begin{split}
+(\partial_\varphi \mathcal{L}) \xi &= 2 \cdot F(u, \xi) - +\int_\Omega \varepsilon \nabla \varphi \nabla \xi +
+\frac{1}{\varepsilon} \Psi'(\varphi) \xi \ dx \\ 
+& \quad - \langle \varepsilon(u) \varepsilon(\eta)\rangle_{C'(\varphi)\xi} - \eta \int_\Omega \xi dx
+\end{split}
+\end{align}
+
+We are now ready to state the complete optimality system: \newline
+The state equations:
+\begin{equation}
+\text{(SE)}\ 
+\begin{cases}
+\ \langle \varepsilon(u) \varepsilon(\theta)\rangle_{C(\varphi)} + F(p, \varphi) \\
+\ \int_\Omega \varphi - m \ dx
+\end{cases}
+\end{equation}
+The adjoint equation:
+\begin{equation}
+\text{(AE)} \qquad 
+ \langle \varepsilon(u) \varepsilon(\theta)\rangle_{C(\varphi)} + F(p, \varphi) \\
+\end{equation}
+And the variational inequality:
+\begin{equation}
+\text{(VI)}\ 
+\begin{split}
+(\partial_\varphi \mathcal{L}) (\tilde{\varphi} - \varphi) &= 2 \cdot F(\tilde{u}, (\tilde{\varphi} - \varphi)) \\ 
+& \quad + \int_\Omega \varepsilon \nabla \tilde{\varphi} \nabla (\tilde{\varphi} - \varphi) +
+\frac{1}{\varepsilon} \Psi'(\tilde{\varphi}) (\tilde{\varphi} - \varphi) \ dx \\ 
+& \quad - \langle \varepsilon(\tilde{u}) \varepsilon(\eta)\rangle_{C'(\tilde{\varphi})(\tilde{\varphi} - \varphi)} - \eta \int_\Omega (\tilde{\varphi} - \varphi) dx \quad \geq 0
+\end{split}
+\end{equation}
+
+### Numerial soution
+
+#### Pseudo time stepping
+Now, we solve for $\tilde{\varphi}$ in the optimality conditions. Equation \ref{eq:gradient} 
+defines a linear functional on $H^1_D$ which I refer to as $\nabla \mathcal{L} (\omega)$. Using a scalar product this functional can be identified
+with a funtion on $H^1_D$ that we loosely call the gradient. This approach is called a gradient flow. 
+Consequently a gradient descent in conjunction with a semi-implicit stepping scheme is used.
+
+$$\left( \partial_t \varphi, \omega \right) = \nabla \mathcal{L} (\omega)$$
+
+Foo:
+
+\begin{equation}
+\begin{split}
+\left( \partial_t \varphi, \omega \right) =&  \varepsilon \int_\Omega \nabla \varphi \nabla \omega
++ \int_\Omega \frac{1}{\varepsilon} \Psi'(\varphi) \omega \ dx + 2 \cdot F(u, \omega) \\
+ &- \langle \varepsilon(u) \varepsilon(u)\rangle_{C'(\varphi)\omega} + \eta \int_\Omega \omega \ dx + \mu \omega - \lambda \omega  
+\end{split} \label{eq:gradflow}
+\end{equation}
+
+We start with some initial function $\varphi^k, \ k=0$.
+Inserting for $\partial_t \varphi$ its approximation $\frac{\varphi^{k+1}-\varphi^k}{\tau}$ 
+and using $\varphi^{k+1}$ for $\nabla \varphi$ we end up with:
+
+\begin{equation}
+\begin{split}
+\frac{1}{\tau} \int_\Omega \varphi^{k+1} \omega dx + \varepsilon \int_\Omega \nabla \varphi^{k+1}:\nabla\omega dx =&
+\frac{1}{\tau} \int_\Omega \varphi^{k} \omega dx \\
+&+ \frac{1}{\varepsilon} \int_\Omega \Psi'(\varphi^k) \omega dx + \langle \varepsilon(u) \varepsilon(u)\rangle_{C'(\varphi^k)\omega} \\
+&- 2 \int_\Omega \omega \rho_0 g u dx + \eta \int_\Omega \omega \ dx + \mu \omega - \lambda \omega
+\end{split}
+\end{equation}
+
+
+#### Primal-dual active set strategy
+So far we have left out the complementarity conditions in the calculation of the descent direction.
+For this, a primal dual active set strategy (PDAS) is used. PDAS maintains a set of active constraints for every point.
+A constraint is inactive if the corresponding lagrange multiplier is zero and active if $\varphi$ takes on the corresponding bound.
+One of which has to hold due to the equations \ref{eq:complementary1} and \ref{eq:complementary1}.
+
+Consequently the gradient descent step is calculated with $\varphi$ taking on a fixed value on the active set and being unbounded (lagrange multiplier =0) on the inactive set. 
+Afterwards the 
+
 
 ### Isosurface extraction
 Since the Finite-Element-Mesh is providing a 3D-tesselation of the domain, which in this case consists of tetrahedra, the generation of an isosurface is handled as in the marching-tetrahedra algorithm. 
@@ -406,9 +578,10 @@ What unacceptable means is defined in the algorithm section but is basically imp
 ### Projection of vertices onto the surface
 
 Both in an edge split as well as in vertex smoothing a constructed new vertex must be projected onto the surface.
-To this end I use a simple gradient descent with a fixed steplength of one. This is a rather heuristical result
+To this end I use a simple gradient descent iterations with a fixed steplength of one. This is a rather heuristical result
 that has proven much better convergence than the exact steplength.
-This is most probably due to the fact that around the surface the slope of the function is one by construction.
+Most probably this is due to the fact that around the surface the slope of the function is one by construction.
+
 
 
 
