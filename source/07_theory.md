@@ -1,6 +1,11 @@
 
 # Theoretical backgrounds
 
+First I present the theory needed for the topology optimization used. 
+This includes a brief recapitulation of linear elasticity, compliance minimization and then some elaborations on the
+topology optimization and it's optimality conditions and the numerics that follow from it.
+After that the extration of the isosurface is described and the basic remeshing operations are introduced.
+
 ## Linear elasticity
 
 ### The equations of static elasticity
@@ -10,9 +15,9 @@ the book mathematical elasticity by Ciarlet which is a comprehensive standard pi
 
 Continuum dynamics deals with a body occupying a lipschitz-continuous reference configuration $\overline{\Omega}\subset \mathbb{R}^3$ under rest which is deformed to a
 configuration $\Omega \subset \mathbb{R}^3$ by applied forces.
-The deformation is then described by an injective mapping $\varphi$ which contains a displacement field $u:\overline{\Omega} \mapsto \Omega$:
+The deformation is described by an injective mapping $\varphi$ via a displacement field $u:\overline{\Omega} \mapsto \Omega$:
 $$\varphi:\overline{\Omega} \mapsto \Omega \qquad \varphi=id+u$$
-For the static case treated here, the deformation is time independant.
+For the static case treated here, the deformation is time independent.
 The deformation and displacement mappings are required to be two times continuously differentiable but this reqirement can be relaxed in the variational formulation of the equations. 
 I denote the coordinates in the reference configuration with $x$ and and those in the deformed configuration with $x^\varphi = \varphi(x)$. 
 In engineering Textbooks those coordinates are sometimes referred to as Lagrange- and Euler-coordinates respectively.
@@ -26,7 +31,7 @@ The elasticity theory is then build on the follwowing two contibutions from Cauc
    $$\int_{A^\varphi} f^\varphi(x^\varphi) dx^\varphi + \int_{\partial A^\varphi} t^\varphi(x^\varphi,n^\varphi)da^\varphi = 0$$
    Here, $dx^\varphi$ and $da^\varphi$ are the volume and surface elements in the deformed configuration, $n^\varphi$ is the surface-unit-normal and $t^\varphi$ is the cauchy stress vectorfield:
    $$t^\varphi:\Omega \times \mathbb{S}_1 \mapsto \mathbb{R}^3 \quad where \quad \mathbb{S}_1 := \{v \in \mathbb{R}^3\:|\: \lVert v \rVert = 1 \}$$
-   Note cauchy stress vector $t^\varphi$ depends on the given Volume $A$ only through the normal vector at a surface point and
+   Note that the cauchy stress vector $t^\varphi$ depends on the given Volume $A$ only through the normal vector at a surface point and
    that any surface-force dictated on part of $\partial A \cap \partial\Omega$ must be dispersed through 
    the remaining part of $\partial A$.
 
@@ -35,34 +40,38 @@ The elasticity theory is then build on the follwowing two contibutions from Cauc
    Assuming that $f^\varphi$ is continuous and 
    ${t^\varphi \in \textrm{C}^1(\Omega) \cap \textrm{C}(\mathbb{S}_1)}$,
    then $t^\varphi$ is linear w.r.t. 
-   to the second argument ie.:
+   to the surface normal ie.:
    \begin{subequations}\label{eq:equilibrium}
    \begin{align}
    t^\varphi (x^\varphi, n) &= T^\varphi (x^\varphi)n \qquad \forall x^\varphi \in \Omega, \! &\forall n \in \mathbb{S}_1\\
-   &\text{and} \nonumber\\
+   &\text{and additionally} \nonumber\\
      -\text{div}^\varphi T^\varphi (x^\varphi) &= f^\varphi   &\forall x^\varphi \in \Omega \label{eq:divT} \\
      T^\varphi (x^\varphi) &= T^\varphi (x^\varphi)^T         &\forall x^\varphi \in \Omega \\
-     T^\varphi (x^\varphi) n^\varphi &= g^\varphi(x^\varphi)  &\forall x^\varphi \in \Gamma^\varphi 
+     T^\varphi (x^\varphi) n^\varphi &= g^\varphi(x^\varphi)  &\forall x^\varphi \in \Gamma_g^\varphi
    \end{align}\end{subequations}
-   where $\Gamma^\varphi$ is the part of $\partial \Omega$ where the boundary condition $g$ is prescribed 
+   where $\Gamma_g^\varphi$ is the part of $\partial \Omega$ where the boundary condition $g$ is prescribed 
    and $\text{div}T = \partial_j T_{ij}, e_i$
    [See @philippe_ciarlet_mathematical_1990 p.63-65 for the proof]  
 
-Notice that the forumulation above uses the stress tensor in the deformed configuration.
+Notice that the forumulation above uses the stress tensor in the deformed configuration where it is symmetric.
 The pullback of the tensor onto the reference configuration is achieved with the piola-transform after which it needs 
-to be symmetrized again. This then yields the so-called first and second Piola-Kirchhoff-Stress-Tensors denoted with $\Sigma$.
-The densities in the  pullback of the forces is often ignored. These are then called dead loads
+to be symmetrized again. This then yields the so-called first and second Piola-Kirchhoff-Stress-Tensors of 
+which the latter is denoted with $\Sigma$.
+A change in the force densities due to the deformation is often ignored. These forces are then called dead loads
 [see @philippe_ciarlet_mathematical_1990 chapter 2.7].
 
-They are omitted here for brevity but the second Piola-Kirchhoff-Stress is the stress tensor to be determined in the next chapter.
+The equilibirum equations for them are omitted here for brevity but the second Piola-Kirchhoff-Stress is the stress tensor to be determined in the next chapter.
+
+Another thing that is important is that the boundary condition can and will be only prescribed on a part of the boundary.
 
 ### Stess, strain and the equations of equilibrium in the linear case
 So far the theory is valid for all continuums but there are also nine unknown functions, namely the three components of the deformation and the six components of the stress tensor tensor.
-Luckily, several simplifictaions can be made in case of isotropic and homogeneous media that lead to a remarkably simple form of the tensor.
+However, several simplifictaions can be made in case of isotropic and homogeneous media that lead to a remarkably simple form of the tensor.
 
-To this end the chauchy strain tensor $C$ and its difference from unity $E$ is introduced.
-They describes the first order local change in length-scale under a deformation and are via the 
-fréchet derivative of the mapping $\varphi\mathrm{,} \: \nabla \varphi$:
+To this end the (right-) Chauchy (Green) strain tensor $C$ and its difference from unity $E$ is introduced.
+I will refer to $E$ simply as the strain tensor.
+They describes the first order local change in length-scale under a deformation and are defined via the 
+fréchet derivative of the mapping $\varphi\mathrm{:} \: \nabla \varphi$:
 
 $$\nabla \varphi = \begin{pmatrix}
 			\partial_1 u_1 & \partial_2 u_1 &  \partial_3 u_1 \\
@@ -73,6 +82,7 @@ $$\nabla \varphi = \begin{pmatrix}
 
 $$C=\nabla \varphi^T \nabla \varphi = I + \nabla u^T + \nabla u + \nabla u^T \nabla u = I + 2 E  $$
 Viewed in a different light, the deformed state can be considered a manifold with $C$ as the metric-tensor.
+
 
 The simplification of the second Piola-Kichhoff-Stress-tensor follows these steps:
 
@@ -86,7 +96,7 @@ Details on these steps can again be found in [@philippe_ciarlet_mathematical_199
 After following these steps, $\Sigma$ takes on the following form:
 $$\Sigma(C) = \lambda (\mathrm{tr}E)I + 2\mu E + o(\lVert E \rVert)$$
 
-Here, $\lambda$ and $\mu$ are the lamé coefficients of the material.
+Here, $\lambda$ and $\mu$ are the lamé coefficients of the material and $I$ is the identity tensor.
 In the linear theory that is used as the basis for the topology optimization, the strain $E$ is replaced with 
 the linearized version $\varepsilon$: 
 $$\varepsilon = \frac{1}{2} \nabla u^T + \nabla u$$
@@ -94,18 +104,23 @@ $$\varepsilon = \frac{1}{2} \nabla u^T + \nabla u$$
 this yields the following even simpler form of the tensor which is referred to as $\sigma$:
 
 $$\sigma = \lambda ( \nabla u) I + \mu \left(\nabla u + \nabla u^T \right)$$
-The more prominent form however is called Hooks-law and written with the so-called stiffness tensor $c$:
+The more prominent form of which is called Hooks-law and written with the so-called stiffness tensor $c$:
 \begin{equation} \sigma = c : \varepsilon \qquad \text{or} \qquad \sigma = c \varepsilon \end{equation}
-Where the last form is written in vector form for the components of the tensors.
+
+Where the following tensoroperation for rank 2 tensors  is introduced that will be used in the coming sections:
+$$G:V :=  \sum_{i,j} G_{ij} V_{ij}$$
+The last form is written in vector form for the components of the tensors.
 
 ### Variational formulation
 For finite-element simulations and reduced smoothness requirements of the displacement, a variatonal formulation of the equilibrium equations \ref{eq:equilibrium} must be formulated.
-To simplify the writing, the following tensoroperation for rank 2 tensors  is introduced:
-$$G:V :=  \sum_{i,j} G_{ij} V_{ij}$$
 
-Multiplying equation \ref{eq:divT} with a test function $\theta$ on both sides and integrating yields:
+For this we first define the space $$
+H^1_D = \{\theta \in H^1(\Omega) | \theta=0 \text{ on } \Gamma_0=\partial \Omega - \Gamma_g \}$$
+
+Multiplying equation \ref{eq:divT} with a test function $\theta$ from this space on both sides and integrating yields:
 $$\int_{\Omega^\varphi} \text{div}^\varphi T^\varphi \cdot \theta^\varphi dx^\varphi = -\int_{\Omega^\varphi} f^\varphi
 \theta^\varphi dx^\varphi + \int_{\Gamma^\varphi} g^\varphi \theta^\varphi$$
+Which has to hold for all test functions $\theta \in H^1_D$
 
 Using the Greens-formula for Tensor fields:
 $$\int_{\bar{\Omega}} \text{div} H \cdot \theta dx = - \int_{\bar{\Omega}} H:\nabla \theta dx + \int_\Gamma Hn\cdot \theta da $$
@@ -113,7 +128,7 @@ and applying the pullback to the reference configuration with the second Piola-K
 
 $$\int_{\bar{\Omega}} \nabla \varphi : \Sigma \nabla \theta dx = \int_{\bar{\Omega}} f \cdot \theta dx + \int_\Gamma g \cdot \theta da $$
 
-For All sufficiently regular vector fields $\theta: \bar{\Omega} \mapsto \mathbb{R}^3$.
+For All sufficiently vector fields $\theta: \bar{\Omega} \mapsto \mathbb{R}^3$ from $H^1_D$.
 This is also called the 'principle of virtual work' (in the reference configuration).
 
 For very small strains the deformation gradient in front of $\Sigma$ can be dropped since the 
@@ -122,16 +137,16 @@ diplacement gradient multiplied with the stress-tensor is of second order in $\n
 Furthermore, since the product of a symmetric tensor with an antisymmetric one is zero, we split $\nabla \theta$ into:
 $\left[ \frac{1}{2}(\nabla \theta + \nabla \theta^T) + \frac{1}{2}  (\nabla \theta - \nabla \theta^T)\right]$
 
-And thus we write the equation in the following form:
+And thus we write the equilibrium equation in the following comprehensive form:
 \begin{equation}
 \int_{\bar{\Omega}} \sigma \frac{1}{2}(\nabla \theta + \nabla \theta^T) = \int_{\bar{\Omega}} \sigma \varepsilon(\theta) =
-\int_{\bar{\Omega}} f \cdot \theta dx + \int_\Gamma g \cdot \theta da \end{equation}
+\int_{\bar{\Omega}} f \cdot \theta dx + \int_\Gamma g \cdot \theta da  \quad \forall \theta \in H^1_D\end{equation}
 
 
 For the following sections we write this as the following shorthand notation using the inner product 
 $\langle A,B \rangle_C = \int_{\bar{\Omega}} A: CB$ :
 
-\begin{equation}\langle \varepsilon(u) \varepsilon(\theta)\rangle_{C(\varphi)} = \int_{\bar{\Omega}} f \cdot \theta + \int_\Gamma g \cdot \theta =: F(\theta)\label{eq:compliance}\end{equation}
+\begin{equation}\langle \varepsilon(u), \varepsilon(\theta)\rangle_{C(\varphi)} = \int_{\bar{\Omega}} f \cdot \theta + \int_\Gamma g \cdot \theta =: F(\theta)\label{eq:compliance}\end{equation}
 
 The well posedness of the weak formulation is proved using the Lax-Milgram Lemma and Korns Inequality in [@blank_relating_2014]
 
@@ -141,8 +156,8 @@ This compliance is what is to be optimized in the following section.
 ## Topology optimization
 
 The topology optimization procedure used in this work is a direct implementation the works of [@blank_relating_2014]
-As a result of this I frequently refer to these papers and only strive to give a compact summary of the steps.
-Topology optimization is a relativly new technique and was first 
+As a result of this I frequently refer to this and relating papers and only strive to give a compact summary of the steps.
+The topology optimization used here is a relativly new technique and was first proposed by Bourdin & Chambolle.
 
 The term topology optimization was coined in the context of optimizing mechanical structures.
 It is not bound to a certain implementation but to the requirement that a structure under load that is optimized via a certain functional may change its topology under that optimization.
@@ -164,7 +179,7 @@ Here, $u$ is the displacement solution of the mechanical system in the left-hand
 
 However, it is still open at this time how the compliance depends on the structure of the part.
 This dependence is actually encoded in the Stiffness-tensor $c$ of the mechanical system that will be constructed from the 
-phase field after this has been rigorously defined.
+phase field after this has been sufficiently defined.
 
 ### The phase-field description and regularization energy
 
@@ -187,15 +202,15 @@ However, these values, as they only occur in the interfacial region, will be for
 
 For the reading convenience we stipulate the requirements on $\varphi$ in the following space:
 $$\mathcal{G}^m = \big\{\varphi \in H^1(\Omega, \mathbb{R})) \quad \big| \quad 0\leq \varphi \leq 1 \quad \text{and} \quad \int_\Omega \varphi dx = m \cdot \text{vol}(\Omega) \big\}$$
-These requirements are later taken care of by complementary slackness and a lagrange multiplier respectively.
+These requirements are later taken care of by terms from the Karush-Kuhn-Tucker theory, namely the complementary slackness and a lagrange multiplier.
 
 As stated, an additional term has to be added to the compliance functional as to force condensation of the phasefield and 
-regularize the occurence of jumps. The term used is due to [@takezawa_shape_2010]:
+regularize the occurence of jumps. The term used is due to [@takezawa_shape_2010] and is sometimes called the Ginzburg-Landau Energy:
 
 $$ E^\varepsilon = \int_\Omega \frac{\varepsilon}{2} |\nabla \varphi|^2 + \frac{1}{\varepsilon} \Psi(\varphi) dx $$
 
 The potential $\Psi(\varphi)$ serves as the condensation potential that forces the phase field to either 0 or 1.
-Here, an obstacle potential is used while for the analysis, a differentiable double-well potential is employed:
+Here, an obstacle potential is used while for the analysis, a differentiable double-well potential is considered:
 $$\Psi_\text{dw}(\varphi) = \frac{1}{4} (\varphi^2 - \varphi)^2$$
 
 $$\Psi_\text{obs} = \begin{cases} (1-\varphi)\varphi,  \quad \text{if}\ \varphi \in [0,1]\\
@@ -206,6 +221,7 @@ The two potentials are displayed in figure \ref{fig:potentials}
 ![The two potentials in the Ginzburg-Landau energy term \label{fig:potentials}](source/figures/double_well.png){width=70%}
 
 ### Interpolation of the stiffness tensor and gravitational force
+Using this phasefield, an interpolating stiffness tensor can be constructed.
 The stiffness tensor in the void is modeled by a very soft material $C_\text{void}$.
 For the interpolation in the interfacial region towards the material tensor $C_\text{mat}$ a linear interpolation with a superimposed 
 transition function $t(\varphi) = \varphi^3$ is used:
@@ -214,9 +230,9 @@ $$C(\varphi) = C_\text{mat} t(\varphi) + C_{void} (1- t(\varphi)) $$
 Also, the force $f$ occuring in the mechanical system can now be made concrete.
 Namely the phase-field acts as a direct scaling factor for the mass density and excludes the void from contributing any forces:
 
-$$f = \varphi \cdot \rho_\text{mat} \cdot g \quad \text{with} \  g=9.81 \cdot [0, 0, 1]^T$$
+$$f = \varphi \cdot \rho_\text{mat} \cdot g \quad \text{with} \  g=9.81 \cdot [0, 0, 1]^T \: "N"$$
 
-$$F(u, \varphi) = \int_{\bar{\Omega}} \varphi \cdot \rho_\text{mat} \cdot u + \int_\Gamma g \cdot u $$
+$$F(u, \varphi) = \int_{\bar{\Omega}} \varphi \cdot \rho_\text{mat} \cdot u + \int_{\Gamma_g} g \cdot u $$
 
 ### The optimal control problem
 We are now ready to state the optimality system including the first order necessary condition for a minimum.
@@ -229,8 +245,8 @@ To write down the optimality conditions in a concise form, consider the control-
 $S(\varphi) = u$ defined implicitly by equation \ref{eq:compliance}. 
 It's directional derivative $S'(\varphi)h = p$ is given by the solution to:
 
-\begin{equation}\langle \varepsilon(p) \varepsilon(\eta)\rangle_{C(\varphi)} =
- \langle \varepsilon(u) \varepsilon(\eta)\rangle_{C'(\varphi)h} - \int_{\bar{\Omega}} h \cdot f \cdot \eta  \quad \forall \eta \in H^1_D
+\begin{equation}\langle \varepsilon(p), \varepsilon(\eta)\rangle_{C(\varphi)} =
+ \langle \varepsilon(u), \varepsilon(\eta)\rangle_{C'(\varphi)h} - \int_{\bar{\Omega}} h \cdot f \cdot \eta  \quad \forall \eta \in H^1_D
  \label{eq:control_to_state}
  \end{equation}
 
@@ -296,45 +312,45 @@ Where the last three conditions arise due to complementarity.
 
 
 
-$$\mathcal{L}(u, \varphi, p) = F(u,\varphi)  + E^\varepsilon(\varphi) - \langle \varepsilon(u) \varepsilon(p)\rangle_{C(\varphi)} 
-	+ F(p, \varphi) - \eta \int_\Omega \varphi - m \ dx $$
+<!--$$\mathcal{L}(u, \varphi, p) = F(u,\varphi)  + E^\varepsilon(\varphi) - \langle \varepsilon(u) \varepsilon(p)\rangle_{C(\varphi)} -->
+	<!--+ F(p, \varphi) - \eta \int_\Omega \varphi - m \ dx $$-->
 
-Notice that $p$ is the lagrange multiplier to the mechanical system and the 
-lagrange multiplier $\eta$ is introduced to take care of the volume-contraint as required in $\mathcal{G}^m$
-We derive the Lagrange funtion formally to obtain the optimality system:
-\begin{align}
-(\partial_u \mathcal{L}) q &= F(q, \varphi) - \langle \varepsilon(q) \varepsilon(\eta)\rangle_{C(\varphi)}   \\
-\begin{split}
-(\partial_\varphi \mathcal{L}) \xi &= 2 \cdot F(u, \xi) - +\int_\Omega \varepsilon \nabla \varphi \nabla \xi +
-\frac{1}{\varepsilon} \Psi'(\varphi) \xi \ dx \\ 
-& \quad - \langle \varepsilon(u) \varepsilon(\eta)\rangle_{C'(\varphi)\xi} - \eta \int_\Omega \xi dx
-\end{split}
-\end{align}
+<!--Notice that $p$ is the lagrange multiplier to the mechanical system and the -->
+<!--lagrange multiplier $\eta$ is introduced to take care of the volume-contraint as required in $\mathcal{G}^m$-->
+<!--We derive the Lagrange funtion formally to obtain the optimality system:-->
+<!--\begin{align}-->
+<!--(\partial_u \mathcal{L}) q &= F(q, \varphi) - \langle \varepsilon(q) \varepsilon(\eta)\rangle_{C(\varphi)}   \\-->
+<!--\begin{split}-->
+<!--(\partial_\varphi \mathcal{L}) \xi &= 2 \cdot F(u, \xi) - +\int_\Omega \varepsilon \nabla \varphi \nabla \xi +-->
+<!--\frac{1}{\varepsilon} \Psi'(\varphi) \xi \ dx \\ -->
+<!--& \quad - \langle \varepsilon(u) \varepsilon(\eta)\rangle_{C'(\varphi)\xi} - \eta \int_\Omega \xi dx-->
+<!--\end{split}-->
+<!--\end{align}-->
 
-We are now ready to state the complete optimality system: \newline
-The state equations:
-\begin{equation}
-\text{(SE)}\ 
-\begin{cases}
-\ \langle \varepsilon(u) \varepsilon(\theta)\rangle_{C(\varphi)} + F(p, \varphi) \\
-\ \int_\Omega \varphi - m \ dx
-\end{cases}
-\end{equation}
-The adjoint equation:
-\begin{equation}
-\text{(AE)} \qquad 
- \langle \varepsilon(u) \varepsilon(\theta)\rangle_{C(\varphi)} + F(p, \varphi) \\
-\end{equation}
-And the variational inequality:
-\begin{equation}
-\text{(VI)}\ 
-\begin{split}
-(\partial_\varphi \mathcal{L}) (\tilde{\varphi} - \varphi) &= 2 \cdot F(\tilde{u}, (\tilde{\varphi} - \varphi)) \\ 
-& \quad + \int_\Omega \varepsilon \nabla \tilde{\varphi} \nabla (\tilde{\varphi} - \varphi) +
-\frac{1}{\varepsilon} \Psi'(\tilde{\varphi}) (\tilde{\varphi} - \varphi) \ dx \\ 
-& \quad - \langle \varepsilon(\tilde{u}) \varepsilon(\eta)\rangle_{C'(\tilde{\varphi})(\tilde{\varphi} - \varphi)} - \eta \int_\Omega (\tilde{\varphi} - \varphi) dx \quad \geq 0
-\end{split}
-\end{equation}
+<!--We are now ready to state the complete optimality system: \newline-->
+<!--The state equations:-->
+<!--\begin{equation}-->
+<!--\text{(SE)}\ -->
+<!--\begin{cases}-->
+<!--\ \langle \varepsilon(u) \varepsilon(\theta)\rangle_{C(\varphi)} + F(p, \varphi) \\-->
+<!--\ \int_\Omega \varphi - m \ dx-->
+<!--\end{cases}-->
+<!--\end{equation}-->
+<!--The adjoint equation:-->
+<!--\begin{equation}-->
+<!--\text{(AE)} \qquad -->
+ <!--\langle \varepsilon(u) \varepsilon(\theta)\rangle_{C(\varphi)} + F(p, \varphi) \\-->
+<!--\end{equation}-->
+<!--And the variational inequality:-->
+<!--\begin{equation}-->
+<!--\text{(VI)}\ -->
+<!--\begin{split}-->
+<!--(\partial_\varphi \mathcal{L}) (\tilde{\varphi} - \varphi) &= 2 \cdot F(\tilde{u}, (\tilde{\varphi} - \varphi)) \\ -->
+<!--& \quad + \int_\Omega \varepsilon \nabla \tilde{\varphi} \nabla (\tilde{\varphi} - \varphi) +-->
+<!--\frac{1}{\varepsilon} \Psi'(\tilde{\varphi}) (\tilde{\varphi} - \varphi) \ dx \\ -->
+<!--& \quad - \langle \varepsilon(\tilde{u}) \varepsilon(\eta)\rangle_{C'(\tilde{\varphi})(\tilde{\varphi} - \varphi)} - \eta \int_\Omega (\tilde{\varphi} - \varphi) dx \quad \geq 0-->
+<!--\end{split}-->
+<!--\end{equation}-->
 
 ### Numerial soution
 
@@ -413,32 +429,36 @@ Because this is the case here, determining qualities for the RBF-interpolant are
 Radial-basis-function interpolation constructs the interpolant $S$ as a linear combination of scaled Radial-basis-functions centered at the
 datasites:
 $$S(x) = \sum_i \alpha_i\varphi(\lVert x-x_i\rVert)$$
-The norm denotes the standard euclidian norm which is essential for the convergence results [see @buhmann_radial_nodate p]  
+
 The Radial-basis-functions themselves are functions of the form $\varphi:\mathbb{R}\mapsto\mathbb{R}$
+The norm denotes the standard euclidian norm which is essential for the convergence results [see @buhmann_radial_nodate p]  
 
 By introducing the interpolation matrix $A$ as:
-$$A= \varphi(\lVert x_i - x_j\rVert)|_{i,j}$$ 
+\begin{equation}A= \varphi(\lVert x_i - x_j\rVert)|_{i,j} \label{eq:interpolation_matrix}\end{equation}
 we can write the interpolation condition \ref{eq:interpolation_condition} as:
-$$A\alpha = F$$
+\begin{equation}A\alpha = F \label{eq:interpolation_system}\end{equation}
 
 
 ### Existence and Uniqueness results
-The invertbility of the interpolation matrix has been investigated thoroughly in the 1970's and 1980's.
-Key results rely on complete monotonicity of the Radial-Basis-function, ie. the property:
+The invertbility of the interpolation matrix $A$ has been investigated thoroughly in the 1970's and 1980's.
+Key results rely on complete monotonicity of the Radial-Basis-function, which is defined as the property:
 $$(-1)^l g^l(t) \ge 0 \quad \forall l \in \mathbb{N} \quad \forall t>0$$
-Then it can be shown that the interpolation matrix is always positive definite.
-The proof relies on the Bernstein representation theorem for monotone functions. [see @buhmann_radial_nodate pp. 11-14 for the case of multiquadratics ]
+Where $g^l$ means the l-th derivative of a function $g: \mathbb{R} \mapsto \mathbb{R}$.
+Given this property it can be shown that the interpolation matrix is always positive definite.
+This was first shown for the multiquadratics function and relies on the Bernstein representation theorem for monotone functions.
+[see @buhmann_radial_nodate pp. 11-14] for a write up or [@micchelli_interpolation_1986 ]for the original proof.
+One then calls the underlying function $g$ positive definite.
 A weaker requirement is that only one of the derivatives must be completely monotone.
-This then leads to the concept of conditonally positive definiteness of a function in which a polynomial is added to the interpolant. 
+This then leads to the concept of conditonally positive definite functions in which a polynomial is added to the interpolant. 
 
-- complete monotonicity yields a positive definite A (result due to Michelli 1986)
 - weaker concept: complete monotonicity of some derivative: $(-1)^k \frac{d^k}{dt^k} \varphi(\sqrt{t})$
-  - introduces conditionally positive definite functions that use an added polynomial that vanishes on the data sites for interpolation and thus the interpolant is again unique and exists
-- called "unisolvence"
+- introduces conditionally positive definite functions that use an added polynomial that vanishes on the data sites for interpolation and thus the interpolant is again unique and exists
 
 ### Commonly used Radial basis functions 
-It remains for us to recite some of the more often used RBFs and state if they are positive definite or conditionally so.
-During the course of writing this thesis it became clear that only local basis functions would be good candidates for a feasible surface interpolation due to the number of vertices common in triangular meshes.
+I now recite some of the more often used RBFs and state if they are positive definite or conditionally so.
+During the course of writing the interpolation program it became clear that only local basis functions would be good 
+candidates for a surface interpolation due to the number of vertices used in most triangular meshes
+and the resulting size of a dense interpolation matrix.
 
 Now commonly used are the Wendland functions [see @wendland_piecewise_1995] which are piecewise polynomial, of minimal degree and positive definite. For the surface interpolation I use the C2 continuous function and it's derivative.
 
@@ -462,12 +482,11 @@ Table: Local RBF functions introduced by Wendland [@wendland_piecewise_1995]
 ![Comparison of different RBF functions. Note that a convergence to zero is not mandatory.
 However, the Wendland functions become zero after r=1](source/figures/rbf_functions.png){#fig:rbf_funcs width=70%}
 
-### Scaling of RBF functions, ambiguities and interpolation properties
-The normal RBF functions have a fixed spread as seen in @fig:rbf_funcs.
-Since spacing of the interpolation data is not fixed,
-a scale needs to be introduced that scales r such that the RBFs
+### Scaling of RBF functions, ambiguities and interpolation properties {#sec:rbf_interpol}
+The Wendland RBF functions have a fixed spread of 1 as seen in @fig:rbf_funcs.
+Since spacing of the interpolation data is not fixed, a scaling of the radial argument needs to be introduced that scales r such that the RBFs
  extend into the space between the datasites. Otherwise the interpolant might just have, in the exteme case, spikes at the sites to attain the required values.
-To this end I scale r by $r' = r/c$ with a scale parameter $c$ since that makes the Wendland functions extend to exactly the value of this parameter.
+To this end I scale r by $c$, ie. $r' = r/c$ with a scale parameter $c$ since that makes the Wendland functions extend to exactly the value of this parameter.
 
 This scaling parameter, in general can be nonuniform over the interpolated values but this comes with uncertainty for the solvability of the interpolation system.
 
@@ -479,7 +498,7 @@ Moreover, it cannot be generally stated which value of a scale parameter is more
 ![Different Radial-Basis-Funtions have different behaviours for off-site values. Multiquadratics grow toward infinity.
 Displayed is a 1-2 comb in two dimensions](source/figures/MQ_2D_comb.png){#fig:wendland_scales width=90%}
 
-### surface interpolation
+### surface interpolation {#sec:surface_interpol}
 Surface descriptions are either explicit or implicit. Explicit means that the surface is the graph of a function
 $F:\Omega\subset\mathbb{R}^2 \mapsto \mathbb{R}^3$ which can be very complicated to construct.
 Especially complicated topologies this can usually be only done via 2d-parametric patches of the surface which have their own difficulties for remeshing.
@@ -503,6 +522,7 @@ This is done to have an area of convergence for a simple gradient-descent projec
 
 ## Remeshing operations
 Different approaches exist to remesh a surface. Most fall into one of the following categories:
+
 - triangulate a commpletely new mesh, usually with delauney triangulation and go from there
 - incremental triangulation, with new nodes inserted or removed one at a time. 
 - local mesh modifications / pliant remeshing 
@@ -510,6 +530,7 @@ Different approaches exist to remesh a surface. Most fall into one of the follow
 Additionally most methods utilize some form of vertex-smoothing as this is an straightforward iterative procedure that improves themesh globally and is guaranteed to converge. 
 
 The approach used here falls into the latter category and uses consecutive loops of local mesh modifications of the following kinds:
+
 - Edge collapse
 - Edge split
 - Edge flip
@@ -578,10 +599,31 @@ What unacceptable means is defined in the algorithm section but is basically imp
 ### Projection of vertices onto the surface
 
 Both in an edge split as well as in vertex smoothing a constructed new vertex must be projected onto the surface.
-To this end I use a simple gradient descent iterations with a fixed steplength of one. This is a rather heuristical result
-that has proven much better convergence than the exact steplength.
-Most probably this is due to the fact that around the surface the slope of the function is one by construction.
+To this end I use a simple gradient descent iterations with a fixed steplength of one. This
+has proven much faster convergence than the exact steplength.
+This is due to the fact that around the surface the slope of the function is one by construction.
 
+The descent algorithm reads as follows
+
+\begin{algorithm}[H]
+\DontPrintSemicolon
+\SetAlgoLined
+\SetKwInOut{Input}{Input}\SetKwInOut{Output}{Output}
+\Input{$x_0 \text{ and } eps$}
+\BlankLine
+i=0 \;
+\While{$i<$ steplimit}{
+    \uIf{i mod 3==0}{
+	calculate $\nabla f(x_i)$ \;
+	}
+    calculate $f(x_i)$ \;
+    \uIf{ $f(x_i) <$ eps}{\Return{$x_i$}} 
+    stepsize $=\frac{f}{\lVert \nabla f(x_i) \rVert}$ \;
+    clip stepsize \;
+    $x_{i+1} = x - \text{ stepsize } \cdot \nabla f(x_i)$ \;
+}
+\caption{Project a vertex $x_0$ onto the surface}
+\end{algorithm} 
 
 
 

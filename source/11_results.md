@@ -18,6 +18,17 @@ b) the witdh between minima and maxima adjacent to the zero crossing (convergenc
 ![At the vertices of the mesh in between the offset interpolation points the RBF-interpolant is well behaved.
 The offset interpolation points are located at $\pm$ 0.78 in units of the actual mesh  \label{my_label}](source/figures/vertex_normal_plot.png){ width=100% }
 
-## Parameter survey
+## The topology optimization models
 
-## convergence behaviour 
+
+### The bridge
+
+- parameters: gamma, eps
+- domain description and boundary conditions
+- how many tetrahedra
+
+### The table
+
+### The tower
+
+## Analysis of the results and problem 
