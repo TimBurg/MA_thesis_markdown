@@ -23,12 +23,21 @@ The offset interpolation points are located at $\pm$ 0.78 in units of the actual
 
 ### The bridge
 
+![The boundary conditions of the bridge model](./source/figures/bridge_grid.png)
+
+![Isosurface of bridge after extraction](./source/figures/bridge_raw.png)
+
+![After remeshing with $l^{6d} =$2x longest edge and doing 10 iterations](./source/figures/bridge_remeshed.png)
+
 - parameters: gamma, eps
 - domain description and boundary conditions
 - how many tetrahedra
 
 ### The table
+![The boundary conditions of the bridge model](./source/figures/tisch3d_grid_bottom.png)
+![The boundary conditions of the bridge model](./source/figures/tisch3d_grid_top.png)
 
 ### The tower
+<!--![The boundary conditions of the bridge model](./source/figures/bridge_grid.png)-->
 
 ## Analysis of the results and problem 

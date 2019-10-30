@@ -1,10 +1,10 @@
 
 # Theoretical backgrounds
 
-First I present the theory needed for the topology optimization used. 
-This includes a brief recapitulation of linear elasticity, compliance minimization and then some elaborations on the
-topology optimization and it's optimality conditions and the numerics that follow from it.
-After that the extration of the isosurface is described and the basic remeshing operations are introduced.
+First I present the theory for the topology optimization that was used. 
+This includes a brief recapitulation of linear elasticity and compliance minimization and then a short 
+derivation of the optimality conditionn and the numerics that follow were used to implement it.
+After that the extration of the isosurface, the Radial-basis-function based surface interpolation and the basic remeshing operations are introduced.
 
 ## Linear elasticity
 
@@ -71,7 +71,7 @@ However, several simplifictaions can be made in case of isotropic and homogeneou
 To this end the (right-) Chauchy (Green) strain tensor $C$ and its difference from unity $E$ is introduced.
 I will refer to $E$ simply as the strain tensor.
 They describes the first order local change in length-scale under a deformation and are defined via the 
-fréchet derivative of the mapping $\varphi\mathrm{:} \: \nabla \varphi$:
+Fréchet derivative of the mapping $\varphi\mathrm{:} \: \nabla \varphi$:
 
 $$\nabla \varphi = \begin{pmatrix}
 			\partial_1 u_1 & \partial_2 u_1 &  \partial_3 u_1 \\
@@ -99,13 +99,13 @@ $$\Sigma(C) = \lambda (\mathrm{tr}E)I + 2\mu E + o(\lVert E \rVert)$$
 Here, $\lambda$ and $\mu$ are the lamé coefficients of the material and $I$ is the identity tensor.
 In the linear theory that is used as the basis for the topology optimization, the strain $E$ is replaced with 
 the linearized version $\varepsilon$: 
-$$\varepsilon = \frac{1}{2} \nabla u^T + \nabla u$$
+$$\varepsilon = \frac{1}{2}( \nabla u^T + \nabla u )$$
 
 this yields the following even simpler form of the tensor which is referred to as $\sigma$:
 
 $$\sigma = \lambda ( \nabla u) I + \mu \left(\nabla u + \nabla u^T \right)$$
 The more prominent form of which is called Hooks-law and written with the so-called stiffness tensor $c$:
-\begin{equation} \sigma = c : \varepsilon \qquad \text{or} \qquad \sigma = c \varepsilon \end{equation}
+\begin{equation} \sigma = c : \varepsilon \qquad \text{or} \qquad \sigma = c \varepsilon \label{eq:stiffness}\end{equation}
 
 Where the following tensoroperation for rank 2 tensors  is introduced that will be used in the coming sections:
 $$G:V :=  \sum_{i,j} G_{ij} V_{ij}$$
@@ -115,18 +115,20 @@ The last form is written in vector form for the components of the tensors.
 For finite-element simulations and reduced smoothness requirements of the displacement, a variatonal formulation of the equilibrium equations \ref{eq:equilibrium} must be formulated.
 
 For this we first define the space $$
-H^1_D = \{\theta \in H^1(\Omega) | \theta=0 \text{ on } \Gamma_0=\partial \Omega - \Gamma_g \}$$
+H^1_D = \{\theta \in H^1(\Omega) | \theta=0 \text{ on } \Gamma_D=\partial \bar{\Omega} - \Gamma_g \}$$
+to exclude the boundary term on $\Gamma_D$ from contributing force terms.
 
 Multiplying equation \ref{eq:divT} with a test function $\theta$ from this space on both sides and integrating yields:
 $$\int_{\Omega^\varphi} \text{div}^\varphi T^\varphi \cdot \theta^\varphi dx^\varphi = -\int_{\Omega^\varphi} f^\varphi
-\theta^\varphi dx^\varphi + \int_{\Gamma^\varphi} g^\varphi \theta^\varphi$$
+\theta^\varphi dx^\varphi + \int_{\Gamma_g^\varphi} g^\varphi \theta^\varphi$$
 Which has to hold for all test functions $\theta \in H^1_D$
 
 Using the Greens-formula for Tensor fields:
 $$\int_{\bar{\Omega}} \text{div} H \cdot \theta dx = - \int_{\bar{\Omega}} H:\nabla \theta dx + \int_\Gamma Hn\cdot \theta da $$
 and applying the pullback to the reference configuration with the second Piola-Kirchhoff-Stress-tensor then gives:
 
-$$\int_{\bar{\Omega}} \nabla \varphi : \Sigma \nabla \theta dx = \int_{\bar{\Omega}} f \cdot \theta dx + \int_\Gamma g \cdot \theta da $$
+$$\int_{\bar{\Omega}} \nabla \varphi : \Sigma \nabla \theta dx = \int_{\bar{\Omega}} f 
+\cdot \theta dx + \int_\Gamma g \cdot \theta da \qquad \forall \theta \in H^1_D$$
 
 For All sufficiently vector fields $\theta: \bar{\Omega} \mapsto \mathbb{R}^3$ from $H^1_D$.
 This is also called the 'principle of virtual work' (in the reference configuration).
@@ -137,38 +139,42 @@ diplacement gradient multiplied with the stress-tensor is of second order in $\n
 Furthermore, since the product of a symmetric tensor with an antisymmetric one is zero, we split $\nabla \theta$ into:
 $\left[ \frac{1}{2}(\nabla \theta + \nabla \theta^T) + \frac{1}{2}  (\nabla \theta - \nabla \theta^T)\right]$
 
-And thus we write the equilibrium equation in the following comprehensive form:
+And thus we write the equilibrium equation in the variational form as:
 \begin{equation}
 \int_{\bar{\Omega}} \sigma \frac{1}{2}(\nabla \theta + \nabla \theta^T) = \int_{\bar{\Omega}} \sigma \varepsilon(\theta) =
-\int_{\bar{\Omega}} f \cdot \theta dx + \int_\Gamma g \cdot \theta da  \quad \forall \theta \in H^1_D\end{equation}
+\int_{\bar{\Omega}} f \cdot \theta dx + \int_\Gamma g \cdot \theta da  \quad \forall \theta \in H^1_D \label{eq:equi_variational}
+\end{equation}
 
 
-For the following sections we write this as the following shorthand notation using the inner product 
+For the following sections we denote this as the following shorthand notation using the inner product 
+and the stiffness tensor from \ref{eq:stiffness}:
 $\langle A,B \rangle_C = \int_{\bar{\Omega}} A: CB$ :
 
-\begin{equation}\langle \varepsilon(u), \varepsilon(\theta)\rangle_{C(\varphi)} = \int_{\bar{\Omega}} f \cdot \theta + \int_\Gamma g \cdot \theta =: F(\theta)\label{eq:compliance}\end{equation}
+\begin{equation}\langle \varepsilon(u), \varepsilon(\theta)\rangle_{C(\varphi)} = \int_{\bar{\Omega}} f \cdot \theta + 
+\int_\Gamma g \cdot \theta =: F(\theta) \qquad \forall \theta \in H^1_D \label{eq:compliance}\end{equation}
 
 The well posedness of the weak formulation is proved using the Lax-Milgram Lemma and Korns Inequality in [@blank_relating_2014]
 
-For an actual deformation rather than a virtual one, the functional $F$ is called the compliance of the structure.
+For an actual deformation rather than a virtual one, the functional $F$ in \ref{eq:compliance} is called the compliance of the structure.
 This compliance is what is to be optimized in the following section. 
 
 ## Topology optimization
 
 The topology optimization procedure used in this work is a direct implementation the works of [@blank_relating_2014]
-As a result of this I frequently refer to this and relating papers and only strive to give a compact summary of the steps.
-The topology optimization used here is a relativly new technique and was first proposed by Bourdin & Chambolle.
+As a result of this I frequently refer to this paper and those relating to it and only strive to give a compact summary of the steps.
+A phase field based topology optimization was first introduced by [@bourdin_design-dependent_2003].
 
 The term topology optimization was coined in the context of optimizing mechanical structures.
-It is not bound to a certain implementation but to the requirement that a structure under load that is optimized via a certain functional may change its topology under that optimization.
+It is not bound to a certain implementation but to the requirement that a structure under load may change its topology under the optimization procedure.
 This is generally understood in the sense as to allow the nucleation of holes in a previously filled material rather than forming new 
 strucutres in the void.
 
-The method used throuout this work that accomplishes this uses the compliance minimization functional with a phase field description of the structure.
+The method used throughout this work that accomplishes this uses the compliance minimization functional
+with a regularized phase field description of the structure.
 In effect, compliance minimization maximizes the stiffness of the structure under a mass- or volume constraint while the phase field describes where material is placed in the domain. 
 
 The use of a phase-function description allows to incorporate a computationally cheap perimeter regularization via an additional term in the optimization functional.
-This is needed since the compliance minimization in itself is not well posed and allows high variaton in the microstructure of a part that cannot be manufactured and is not numerically stable.
+This is needed since the compliance minimization in itself is not well posed and allows high variation in the microstructure of a part that cannot be manufactured and is not numerically stable.
 
 ### Compliance minimization
 
@@ -179,14 +185,14 @@ Here, $u$ is the displacement solution of the mechanical system in the left-hand
 
 However, it is still open at this time how the compliance depends on the structure of the part.
 This dependence is actually encoded in the Stiffness-tensor $c$ of the mechanical system that will be constructed from the 
-phase field after this has been sufficiently defined.
+phase field after this has been defined in the next section.
 
 ### The phase-field description and regularization energy
 
 For the modeling of structures either a level set method or a phase field description is viable.
 In case of the phase-field a continuous function is chosen 
 that here can take on values in the range from 0 to 1 where 0 represents the void and 1 the material:
-$$ 0 < \varphi < 1$$
+$$ 0 \leq \varphi \leq 1$$
 
 A penalty term is then added to the optimization to force the phasefield to condensate to either 0 or 1 depending on a forcing term from the compliance minimization.
 Consequently an interface forms that can expand or retract and this falls into the category of advancing front algorithms. For details see [@barles_front_1993].
@@ -228,14 +234,14 @@ transition function $t(\varphi) = \varphi^3$ is used:
 $$C(\varphi) = C_\text{mat} t(\varphi) + C_{void} (1- t(\varphi)) $$
 
 Also, the force $f$ occuring in the mechanical system can now be made concrete.
-Namely the phase-field acts as a direct scaling factor for the mass density and excludes the void from contributing any forces:
+Namely the phase-field acts as a direct scaling factor for the mass density $\rho_{\text{mat}}$ and excludes the void from contributing any forces:
 
-$$f = \varphi \cdot \rho_\text{mat} \cdot g \quad \text{with} \  g=9.81 \cdot [0, 0, 1]^T \: "N"$$
+$$f = \varphi \cdot \rho_\text{mat} \cdot G_z \quad \text{with} \  G_z=9.81 \cdot [0, 0, 1]^T \: "N"$$
 
 $$F(u, \varphi) = \int_{\bar{\Omega}} \varphi \cdot \rho_\text{mat} \cdot u + \int_{\Gamma_g} g \cdot u $$
 
 ### The optimal control problem
-We are now ready to state the optimality system including the first order necessary condition for a minimum.
+I now state the first order necessary optimality conditions for a minimum which are given by the Karush-Kuhn-Tucker theory.
 
 As indicdated before, the goal is to minimize the functional made up of the compliance and the Ginzburg-Landau term:
 $$ \text{min}\ J(u, \varphi) := E(\varphi) + F(u, \varphi) \quad \text{with} \ \varphi \in \mathcal{G}^m \text{ and } u\ 
@@ -268,8 +274,8 @@ Note that if this was not the case, an auxillary state $q \in H^1_D$ could have 
 Now using equation \ref{eq:control_to_state} with $u$ as a test function this can be written as:
 
 \begin{align}
-\frac{\partial}{\partial u} J(u, \varphi) p &= F(p,\varphi)=\langle \varepsilon(u) \varepsilon(p)\rangle_{C(\varphi)} 
-&= -\langle \varepsilon(u) \varepsilon(u)\rangle_{C'(\varphi)h} -  \int_{\bar{\Omega}} h \cdot f \cdot u
+\frac{\partial}{\partial u} J(u, \varphi) p &= F(p,\varphi)=\langle \varepsilon(u), \varepsilon(p)\rangle_{C(\varphi)} 
+&= -\langle \varepsilon(u), \varepsilon(u)\rangle_{C'(\varphi)h} -  \int_{\bar{\Omega}} h \cdot f \cdot u
 \end{align}
 
 The calculation of the partial derivative of $J$ with respect to $\varphi$ is straightforward:
@@ -310,65 +316,23 @@ Introducing lagrange multipliers $\eta, \mu, \lambda$ the KKT-first order necess
 
 Where the last three conditions arise due to complementarity.
 
-
-
-<!--$$\mathcal{L}(u, \varphi, p) = F(u,\varphi)  + E^\varepsilon(\varphi) - \langle \varepsilon(u) \varepsilon(p)\rangle_{C(\varphi)} -->
-	<!--+ F(p, \varphi) - \eta \int_\Omega \varphi - m \ dx $$-->
-
-<!--Notice that $p$ is the lagrange multiplier to the mechanical system and the -->
-<!--lagrange multiplier $\eta$ is introduced to take care of the volume-contraint as required in $\mathcal{G}^m$-->
-<!--We derive the Lagrange funtion formally to obtain the optimality system:-->
-<!--\begin{align}-->
-<!--(\partial_u \mathcal{L}) q &= F(q, \varphi) - \langle \varepsilon(q) \varepsilon(\eta)\rangle_{C(\varphi)}   \\-->
-<!--\begin{split}-->
-<!--(\partial_\varphi \mathcal{L}) \xi &= 2 \cdot F(u, \xi) - +\int_\Omega \varepsilon \nabla \varphi \nabla \xi +-->
-<!--\frac{1}{\varepsilon} \Psi'(\varphi) \xi \ dx \\ -->
-<!--& \quad - \langle \varepsilon(u) \varepsilon(\eta)\rangle_{C'(\varphi)\xi} - \eta \int_\Omega \xi dx-->
-<!--\end{split}-->
-<!--\end{align}-->
-
-<!--We are now ready to state the complete optimality system: \newline-->
-<!--The state equations:-->
-<!--\begin{equation}-->
-<!--\text{(SE)}\ -->
-<!--\begin{cases}-->
-<!--\ \langle \varepsilon(u) \varepsilon(\theta)\rangle_{C(\varphi)} + F(p, \varphi) \\-->
-<!--\ \int_\Omega \varphi - m \ dx-->
-<!--\end{cases}-->
-<!--\end{equation}-->
-<!--The adjoint equation:-->
-<!--\begin{equation}-->
-<!--\text{(AE)} \qquad -->
- <!--\langle \varepsilon(u) \varepsilon(\theta)\rangle_{C(\varphi)} + F(p, \varphi) \\-->
-<!--\end{equation}-->
-<!--And the variational inequality:-->
-<!--\begin{equation}-->
-<!--\text{(VI)}\ -->
-<!--\begin{split}-->
-<!--(\partial_\varphi \mathcal{L}) (\tilde{\varphi} - \varphi) &= 2 \cdot F(\tilde{u}, (\tilde{\varphi} - \varphi)) \\ -->
-<!--& \quad + \int_\Omega \varepsilon \nabla \tilde{\varphi} \nabla (\tilde{\varphi} - \varphi) +-->
-<!--\frac{1}{\varepsilon} \Psi'(\tilde{\varphi}) (\tilde{\varphi} - \varphi) \ dx \\ -->
-<!--& \quad - \langle \varepsilon(\tilde{u}) \varepsilon(\eta)\rangle_{C'(\tilde{\varphi})(\tilde{\varphi} - \varphi)} - \eta \int_\Omega (\tilde{\varphi} - \varphi) dx \quad \geq 0-->
-<!--\end{split}-->
-<!--\end{equation}-->
-
 ### Numerial soution
 
 #### Pseudo time stepping
 Now, we solve for $\tilde{\varphi}$ in the optimality conditions. Equation \ref{eq:gradient} 
 defines a linear functional on $H^1_D$ which I refer to as $\nabla \mathcal{L} (\omega)$. Using a scalar product this functional can be identified
-with a funtion on $H^1_D$ that we loosely call the gradient. This approach is called a gradient flow. 
+with a funtion on $L^2$ that we loosely call the gradient. This approach is called a gradient flow. 
 Consequently a gradient descent in conjunction with a semi-implicit stepping scheme is used.
 
 $$\left( \partial_t \varphi, \omega \right) = \nabla \mathcal{L} (\omega)$$
 
-Foo:
+Expanding the functional gives:
 
 \begin{equation}
 \begin{split}
 \left( \partial_t \varphi, \omega \right) =&  \varepsilon \int_\Omega \nabla \varphi \nabla \omega
 + \int_\Omega \frac{1}{\varepsilon} \Psi'(\varphi) \omega \ dx + 2 \cdot F(u, \omega) \\
- &- \langle \varepsilon(u) \varepsilon(u)\rangle_{C'(\varphi)\omega} + \eta \int_\Omega \omega \ dx + \mu \omega - \lambda \omega  
+ &- \langle \varepsilon(u), \varepsilon(u)\rangle_{C'(\varphi)\omega} + \eta \int_\Omega \omega \ dx + \mu \omega - \lambda \omega  
 \end{split} \label{eq:gradflow}
 \end{equation}
 
@@ -384,26 +348,32 @@ and using $\varphi^{k+1}$ for $\nabla \varphi$ we end up with:
 &- 2 \int_\Omega \omega \rho_0 g u dx + \eta \int_\Omega \omega \ dx + \mu \omega - \lambda \omega
 \end{split}
 \end{equation}
-
+Where, as before, $u$ solves the mechanical system \ref{eq:equi_variational}.
+This defines the principal iterative scheme for a descent.
 
 #### Primal-dual active set strategy
 So far we have left out the complementarity conditions in the calculation of the descent direction.
 For this, a primal dual active set strategy (PDAS) is used. PDAS maintains a set of active constraints for every point.
-A constraint is inactive if the corresponding lagrange multiplier is zero and active if $\varphi$ takes on the corresponding bound.
-One of which has to hold due to the equations \ref{eq:complementary1} and \ref{eq:complementary1}.
+A constraint is inactive if the corresponding lagrange multiplier is zero and active if $\varphi$ takes on the corresponding bound -
+One of which has to hold due to the equations \ref{eq:complementary1} and \ref{eq:complementary2}.
 
 Consequently the gradient descent step is calculated with $\varphi$ taking on a fixed value on the active set and being unbounded (lagrange multiplier =0) on the inactive set. 
 Afterwards the 
 
 
 ### Isosurface extraction
+After a calculation has converged, a 0.5 isofurface is used that represents the surface of the part. 
+
 Since the Finite-Element-Mesh is providing a 3D-tesselation of the domain, which in this case consists of tetrahedra, the generation of an isosurface is handled as in the marching-tetrahedra algorithm. 
 Tetrahedra, as opposed to cubes, can only have 3 distinct cases of edge intersections that differ in terms of their makeup of triangular faces. No intersections, intersection at 3 edges(1 triangle) and intersection at 4 edges (2 triangles). See figure \ref{fig:isocuttetraeder} for an illustration.
 
 For the edge intersections, a linear interpolation of the values between two vertices is used. 
 The intersections are then found via simple line intersections comparable to the section of the x-axis for a line.
 If 3 intersections are found one triangle is generated with the vertices of the intersections and if 4 intersections are found 2 triangles are generated.
-Susequently the ordering of the vertices is checked so that looking from the outside, the vertices are ordered counterclockwise in accordance with the stl-specification. For this, the function values at the tetrahedra-nodes are considered to find a point that is inside (has a value greater than 0)
+Susequently the ordering of the vertices is checked so that looking from the outside, 
+the vertices are ordered counterclockwise in accordance with the 
+stl-specification^[stl is one of the primary file formats for triangular meshes]. 
+For this, the function values at the tetrahedra-nodes are considered to find a point that is inside (has a value greater than 0).
 This is especially important since the orientation is used in the remeshing procedure and can only be correctly determined at this step.
 
 ![In the case of a 3D-Tetrahedra tesselation only 3 distinct cases can appear a)intersection
@@ -417,21 +387,33 @@ Interpolation can be viewed as a special kind of approximation in which, for an 
 it is demanded that the interpolant reproduces the original functions values at special points $x_i$ ie.:
 \begin{equation}S(x_i) = F(x_i) \quad \forall i\in \Xi \label{eq:interpolation_condition} \end{equation}
 Where $\Xi$ is some finite (possibly scattered) dataset in $\mathbb{R}^N$ (multivariate) ie. a set $(\xi, f_\xi) \in \mathbb{R}^N \times \mathbb{R}$.
-The functions considered here are scalar valued. A construction of vector-valued interpolants from scalar-valued conmponent-ones ist straightforward.
+The functions considered here are scalar valued. A construction of vector-valued interpolants from scalar-valued-component ones ist straightforward.
 
-Interpolants are usually constructed from some function space which in this case is made up of Radial-basis-functions.
-Radial-basis-functions are special in that they allow easy interpolation of scattered multivariate data with guaranteed existence and uniqueness results.
+Interpolants are constructed from some function space which in this case is made up of Radial-basis-functions centered at 
+the interpolation centers. Due to this dependence on the centers the spaces are individual to the interpolation.
+
+Radial-basis-functions are multivariate functions constructed from univariate functions of  the form 
+$\varphi:[0,\infty)\mapsto\mathbb{R}$ superimposed over the euclidean norm. 
+Special monotonicity properties of those functions lead to unisolvent interpolation as explained in the next section.
+Radial basis functions can also be introduced as multivariate functions $\varphi:\mathbb{R}^3\mapsto\mathbb{R}$ that then need
+to be even ie. $\varphi(x) = \varphi(-x)$.
+The norm usually denotes the standard euclidian norm which is essential for the convergence results.
+Some information about other norms is given in [@wendland_scattered_2005 p.83,84]
+
+Radial-basis-functions are special in that they allow easy interpolation of scattered multivariate data of arbitrary dimension with 
+guaranteed existence and uniqueness results. 
+This is unique to this method and can not be achieved by polynomial interpolation for example. 
+
+
 In general, different interpolants do behave differently for the space in between the datasites and are distinguished by 
 their approximation and or convergence properties for special classes or cases of $F$.
 However, when no original function(just the values $F(x_i)$) is given the accuracy of an interpolation can not generally be assessed.
-Because this is the case here, determining qualities for the RBF-interpolant are discussed in section ...
+Because this is the case here, determining qualities for the RBF-interpolant are discussed in [@sec:surf_cond]
 
-Radial-basis-function interpolation constructs the interpolant $S$ as a linear combination of scaled Radial-basis-functions centered at the
+The interpolant $S$ is constructed as a linear combination of scaled Radial-basis-functions centered at the
 datasites:
 $$S(x) = \sum_i \alpha_i\varphi(\lVert x-x_i\rVert)$$
 
-The Radial-basis-functions themselves are functions of the form $\varphi:\mathbb{R}\mapsto\mathbb{R}$
-The norm denotes the standard euclidian norm which is essential for the convergence results [see @buhmann_radial_nodate p]  
 
 By introducing the interpolation matrix $A$ as:
 \begin{equation}A= \varphi(\lVert x_i - x_j\rVert)|_{i,j} \label{eq:interpolation_matrix}\end{equation}
@@ -440,25 +422,44 @@ we can write the interpolation condition \ref{eq:interpolation_condition} as:
 
 
 ### Existence and Uniqueness results
-The invertbility of the interpolation matrix $A$ has been investigated thoroughly in the 1970's and 1980's.
-Key results rely on complete monotonicity of the Radial-Basis-function, which is defined as the property:
+The invertbility of the interpolation matrix $A$ for all pairwise distinct combinations of 
+centers in $\mathbb{R}^d$ is of key importance.
+As stated this property can be guaranteed for certain classes of functions which satisfiy a montonicity property.
+
+Definition:
+  ~ A continuous function $\Phi:\mathbb{R}^d \mapsto \mathbb{R}$ is called positive \mbox{(semi-)}definite if, for all $N \in \mathbb{N}$ and
+    all sets of pairwise distinct points $X=\{x_1, ... ,x_N \} \subseteq \mathbb{R}^d$ and all $\alpha \in \mathbb{R}^N$ the
+    following quadratic form is (nonnegative) positive:
+    $$\sum_{j=1}^N \sum_{k=1}^N \alpha_j \alpha_k \Phi(x_j - x_k)$$
+
+This property is analogously used for the univatiate functions $\varphi$.
+
+Such positive semi definiteness of a function can be shown via a property called complete monotonicity: 
 $$(-1)^l g^l(t) \ge 0 \quad \forall l \in \mathbb{N} \quad \forall t>0$$
 Where $g^l$ means the l-th derivative of a function $g: \mathbb{R} \mapsto \mathbb{R}$.
-Given this property it can be shown that the interpolation matrix is always positive definite.
-This was first shown for the multiquadratics function and relies on the Bernstein representation theorem for monotone functions.
-[see @buhmann_radial_nodate pp. 11-14] for a write up or [@micchelli_interpolation_1986 ]for the original proof.
-One then calls the underlying function $g$ positive definite.
-A weaker requirement is that only one of the derivatives must be completely monotone.
-This then leads to the concept of conditonally positive definite functions in which a polynomial is added to the interpolant. 
+The prototype of a complete monotone function is the exponential function $e^{-\alpha t}$ for some non negative alpha.
 
-- weaker concept: complete monotonicity of some derivative: $(-1)^k \frac{d^k}{dt^k} \varphi(\sqrt{t})$
-- introduces conditionally positive definite functions that use an added polynomial that vanishes on the data sites for interpolation and thus the interpolant is again unique and exists
+If $\varphi(\sqrt{\cdot})$ is completely monotone on $[0, \infty)$ and not constant, then $\varphi$ is positive definite.
+The proof requires some theory on measure spaces and generalized fourier transforms and rests on the Bernstein-Widder representation of 
+such functions.
+Since these are a bit out of scope I refer to [@wendland_scattered_2005 theorem 7.14].
+
+A first formal proof was completed for the multiquadratics function by [@micchelli_interpolation_1986].
+For multiquadratics it actually suffices that the first derivative of $\varphi$ is 
+completely monotone [@buhmann_radial_2003 theorem 2.2].
+
+This motivates a weaker concept called conditionally positive definiteness and requires an added polynomial for unisolvence.
+This is described in the Appendix.
+
+A weaker requirement is that only one of the derivatives must be completely monotone.
+This then motivates the concept of conditonally positive definite functions in which a polynomial is added to the interpolant. 
 
 ### Commonly used Radial basis functions 
-I now recite some of the more often used RBFs and state if they are positive definite or conditionally so.
+I now recite some of the more often used RBFs and give some detail on the local functions that were used for the actual implementation.
 During the course of writing the interpolation program it became clear that only local basis functions would be good 
 candidates for a surface interpolation due to the number of vertices used in most triangular meshes
 and the resulting size of a dense interpolation matrix.
+But also the conditon number of interpolation matrix is problematic.
 
 Now commonly used are the Wendland functions [see @wendland_piecewise_1995] which are piecewise polynomial, of minimal degree and positive definite. For the surface interpolation I use the C2 continuous function and it's derivative.
 
@@ -501,9 +502,9 @@ Displayed is a 1-2 comb in two dimensions](source/figures/MQ_2D_comb.png){#fig:w
 ### surface interpolation {#sec:surface_interpol}
 Surface descriptions are either explicit or implicit. Explicit means that the surface is the graph of a function
 $F:\Omega\subset\mathbb{R}^2 \mapsto \mathbb{R}^3$ which can be very complicated to construct.
-Especially complicated topologies this can usually be only done via 2d-parametric patches of the surface which have their own difficulties for remeshing.
+Especially for complicated topologies, this can usually be only done via 2d-parametric patches of the surface which have their own difficulties for remeshing.
 Implicit surfaces on the other hand are defined via a functions level set (usually the zero level) ie. $F(x) = 0$ which is 
-easier to construct but is harder to visualise. Usually then for visualization either marching-cubes or raytracing methods are used.
+easier to construct but is harder to visualise. Common methods for visualization include marching-cubes and raytracing methods.
 
 For the surface interpolation with an implicit function this translates to the interpolant being zero at the datasites: $S(x_i) = 0$.
 Since the zero function would be a trivial solution to this, off-surface constraints must be given.
@@ -581,7 +582,7 @@ according to the following formula:
 $$\vec{p}' = \vec{p} + \alpha \sum_{j \in \mathcal{N}} f(\lVert\vec{p} - \vec{p}_j \rVert) (\vec{p}-\vec{p}_j)$$
 
 Wherein $\mathcal{N}$ stands for the neighbors, $\alpha$ is a normalization constant and $f$ is a weight function.
-Different weights have been investigated in [@bossen_pliant_nodate] where they constructed a well performing weight function.
+Different weights have been investigated in [@bossen_pliant_2003] where they constructed a well performing weight function.
 Given a target edge length $t$ and an actual edge length $l$ a normalized edge length is defined as $d=l/t$ and the weight function reads:
 $$f(d) = (1-d^4)\cdot e^{-d^4}$$
 

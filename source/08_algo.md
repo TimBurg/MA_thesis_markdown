@@ -27,7 +27,7 @@ The scale factor of the rbf functions was set to 2.5 times the longest edge in t
 surface.
 
 
-## surface conditioning
+## surface conditioning{#sec:surf_cond}
 A principal problem is that of the values of the interpolant in between the datasites.
 In the case of an implicitly defined surface this influences not only the shape of the zero level set but also the slope
 around the border of the surface.
@@ -44,8 +44,11 @@ The interpolation matrix \ref{eq:interpolation_matrix} is then constructed as a 
 [@sec:rbf_interpol] and the system \ref{eq:interpolation_system} is subsequently solved for the coefficients.
 
  
-
-![A testmodel interpolated with the Wendland functions](./source/figures/cat_cubes_isosurf.png)
+![](./source/figures/cat_raw.png){width=50%}
+![](./source/figures/cat_cubes_isosurf.png){width=50%}
+\begin{figure}[!h]
+\caption{An isosurface extracted via marching cubes of an interpolated cat model}
+\end{figure}
 
 ## Smoothing
 The resulting isosurfaces of the topology optimization generally had rough surfaces with seemingly random small 
