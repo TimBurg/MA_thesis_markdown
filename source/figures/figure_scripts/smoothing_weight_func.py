@@ -7,7 +7,7 @@ def default_weights( x):
     return (1+x4)*exp(x4)
 
 def laplace_weights( x):
-    return min(1-x, x)
+    return min(-x, x)
 
 plotting_range=np.linspace(0,2, 100)
 

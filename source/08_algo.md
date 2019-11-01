@@ -7,7 +7,7 @@ The vertices of the extracted isosurface are the principal points for the interp
 As stated in [@sec:surface_interpol], additionally, the off-surface values both in the positive as well as the negative direction are 
 incorporated into the interpolation. These are calculated via the original meshes vertices $v$ and triangle normals $n_T$ as follows:
 
-$$ \vec{v_{\text{off}}} = \vec{v} \pm \varepsilon \frac{\vec{n_v}}{\lVert \vec{n_v} \rVert} $$
+\begin{equation} \vec{v_{\text{off}}} = \vec{v} \pm \varepsilon \frac{\vec{n_v}}{\lVert \vec{n_v} \rVert} \label{eq:offsites}\end{equation}
 
 where $\vec{n_v}$ is assembled of the triangles $\mathcal{N}_T$ containing $v$ as a vertex:
 
@@ -30,8 +30,18 @@ surface.
 ## surface conditioning{#sec:surf_cond}
 A principal problem is that of the values of the interpolant in between the datasites.
 In the case of an implicitly defined surface this influences not only the shape of the zero level set but also the slope
-around the border of the surface.
-As an illustration take a look at [@fig:centroid_normalprobe]
+at the zero crossing.
+As an illustration take a look at [@fig:centroid_normalprobe].
+Displayed are the interpolant values along the triangle normals of the initial model which were centered at each triangles centroid.
+The zero crossing mostly occur in the neighborhood of zero as is to be expected from the intended smoothness of the surface.
+However, for some normal traces or plots a stronger deviation can be made out and the existence of a zero crossing is questionable.
+If in fact the scale parameter is chosen too small then there might be no zero crossings at all for some triangles which,
+in the best case will only inhibit refinement in that area as the vertex projection cannot converge. 
+In the worst case though the projection might yield a vertex that results in an invalid mesh 
+(flipped triangle or non-manifold surface or self intersection). 
+
+
+
 
 ![Interpolant values along the normal direction sampled at the triangle centroids](./source/figures/centroid_normalprobe.png){#fig:centroid_normalprobe}
 
@@ -43,12 +53,27 @@ As an illustration take a look at [@fig:centroid_normalprobe]
 The interpolation matrix \ref{eq:interpolation_matrix} is then constructed as a sparse matrix with a scale factor $c$ as explained in
 [@sec:rbf_interpol] and the system \ref{eq:interpolation_system} is subsequently solved for the coefficients.
 
- 
+
+Throughout the implementation of the algorithm a cat model was used that is pictured in figure \ref{fig:cat_model} 
+together with it's interpolated surface (the isosurface was generated with marching cubes).
+
 ![](./source/figures/cat_raw.png){width=50%}
 ![](./source/figures/cat_cubes_isosurf.png){width=50%}
 \begin{figure}[!h]
 \caption{An isosurface extracted via marching cubes of an interpolated cat model}
+\label{fig:cat_model}
 \end{figure}
+
+An intersection through the cat surface is shown in [@fig:cat_isolines]. The isolines show that the surface 
+is generally well behaved with the isolines being mostly parallel. 
+Deviations can occur in areas of high curvature of the original mesh (the feet) and where other parts of the model 
+are in proximity (this is no issue in this case).
+
+For models with very close proximity of parts in relation to a coarser original mesh the slope around zero
+given by equation \ref{eq:offsites} should be adapted.
+
+
+![An 2d section through the interpolant of the cat model with 7 isolines around 0](./source/figures/cat_isolines.png){#fig:cat_isolines}
 
 ## Smoothing
 The resulting isosurfaces of the topology optimization generally had rough surfaces with seemingly random small 

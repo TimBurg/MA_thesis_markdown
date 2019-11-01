@@ -19,11 +19,19 @@ b) the witdh between minima and maxima adjacent to the zero crossing (convergenc
 The offset interpolation points are located at $\pm$ 0.78 in units of the actual mesh  \label{my_label}](source/figures/vertex_normal_plot.png){ width=100% }
 
 ## The topology optimization models
+The templates for the following calculation were kindly provided by Moritz Ebeling from the Weierstraß Institute 
+for which this work was written.
 
 
 ### The bridge
+The calculation 
 
-![The boundary conditions of the bridge model](./source/figures/bridge_grid.png)
+![](./source/figures/bridge_grid_front.png){width=50%}
+![](./source/figures/bridge_grid_back.png){width=50%}
+\begin{figure}[!h]
+\caption{The grid for the bridge model from the front and the back}
+\label{fig:bridge_grid}
+\end{figure}
 
 ![Isosurface of bridge after extraction](./source/figures/bridge_raw.png)
 

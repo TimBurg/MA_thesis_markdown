@@ -104,21 +104,21 @@ $$\varepsilon = \frac{1}{2}( \nabla u^T + \nabla u )$$
 this yields the following even simpler form of the tensor which is referred to as $\sigma$:
 
 $$\sigma = \lambda ( \nabla u) I + \mu \left(\nabla u + \nabla u^T \right)$$
-The more prominent form of which is called Hooks-law and written with the so-called stiffness tensor $c$:
-\begin{equation} \sigma = c : \varepsilon \qquad \text{or} \qquad \sigma = c \varepsilon \label{eq:stiffness}\end{equation}
+The more prominent form of which is called Hooks-law and written with the so-called stiffness tensor that is unfortunately also named $C$ in the literature:
+\begin{equation} \sigma = C : \varepsilon \qquad \text{or} \qquad \sigma = C \varepsilon \label{eq:stiffness}\end{equation}
 
 Where the following tensoroperation for rank 2 tensors  is introduced that will be used in the coming sections:
 $$G:V :=  \sum_{i,j} G_{ij} V_{ij}$$
 The last form is written in vector form for the components of the tensors.
 
 ### Variational formulation
-For finite-element simulations and reduced smoothness requirements of the displacement, a variatonal formulation of the equilibrium equations \ref{eq:equilibrium} must be formulated.
+For finite-element simulations and reduced smoothness requirements of the displacement, a variatonal formulation of the equilibrium equations \eqref{eq:equilibrium} must be formulated.
 
 For this we first define the space $$
 H^1_D = \{\theta \in H^1(\Omega) | \theta=0 \text{ on } \Gamma_D=\partial \bar{\Omega} - \Gamma_g \}$$
 to exclude the boundary term on $\Gamma_D$ from contributing force terms.
 
-Multiplying equation \ref{eq:divT} with a test function $\theta$ from this space on both sides and integrating yields:
+Multiplying equation \eqref{eq:divT} with a test function $\theta$ from this space on both sides and integrating yields:
 $$\int_{\Omega^\varphi} \text{div}^\varphi T^\varphi \cdot \theta^\varphi dx^\varphi = -\int_{\Omega^\varphi} f^\varphi
 \theta^\varphi dx^\varphi + \int_{\Gamma_g^\varphi} g^\varphi \theta^\varphi$$
 Which has to hold for all test functions $\theta \in H^1_D$
@@ -147,7 +147,7 @@ And thus we write the equilibrium equation in the variational form as:
 
 
 For the following sections we denote this as the following shorthand notation using the inner product 
-and the stiffness tensor from \ref{eq:stiffness}:
+and the stiffness tensor from \eqref{eq:stiffness}:
 $\langle A,B \rangle_C = \int_{\bar{\Omega}} A: CB$ :
 
 \begin{equation}\langle \varepsilon(u), \varepsilon(\theta)\rangle_{C(\varphi)} = \int_{\bar{\Omega}} f \cdot \theta + 
@@ -155,12 +155,12 @@ $\langle A,B \rangle_C = \int_{\bar{\Omega}} A: CB$ :
 
 The well posedness of the weak formulation is proved using the Lax-Milgram Lemma and Korns Inequality in [@blank_relating_2014]
 
-For an actual deformation rather than a virtual one, the functional $F$ in \ref{eq:compliance} is called the compliance of the structure.
+For an actual deformation rather than a virtual one, the functional $F$ in \eqref{eq:compliance} is called the compliance of the structure.
 This compliance is what is to be optimized in the following section. 
 
 ## Topology optimization
 
-The topology optimization procedure used in this work is a direct implementation the works of [@blank_relating_2014]
+The topology optimization procedure used in this work is a direct implementation of the works of [@blank_relating_2014].
 As a result of this I frequently refer to this paper and those relating to it and only strive to give a compact summary of the steps.
 A phase field based topology optimization was first introduced by [@bourdin_design-dependent_2003].
 
@@ -178,13 +178,13 @@ This is needed since the compliance minimization in itself is not well posed and
 
 ### Compliance minimization
 
-Compliance is a very common goal function for topology optimization and defined as in equation \ref{eq:compliance}:
+Compliance is a very common goal function for topology optimization and defined as in equation \eqref{eq:compliance}:
 $$F(u) = \int_{\bar{\Omega}} f \cdot u + \int_\Gamma g \cdot u $$
 
-Here, $u$ is the displacement solution of the mechanical system in the left-hand side of equation \ref{eq:compliance}
+Here, $u$ is the displacement solution of the mechanical system in the left-hand side of equation \eqref{eq:compliance}
 
 However, it is still open at this time how the compliance depends on the structure of the part.
-This dependence is actually encoded in the Stiffness-tensor $c$ of the mechanical system that will be constructed from the 
+This dependence is actually encoded in the Stiffness-tensor $C$ of the mechanical system that will be constructed from the 
 phase field after this has been defined in the next section.
 
 ### The phase-field description and regularization energy
@@ -200,11 +200,13 @@ The resulting equation driving the interface is an Allan-Cahn Equation as discus
 However, for the general understanding the optimality conditions are of more avail.
 
 
-Firstly, since integrating a value of 1 over a region, a volume constraint is easily added with a parameter $m$ that dictates how much of the design domain is to be void:
+Since integrating the phase field over a region gives the volume, a volume constraint
+is imposed by requiring said integral to be equal to a parameter $m$ which then
+dictates how much of the design domain is allowed to be material:
 $$\int_\Omega \varphi dx = m \cdot \text{vol}(\Omega)$$
 
-Notice that values in the intermediate range of $\varphi$ contribute a lesser volume. 
-However, these values, as they only occur in the interfacial region, will be forced to occupy a small portion of the domain.
+Notice that values in the intermediate range of $\varphi$ distort this relationship.
+However, since they only occur in the interfacial region that will be forced to occupy a neglible portion of the domain, this is can be neglected.
 
 For the reading convenience we stipulate the requirements on $\varphi$ in the following space:
 $$\mathcal{G}^m = \big\{\varphi \in H^1(\Omega, \mathbb{R})) \quad \big| \quad 0\leq \varphi \leq 1 \quad \text{and} \quad \int_\Omega \varphi dx = m \cdot \text{vol}(\Omega) \big\}$$
@@ -238,17 +240,17 @@ Namely the phase-field acts as a direct scaling factor for the mass density $\rh
 
 $$f = \varphi \cdot \rho_\text{mat} \cdot G_z \quad \text{with} \  G_z=9.81 \cdot [0, 0, 1]^T \: "N"$$
 
-$$F(u, \varphi) = \int_{\bar{\Omega}} \varphi \cdot \rho_\text{mat} \cdot u + \int_{\Gamma_g} g \cdot u $$
+$$F(u, \varphi) = \int_{\bar{\Omega}} \varphi \cdot \rho_\text{mat} \cdot G_z \cdot  u + \int_{\Gamma_g} g \cdot u $$
 
 ### The optimal control problem
-I now state the first order necessary optimality conditions for a minimum which are given by the Karush-Kuhn-Tucker theory.
+I now state the first order necessary optimality conditions for a minimum which are given by the Karush-Kuhn-Tucker theory.  
 
 As indicdated before, the goal is to minimize the functional made up of the compliance and the Ginzburg-Landau term:
-$$ \text{min}\ J(u, \varphi) := E(\varphi) + F(u, \varphi) \quad \text{with} \ \varphi \in \mathcal{G}^m \text{ and } u\ 
-\text{ forfills eq }\ref{eq:compliance}$$ 
+$$ \text{min}\ J(u, \varphi) := \gamma E(\varphi) + \alpha F(u, \varphi) \quad \text{with} \ \varphi \in \mathcal{G}^m \text{ and } u\ 
+\text{ fulfills eq }\eqref{eq:compliance}$$ 
 
 To write down the optimality conditions in a concise form, consider the control-to-state operator 
-$S(\varphi) = u$ defined implicitly by equation \ref{eq:compliance}. 
+$S(\varphi) = u$ defined implicitly by equation \eqref{eq:compliance}. 
 It's directional derivative $S'(\varphi)h = p$ is given by the solution to:
 
 \begin{equation}\langle \varepsilon(p), \varepsilon(\eta)\rangle_{C(\varphi)} =
@@ -260,10 +262,10 @@ It's directional derivative $S'(\varphi)h = p$ is given by the solution to:
 
 It follows from the definition of the total differential and the chain rule that the reduced functional 
 $\widetilde{J}(\varphi)= J(S(\varphi), \varphi)$ is
-fréchet-differentiable with the derivative:
+Fréchet-differentiable with the derivative:
 $$\tilde{J}'(\varphi) h = \frac{\partial}{\partial u} J(u,\varphi) p + \frac{\partial}{\partial \varphi} J (u, \varphi) h$$
 
-Since $E(\varphi)$ is independant of $u$, the partial derivative with respect to $u$ is just the right-hand side of the state equation:
+Since $E(\varphi)$ is independent of $u$, the partial derivative with respect to $u$ is just the right-hand side of the state equation:
 
 $$\frac{\partial}{\partial u} J(u, \varphi) p = F(p,\varphi) $$
 
@@ -271,7 +273,7 @@ $$\frac{\partial}{\partial u} J(u, \varphi) p = F(p,\varphi) $$
 Which is, since $p \in H^1_D(\Omega, \mathbb{R}^d)$ is an admissible test function, equal to the left hand side of the state equation.
 Note that if this was not the case, an auxillary state $q \in H^1_D$ could have been introduced which would solve a system sometimes called the adjoint system as to make the following equality hold. 
 
-Now using equation \ref{eq:control_to_state} with $u$ as a test function this can be written as:
+Now using equation \eqref{eq:control_to_state} with $u$ as a test function this can be written as:
 
 \begin{align}
 \frac{\partial}{\partial u} J(u, \varphi) p &= F(p,\varphi)=\langle \varepsilon(u), \varepsilon(p)\rangle_{C(\varphi)} 
@@ -280,33 +282,35 @@ Now using equation \ref{eq:control_to_state} with $u$ as a test function this ca
 
 The calculation of the partial derivative of $J$ with respect to $\varphi$ is straightforward:
 
-$$\frac{\partial}{\partial \varphi}J(u,\varphi) \xi = \varepsilon \int_\Omega \nabla \varphi : \nabla \xi +
-\int_\Omega \frac{1}{\varepsilon} \Psi'(\varphi) \xi dx  + F(u,\xi)$$
+$$\frac{\partial}{\partial \varphi}J(u,\varphi) \xi = \varepsilon \int_\Omega (\nabla \varphi , \nabla \xi) \ dx +
+\int_\Omega \frac{1}{\varepsilon} \Psi'(\varphi) \xi \ dx  + F(u,\xi)$$
 
-Summing up, the reduced functional has the following directional derivative:
+Summing up and using $\xi = h$ as the direction in which to 
+derive, the reduced functional has the following
+directional derivative:
 \begin{equation}
-\frac{d}{d \varphi} \tilde{J}(\varphi) = 2 \cdot F(u, \xi) +\int_\Omega \varepsilon \nabla \varphi \nabla \xi +
+\frac{d}{d \varphi} \tilde{J}(\varphi) \xi = 2 \cdot F(u, \xi) +\int_\Omega \varepsilon \nabla \varphi \nabla \xi +
 \frac{1}{\varepsilon} \Psi'(\varphi) \xi \ dx 
- - \langle \varepsilon(u) \varepsilon(\eta)\rangle_{C'(\varphi)\xi}
+ - \langle \varepsilon(u), \varepsilon(u)\rangle_{C'(\varphi)\xi}
 \end{equation}
 
 To incorporate the constraints on $\varphi$ we now follow the Karush-Kush-Tucker theory.
 For this to work we have to make sure a constraint qualification is satisfied.
-Here we consider the slater condition that, for a an itermediate density material distribution in the whole domain 
+Here we consider the slater condition that, for an itermediate density material distribution in the whole domain 
 is obviously satisfied. Thus we can assume strong duality and the complentarity follows.
 
 To reconsider, we have the following additional requirements
 
 \begin{align}
-\int_\Omega \varphi - m \ dx &=& 0 \\
-\varphi -1 &\leq& 0 \\
--\varphi   &\leq& 0 
+\int_\Omega \varphi - m \ dx &= 0 \\
+\varphi -1 &\leq 0 \\
+-\varphi   &\leq 0 
 \end{align}
 
-Introducing lagrange multipliers $\eta, \mu, \lambda$ the KKT-first order necessary optimality conditions then read:
+Introducing lagrange multipliers $\kappa, \mu, \lambda$ the KKT-first order necessary optimality conditions then read:
 
 \begin{align}
-\frac{d}{d\varphi} \tilde{J}(\tilde{\varphi}) \omega + \eta \int_\Omega \omega \ dx + \mu \omega - \lambda \omega  &= 0 \quad \forall \omega \in H^1_D \label{eq:gradient}\\
+\frac{d}{d\varphi} \tilde{J}(\tilde{\varphi}) \omega + \kappa \int_\Omega \omega \ dx + \mu \omega - \lambda \omega  &= 0 \quad \forall \omega \in H^1_D \label{eq:gradient}\\
 \langle \varepsilon(\tilde{u}) \varepsilon(v)\rangle_{C(\varphi)} &= F(\tilde{u}, v)  \quad \forall v \in H^1_D \\
 \int_\Omega \tilde{\varphi} - m \ dx &= 0 \\
 \mu \geq 0,& \quad \lambda \geq 0 \\
@@ -319,7 +323,7 @@ Where the last three conditions arise due to complementarity.
 ### Numerial soution
 
 #### Pseudo time stepping
-Now, we solve for $\tilde{\varphi}$ in the optimality conditions. Equation \ref{eq:gradient} 
+Now, we solve for $\tilde{\varphi}$ in the optimality conditions. Equation \eqref{eq:gradient} 
 defines a linear functional on $H^1_D$ which I refer to as $\nabla \mathcal{L} (\omega)$. Using a scalar product this functional can be identified
 with a funtion on $L^2$ that we loosely call the gradient. This approach is called a gradient flow. 
 Consequently a gradient descent in conjunction with a semi-implicit stepping scheme is used.
@@ -332,30 +336,30 @@ Expanding the functional gives:
 \begin{split}
 \left( \partial_t \varphi, \omega \right) =&  \varepsilon \int_\Omega \nabla \varphi \nabla \omega
 + \int_\Omega \frac{1}{\varepsilon} \Psi'(\varphi) \omega \ dx + 2 \cdot F(u, \omega) \\
- &- \langle \varepsilon(u), \varepsilon(u)\rangle_{C'(\varphi)\omega} + \eta \int_\Omega \omega \ dx + \mu \omega - \lambda \omega  
+ &- \langle \varepsilon(u), \varepsilon(u)\rangle_{C'(\varphi)\omega} + \kappa \int_\Omega \omega \ dx + \mu \omega - \lambda \omega  
 \end{split} \label{eq:gradflow}
 \end{equation}
 
 We start with some initial function $\varphi^k, \ k=0$.
 Inserting for $\partial_t \varphi$ its approximation $\frac{\varphi^{k+1}-\varphi^k}{\tau}$ 
-and using $\varphi^{k+1}$ for $\nabla \varphi$ we end up with:
+and using $\nabla \varphi^{k+1}$ for $\nabla \varphi$ we end up with:
 
 \begin{equation}
 \begin{split}
 \frac{1}{\tau} \int_\Omega \varphi^{k+1} \omega dx + \varepsilon \int_\Omega \nabla \varphi^{k+1}:\nabla\omega dx =&
 \frac{1}{\tau} \int_\Omega \varphi^{k} \omega dx \\
 &+ \frac{1}{\varepsilon} \int_\Omega \Psi'(\varphi^k) \omega dx + \langle \varepsilon(u) \varepsilon(u)\rangle_{C'(\varphi^k)\omega} \\
-&- 2 \int_\Omega \omega \rho_0 g u dx + \eta \int_\Omega \omega \ dx + \mu \omega - \lambda \omega
+&- 2 \int_\Omega \omega \rho_0 g u dx + \kappa \int_\Omega \omega \ dx + \mu \omega - \lambda \omega
 \end{split}
 \end{equation}
-Where, as before, $u$ solves the mechanical system \ref{eq:equi_variational}.
+Where, as before, $u$ solves the mechanical system \eqref{eq:equi_variational}.
 This defines the principal iterative scheme for a descent.
 
 #### Primal-dual active set strategy
 So far we have left out the complementarity conditions in the calculation of the descent direction.
 For this, a primal dual active set strategy (PDAS) is used. PDAS maintains a set of active constraints for every point.
 A constraint is inactive if the corresponding lagrange multiplier is zero and active if $\varphi$ takes on the corresponding bound -
-One of which has to hold due to the equations \ref{eq:complementary1} and \ref{eq:complementary2}.
+One of which has to hold due to the equations \eqref{eq:complementary1} and \eqref{eq:complementary2}.
 
 Consequently the gradient descent step is calculated with $\varphi$ taking on a fixed value on the active set and being unbounded (lagrange multiplier =0) on the inactive set. 
 Afterwards the 
@@ -417,7 +421,7 @@ $$S(x) = \sum_i \alpha_i\varphi(\lVert x-x_i\rVert)$$
 
 By introducing the interpolation matrix $A$ as:
 \begin{equation}A= \varphi(\lVert x_i - x_j\rVert)|_{i,j} \label{eq:interpolation_matrix}\end{equation}
-we can write the interpolation condition \ref{eq:interpolation_condition} as:
+we can write the interpolation condition \eqref{eq:interpolation_condition} as:
 \begin{equation}A\alpha = F \label{eq:interpolation_system}\end{equation}
 
 
@@ -459,9 +463,16 @@ I now recite some of the more often used RBFs and give some detail on the local 
 During the course of writing the interpolation program it became clear that only local basis functions would be good 
 candidates for a surface interpolation due to the number of vertices used in most triangular meshes
 and the resulting size of a dense interpolation matrix.
-But also the conditon number of interpolation matrix is problematic.
+But also the conditon number of the interpolation matrix is problematic for large interpolation sets.
+To this end the compactly supported basis functions are also much more forgiving. 
+I recite some estimates of the condition number in the Appendix.
 
-Now commonly used are the Wendland functions [see @wendland_piecewise_1995] which are piecewise polynomial, of minimal degree and positive definite. For the surface interpolation I use the C2 continuous function and it's derivative.
+Local, piecewise polynomial RBFs are generally dimension dependent in that they are not positive definite 
+for $d>d_0$ in $\mathbb{R}d^d$ where $d_0$ depends on the function. For this application $d_0 = 3$ is obviously the requirement.
+
+Now commonly used are the Wendland functions [see @wendland_piecewise_1995] which are of 
+minimal degree with respect to the space dimension and smoothness and are positive definite. 
+For the surface interpolation I use the two times continuously differentiable function and it's derivative.
 
 function             name                     definiteness 
 -----------------   ------------------------ -------------
@@ -472,11 +483,12 @@ $r^3$               polyharmonic spline	            cpd
 
 Table: RBF functions with global support
 
-function                         name                     definiteness 
------------------                ------------------------ -------------
-$(1-r)_+^4(4r+1)$                $\varphi_{3,1}(r)$           pd
-$(1-r)_+^6(35r^2+18r+3)$         $\varphi_{3,2}(r)$           pd
-$(1-r)_+^8(32r^3+25r^2+8r+1)$    $\varphi_{3,3}(r)$           pd
+function                         name                     definiteness  smoothness
+-----------------                ------------------------ ------------- ----------
+$(1-r)_+^2$                      $\varphi_{3,0}(r)$           pd           $C^0$
+$(1-r)_+^4(4r+1)$                $\varphi_{3,1}(r)$           pd           $C^2$
+$(1-r)_+^6(35r^2+18r+3)$         $\varphi_{3,2}(r)$           pd           $C^4$
+$(1-r)_+^8(32r^3+25r^2+8r+1)$    $\varphi_{3,3}(r)$           pd           $C^6$
 
 Table: Local RBF functions introduced by Wendland [@wendland_piecewise_1995]
 
@@ -501,19 +513,21 @@ Displayed is a 1-2 comb in two dimensions](source/figures/MQ_2D_comb.png){#fig:w
 
 ### surface interpolation {#sec:surface_interpol}
 Surface descriptions are either explicit or implicit. Explicit means that the surface is the graph of a function
-$F:\Omega\subset\mathbb{R}^2 \mapsto \mathbb{R}^3$ which can be very complicated to construct.
-Especially for complicated topologies, this can usually be only done via 2d-parametric patches of the surface which have their own difficulties for remeshing.
-Implicit surfaces on the other hand are defined via a functions level set (usually the zero level) ie. $F(x) = 0$ which is 
+$F:\Omega\subset\mathbb{R}^2 \mapsto \mathbb{R}$ which can be very complicated to construct.
+Especially for complicated topologies, this can usually be only done via 2d-parametric patches of the surface which are difficult to 
+match at the boundaries.
+Implicit surfaces on the other hand are defined via a functions level set (usually the zero level ie. $F(x) = 0$) which is 
 easier to construct but is harder to visualise. Common methods for visualization include marching-cubes and raytracing methods.
 
 For the surface interpolation with an implicit function this translates to the interpolant being zero at the datasites: $S(x_i) = 0$.
 Since the zero function would be a trivial solution to this, off-surface constraints must be given.
-This is usually done with points generated from normalvectors to the surface that are given the value of the signed distance function ie. the value of the distance to the surface:
+This is usually done with points generated from normalvectors to the original surface if such surface exists.
+The pointvalues are then assigned the valuea of the signed distance function to the surface:
 
 $$ S(\mathbf{x}_i + \epsilon \mathbf{n}_i) = F(\mathbf{x}_i+\epsilon \mathbf{n}_i) = \epsilon  
 $${#eq:off_surface_points}
 If not available, the normalvectors can be generated from a cotangent plane that is constructed via  a principal component analysis of nearest neighbors. 
-This however is a nontrivial problem.
+
 In my case the vectors could be obtained from an average of the normals of the adjacent triangles scaled with the inverse of the corresponding edgelengths:
 $$\vec{n} = \sum_{T \in \mathcal{N}_T} \frac{1}{\lVert \vec{n}_T \rVert} \vec{n}_T$$
 These offset-points were generated for every vertex of the original mesh and in both directions (on the inside and on the outside) such as to give the interpolant a constant slope of one around the surface.
@@ -553,9 +567,17 @@ To avoid having to project a new midpoint to the surface, the two vertices of th
 
 ![Illegal edge collapse with a triangle flip \label{fig:collapse_e1}](source/figures/edge_collapse_error1.svg){width=100%}
 
+Both cases are easily cared for.
+The case of more than two common neighbors can be checked in a graph datastructure
+and to check if a triangle was flipped the normal before and after the operation have to be compared.
+
 ### Edge split
 The edge split is a straightforward operation as no special cases have to be taken care of. 
 A new vertex is put at the surface projected midpoint of the existing edge and 4 new edges as well as 4 new triangles replace the split edge and it's adjacent triangles.
+
+The only pitall than can occur is that the projection of the midpoint with a gradient descent can sometimes project into another
+triangle therefore yielding flipped triangles.
+This again need to be checked with a normal-flip check
 
 ### Edge flip
 
@@ -570,7 +592,13 @@ Such an edge is flippable if:
 - $\phi_{ABC} + \phi_{ABD} < \pi \quad \text{and} \quad \phi_{BAC}+ \phi_{BAD} < \pi$  
 - The angle between the normals of the triangles is not too big to not cast "ridges"
 
-I do a flip based on the following criteria:
+I do a flip similar to [@dassi_novel_2016] if the 6d angles of the opposing angles $\phi_{BDA} \text{ and } \phi_{ACB}$ together are larger than a threshold value $\kappa \pi \text{ with } \kappa \leq 1$:
+
+$$\phi_{BDA}^{6d} + \phi_{ACB}^{6d} \geq \kappa \pi$$
+
+A value of $\kappa$ near one is problematic in conjunction with the higher dimensional embedding
+since the HDE angle seldom takes on values of $\pi/2$ or larger due to the surface-normals
+in the 6d-scalar product not being orthogonal.
 
 
 ### Vertex smoothing
@@ -582,15 +610,21 @@ according to the following formula:
 $$\vec{p}' = \vec{p} + \alpha \sum_{j \in \mathcal{N}} f(\lVert\vec{p} - \vec{p}_j \rVert) (\vec{p}-\vec{p}_j)$$
 
 Wherein $\mathcal{N}$ stands for the neighbors, $\alpha$ is a normalization constant and $f$ is a weight function.
-Different weights have been investigated in [@bossen_pliant_2003] where they constructed a well performing weight function.
+Different weights have been investigated in [@bossen_pliant_1998] where they constructed a well performing weight function.
 Given a target edge length $t$ and an actual edge length $l$ a normalized edge length is defined as $d=l/t$ and the weight function reads:
 $$f(d) = (1-d^4)\cdot e^{-d^4}$$
 
-This function pushes if $l < t$ and slightly pulls if $t>l$.
-The function is plotted in figure \ref{fig:smoothing_weights} versus the frequently used laplace weights.
+This function pushes if $l < t$ and slightly pulls if $t>l$ as opposed to the frequently used Laplace-smoothing which only pulls.
+The function is plotted in figure \ref{fig:smoothing_weights} versus Laplace weights.
 Additionally, I clipped the movedistance to 80% of the minium of the  adjacent triangles heights.
-This is done because moves that exceed this distance are likely to cause unacceptable triangles. 
-What unacceptable means is defined in the algorithm section but is basically implemented as triangles with excess tilt versus the surface normal.
+This is done because moves that exceed this distance are likely to cause triangles that are excessively tilted against the surface yet not flipped. 
+These might then cause problems in later operations. 
+
+One of those problems occurs due to the pushing nature of the smoothing that tends to squish larger 
+triangles into thin strips when attached short
+edges are pushing the vertex into the direction of least resistance. 
+Thin strip triangles should then usually be flipped and consequently push back but this can fail due to the requirements 
+for the edge flip and consequently yield distorted triangles.
 
 
 ![The weight function used compared to the laplace weights \label{fig:smoothing_weights}](source/figures/weight_funcs.png){width=70%}
