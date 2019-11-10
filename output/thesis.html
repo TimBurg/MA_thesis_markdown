@@ -156,37 +156,61 @@
                 <li><a href="#abstract">Abstract</a></li>
                 <li><a href="#acknowledgements">Acknowledgements</a></li>
                 <li><a href="#introduction-overview"><span class="toc-section-number">1</span> Introduction &amp; Overview</a><ul>
-                <li><a href="#the-need-for-remeshing-and-common-approaches"><span class="toc-section-number">1.1</span> The need for remeshing and common approaches</a></li>
+                <li><a href="#common-approaches-for-remeshing"><span class="toc-section-number">1.1</span> common approaches for remeshing</a></li>
                 <li><a href="#radial-basis-function-surface-interpolation"><span class="toc-section-number">1.2</span> Radial basis function surface interpolation</a><ul>
                 <li><a href="#higher-dimensional-embedding-for-curvature-adaption"><span class="toc-section-number">1.2.1</span> Higher dimensional embedding for curvature adaption</a></li>
                 </ul></li>
                 </ul></li>
                 <li><a href="#theoretical-backgrounds"><span class="toc-section-number">2</span> Theoretical backgrounds</a><ul>
-                <li><a href="#topology-optimization-via-the-phase-field-method"><span class="toc-section-number">2.1</span> Topology optimization via the phase-field method</a><ul>
-                <li><a href="#the-equations-of-linear-elasticity"><span class="toc-section-number">2.1.1</span> The equations of linear elasticity</a></li>
-                <li><a href="#compliane-minimization"><span class="toc-section-number">2.1.2</span> Compliane minimization</a></li>
-                <li><a href="#phase-field-formulation-and-advancing-front-algorithms"><span class="toc-section-number">2.1.3</span> Phase-field formulation and advancing-front algorithms</a></li>
-                <li><a href="#isosurface-extraction"><span class="toc-section-number">2.1.4</span> Isosurface extraction</a></li>
+                <li><a href="#linear-elasticity"><span class="toc-section-number">2.1</span> Linear elasticity</a><ul>
+                <li><a href="#the-equations-of-static-elasticity"><span class="toc-section-number">2.1.1</span> The equations of static elasticity</a></li>
+                <li><a href="#stess-strain-and-the-equations-of-equilibrium-in-the-linear-case"><span class="toc-section-number">2.1.2</span> Stess, strain and the equations of equilibrium in the linear case</a></li>
+                <li><a href="#variational-formulation"><span class="toc-section-number">2.1.3</span> Variational formulation</a></li>
                 </ul></li>
-                <li><a href="#radial-basis-function-theory"><span class="toc-section-number">2.2</span> Radial-basis-function theory</a><ul>
-                <li><a href="#unisolvence-and-interpolation-properties"><span class="toc-section-number">2.2.1</span> Unisolvence and interpolation properties</a></li>
-                <li><a href="#local-rbfs-and-the-surface-problem"><span class="toc-section-number">2.2.2</span> Local RBFs and the surface problem</a></li>
+                <li><a href="#topology-optimization"><span class="toc-section-number">2.2</span> Topology optimization</a><ul>
+                <li><a href="#compliance-minimization"><span class="toc-section-number">2.2.1</span> Compliance minimization</a></li>
+                <li><a href="#the-phase-field-description-and-regularization-energy"><span class="toc-section-number">2.2.2</span> The phase-field description and regularization energy</a></li>
+                <li><a href="#interpolation-of-the-stiffness-tensor-and-gravitational-force"><span class="toc-section-number">2.2.3</span> Interpolation of the stiffness tensor and gravitational force</a></li>
+                <li><a href="#the-optimal-control-problem"><span class="toc-section-number">2.2.4</span> The optimal control problem</a></li>
+                <li><a href="#numerial-soution"><span class="toc-section-number">2.2.5</span> Numerial soution</a></li>
+                <li><a href="#isosurface-extraction"><span class="toc-section-number">2.2.6</span> Isosurface extraction</a></li>
                 </ul></li>
-                <li><a href="#surface-remeshing-methods"><span class="toc-section-number">2.3</span> Surface remeshing methods</a></li>
-                <li><a href="#remeshing-operations"><span class="toc-section-number">2.4</span> Remeshing operations</a></li>
-                <li><a href="#higher-dimensional-embedding"><span class="toc-section-number">2.5</span> Higher dimensional embedding</a></li>
+                <li><a href="#radial-basis-function-theory"><span class="toc-section-number">2.3</span> radial basis function theory</a><ul>
+                <li><a href="#rbf-interpolation"><span class="toc-section-number">2.3.1</span> RBF Interpolation</a></li>
+                <li><a href="#existence-and-uniqueness-results"><span class="toc-section-number">2.3.2</span> Existence and Uniqueness results</a></li>
+                <li><a href="#commonly-used-radial-basis-functions"><span class="toc-section-number">2.3.3</span> Commonly used Radial basis functions</a></li>
+                <li><a href="#sec:rbf_interpol"><span class="toc-section-number">2.3.4</span> Scaling of RBF functions, ambiguities and interpolation properties</a></li>
+                <li><a href="#sec:surface_interpol"><span class="toc-section-number">2.3.5</span> surface interpolation</a></li>
                 </ul></li>
-                <li><a href="#algorithm-description-and-implemenation-details"><span class="toc-section-number">3</span> Algorithm description and implemenation details</a></li>
-                <li><a href="#test-case-szenarios"><span class="toc-section-number">4</span> Test case szenarios</a></li>
-                <li><a href="#results"><span class="toc-section-number">5</span> Results</a><ul>
-                <li><a href="#parameter-survey"><span class="toc-section-number">5.1</span> Parameter survey</a></li>
-                <li><a href="#convergence-behaviour"><span class="toc-section-number">5.2</span> convergence behaviour</a></li>
+                <li><a href="#remeshing-operations"><span class="toc-section-number">2.4</span> Remeshing operations</a><ul>
+                <li><a href="#edge-collapse"><span class="toc-section-number">2.4.1</span> Edge collapse</a></li>
+                <li><a href="#edge-split"><span class="toc-section-number">2.4.2</span> Edge split</a></li>
+                <li><a href="#edge-flip"><span class="toc-section-number">2.4.3</span> Edge flip</a></li>
+                <li><a href="#vertex-smoothing"><span class="toc-section-number">2.4.4</span> Vertex smoothing</a></li>
+                <li><a href="#projection-of-vertices-onto-the-surface"><span class="toc-section-number">2.4.5</span> Projection of vertices onto the surface</a></li>
                 </ul></li>
-                <li><a href="#problems-outlook-and-future-work"><span class="toc-section-number">6</span> Problems, outlook and future work</a></li>
-                <li><a href="#references"><span class="toc-section-number">7</span> References</a></li>
+                <li><a href="#sec:HDE"><span class="toc-section-number">2.5</span> Higher dimensional embedding</a></li>
+                </ul></li>
+                <li><a href="#algorithm-description-and-implemenation-details"><span class="toc-section-number">3</span> Algorithm description and implemenation details</a><ul>
+                <li><a href="#interpolation"><span class="toc-section-number">3.1</span> interpolation</a></li>
+                <li><a href="#sec:surf_cond"><span class="toc-section-number">3.2</span> surface conditioning</a></li>
+                <li><a href="#smoothing"><span class="toc-section-number">3.3</span> Smoothing</a></li>
+                <li><a href="#projection-step"><span class="toc-section-number">3.4</span> Projection step</a></li>
+                <li><a href="#remeshing"><span class="toc-section-number">3.5</span> Remeshing</a></li>
+                </ul></li>
+                <li><a href="#results"><span class="toc-section-number">4</span> Results</a><ul>
+                <li><a href="#the-topology-optimization-models"><span class="toc-section-number">4.1</span> The topology optimization models</a><ul>
+                <li><a href="#the-bridge"><span class="toc-section-number">4.1.1</span> The bridge</a></li>
+                <li><a href="#the-table"><span class="toc-section-number">4.1.2</span> The table</a></li>
+                <li><a href="#the-tower"><span class="toc-section-number">4.1.3</span> The tower</a></li>
+                </ul></li>
+                <li><a href="#analysis-of-the-results-and-problem"><span class="toc-section-number">4.2</span> Analysis of the results and problem</a></li>
+                </ul></li>
+                <li><a href="#problems-outlook-and-future-work"><span class="toc-section-number">5</span> Problems, outlook and future work</a></li>
+                <li><a href="#references"><span class="toc-section-number">6</span> References</a></li>
                 <li><a href="#appendix-1-some-extra-stuff">Appendix 1: Some extra stuff</a></li>
-                <li><a href="#appendix-2-some-more-extra-stuff">Appendix 2: Some more extra stuff</a></li>
-                <li><a href="#references-1"><span class="toc-section-number">8</span> References</a></li>
+                <li><a href="#non-manifold-errors-of-meshes"><span class="toc-section-number">7</span> Non manifold-errors of meshes</a></li>
+                <li><a href="#sec:conditional"><span class="toc-section-number">8</span> Interpolation with conditionally positive definite functions</a></li>
                 </ul>
             </div>
                                 <!-- 
@@ -200,9 +224,12 @@ and add the centred logo
 <p>   </p>
 <h1 id="abstract" class="unnumbered">Abstract</h1>
 <!-- This is the abstract -->
-<p>This work deals with a novel approach to remesh trianglular meshes that facilitates a surface interpolation by Radial Basis Fuctions (RBFs). This interpolation allows to obtain a normalvector to the surface which is used in a higher-dimensional embedding sheme to yield a curvature adapted mesh ie. smaller triangle-sizes where the curvature is larger.</p>
-<p>A remeshing-program that incorporates the resulting algorithm was implemented and a parameter study conducted.</p>
-<p>Consequently the program was used to remesh the isosurfaces of phase-field topology optimizations.</p>
+<p>In this work I implement and extend a triangular mesh remeshing approach by <span class="citation" data-cites="dassi_novel_2016">(Dassi et al. 2016)</span> that facilitates a surface interpolation by Radial Basis Fuctions (RBFs).</p>
+<p>While serving a representation of the surface for remeshing this interpolation also allows to obtain a normalvector to the surface which is used in a higher-dimensional embedding sheme to yield a curvature adapted mesh ie. smaller triangle-sizes where the curvature is larger.</p>
+<p>Some fundamental issued with the approach are presented and discussed.</p>
+<p>As an application, I wrote a remeshing-program that incorporates the algorithm with some corrections to remesh isosurfaces that I obtained from phase-field topology optimization calculations.</p>
+<p>The topology optimizations were calculated with a software library pdelib custom to the Weierstrass-Institute.</p>
+<p>Both the calculation and the remeshing were conducted on the Weierstraß-servers.</p>
 
 <h1 id="acknowledgements" class="unnumbered">Acknowledgements</h1>
 <!-- This is for acknowledging all of the people who helped out -->
@@ -223,42 +250,416 @@ and add the centred logo
 <!--lang: "en"-->
 <!--bibliography: ./bibliography/tot.bib-->
 <!--...-->
+
 <h1 id="introduction-overview"><span class="header-section-number">1</span> Introduction &amp; Overview</h1>
-<p>Triangular meshes are the most prominent representation of 3D surfaces in computer graphics and the go-to format for computer-aided-design. These meshes, being piecewise linear, can only approximate curved surfaces and often such approximations may be severely ill-conditioned for computations and inefficient in their surface-description. If this is the case then remeshing techniques can be used to yield a better mesh.</p>
-<p>One such case is the extraction of an isosurface of a scalar function defined on a finite-element mesh. The isovalue-intersections may cut the Finite-element-simplices close to corners and edges resulting in possibly very small and generally non-equilateral triangles.</p>
-<p>The Finite-element application considered in this work is a topology optimization with the phase-field method. The phase-field distinguishes material from void but has a continuous range from 0 to 1 where 0 is void and 1 is material. Usually then the isosurface to the value 0.5 is used to determine the boundary of the solid-body. ## How isosurfaces arise in topology optimization</p>
-<h2 id="the-need-for-remeshing-and-common-approaches"><span class="header-section-number">1.1</span> The need for remeshing and common approaches</h2>
+<p>Triangular meshes are the most prominent representation of 3D surfaces in computer graphics and the go-to format for computer-aided-design. Aside from the topological aspects of the described surfaces or non-manifold errors (which are an issue of their own in remeshing and additive manufacturing), these meshes, being piecewise linear, can only approximate curved surfaces. Often such approximations are inefficient in terms of their required data storage because the grid is isotropic and uses about the same number of datapoints in areas of high curvature variation as in flat areas. This problem arises for example when the datapoints are obtained from some form of measurement data (e.g.laser scanners) or are constructed from local algorithms like marching cubes or marching tetrahedra.</p>
+<p>One such case which is the one treated here concerns the extraction of an isosurface-mesh of a scalar-valued function defined on a finite-element mesh. The isovalue-intersections may cut the Finite-element-simplices close to corners and edges resulting in very small and possibly distorted ie. non-equilateral triangles. Variance of the surface is not accounted for in the usual isosurface algorithms and hence a mesh that is as dense as the FE-mesh is extracted. Subsequently various remeshing techniques may be used to yield an adaptive mesh. The method used for this in this work is a pliant remeshing algorithm with local mesh modification.</p>
+<p>The application of which the FE-mesh stems from is a topology optimization using the phase-field method. Topology optimization is a form of optimization of mechanical structures that can nucleate and adapt holes in the material where low stress is encountered and add material in high stress regions.</p>
+<p>Often a certain minimum stiffness or maximum give in a structure is required for it to perform its target application. Topology optimization can then yield designs that need less material or give better stiffness and hence a better performing part for the same material.</p>
+<p>The phase-field is integral in this method and distinguishes material from void but has a continuous range from 0 to 1 where 0 is void and 1 is material. Usually then the isosurface to the value 0.5 is used to determine the boundary of the solid-body.</p>
+<h2 id="common-approaches-for-remeshing"><span class="header-section-number">1.1</span> common approaches for remeshing</h2>
+<p>There are different approaches for remeshing a given triangular mesh that each involve some form of interpolation or approximation to find new vertices for the mesh or generate a whole new mesh altogether. Oftentimes the original piecewise-linear complex ie. the original mesh is used to find the new vertices which is linear interpolation. For applications where a smooth output mesh is desired this is not suitable and more intricate interpolation schemes need to be used. However, all Interpolation schemes do respect the original mesh in the sense that the vertices are still points on the surface. This is not the case if the original mesh is approximated ie. fitted with a functional description.</p>
 <h2 id="radial-basis-function-surface-interpolation"><span class="header-section-number">1.2</span> Radial basis function surface interpolation</h2>
+<p>For remeshing a surface one has to have a representation that can be queried for new on-surface points. Here implicit surface descriptions, ie. <span class="math inline"><em>F</em>(<em>x</em>) = 0</span> for an interpolating space-function <span class="math inline"><em>F</em> : <em>D</em> → ℝ</span> where <span class="math inline"><em>D</em></span> is the data space have proven to be practical. Radial-basis-functions interpolation falls into that catergory and it is, besides polynomial-interpolation, among the most widely used interpolation-scheme nowadays. Radial-basis-functions are especially suited for multivariate data because the dimensionality of the data is only incorporated through the vectornorm of the associated space and as such is especially easy to implement.</p>
+<p>To see this, consider the simplest case where the interpolant is given as a sum over basis funtions centered at the data points <span class="math inline"><em>i</em></span>: <br /><span class="math display"><em>F</em>(<em>x</em>) = ∑<sub><em>i</em></sub><em>α</em><sub><em>i</em></sub><em>φ</em>(∥<em>x</em> − <em>x</em><sub><em>i</em></sub>∥)</span><br /></p>
 <h3 id="higher-dimensional-embedding-for-curvature-adaption"><span class="header-section-number">1.2.1</span> Higher dimensional embedding for curvature adaption</h3>
+<p>The RBF-interpolant can be easily differentiated analytically to obtain the gradient formula. This gradient, standing perpendicular on the 0-level-set describes the curvature of the mesh and is used for curvature adaptive remeshing. This is accomplished with an extension that incorporates the gradient in a 6d formulation: <span class="math inline">(<em>x</em>, <em>y</em>, <em>z</em>, <em>σ</em><em>n</em><sub><em>x</em></sub>, <em>σ</em><em>n</em><sub><em>y</em></sub>, <em>σ</em><em>n</em><sub><em>z</em></sub>)</span> The 6d norm is then used in the remeshing process. This essentially gives longer edges where normals are different and induces a refinement.</p>
+<p>Final thoughts on the reliability of this method can be found in the conclusive statement.</p>
 <h1 id="theoretical-backgrounds"><span class="header-section-number">2</span> Theoretical backgrounds</h1>
-<h2 id="topology-optimization-via-the-phase-field-method"><span class="header-section-number">2.1</span> Topology optimization via the phase-field method</h2>
-<h3 id="the-equations-of-linear-elasticity"><span class="header-section-number">2.1.1</span> The equations of linear elasticity</h3>
-<h3 id="compliane-minimization"><span class="header-section-number">2.1.2</span> Compliane minimization</h3>
-<h3 id="phase-field-formulation-and-advancing-front-algorithms"><span class="header-section-number">2.1.3</span> Phase-field formulation and advancing-front algorithms</h3>
-<h3 id="isosurface-extraction"><span class="header-section-number">2.1.4</span> Isosurface extraction</h3>
-<h2 id="radial-basis-function-theory"><span class="header-section-number">2.2</span> Radial-basis-function theory</h2>
-<h3 id="unisolvence-and-interpolation-properties"><span class="header-section-number">2.2.1</span> Unisolvence and interpolation properties</h3>
-<h3 id="local-rbfs-and-the-surface-problem"><span class="header-section-number">2.2.2</span> Local RBFs and the surface problem</h3>
-<h2 id="surface-remeshing-methods"><span class="header-section-number">2.3</span> Surface remeshing methods</h2>
+<p>First I present the theory for the topology optimization that was used. This includes a brief recapitulation of linear elasticity and compliance minimization and then a short derivation of the optimality conditionn and the numerics that follow were used to implement it. After that the extration of the isosurface, the radial basis function based surface interpolation and the basic remeshing operations are introduced.</p>
+<h2 id="linear-elasticity"><span class="header-section-number">2.1</span> Linear elasticity</h2>
+<h3 id="the-equations-of-static-elasticity"><span class="header-section-number">2.1.1</span> The equations of static elasticity</h3>
+<p>Mathematical elasticity can be considered a branch of continuum dynamics whose research reaches as far back as the late 16th century. I only give a short outline of the stepstones to linear elasticity and refer mostly to<br />
+the book mathematical elasticity by Ciarlet which is a comprehensive standard piece on the topic.</p>
+<p>Continuum dynamics deals with a body occupying a lipschitz-continuous reference configuration <span class="math inline">$\overline{\Omega}\subset \mathbb{R}^3$</span> under rest which is deformed to a configuration <span class="math inline"><em>Ω</em> ⊂ ℝ<sup>3</sup></span> by applied forces. The deformation is described by an injective mapping <span class="math inline"><em>φ</em></span> via a displacement field <span class="math inline">$u:\overline{\Omega} \mapsto \Omega$</span>: <br /><span class="math display">$$\varphi:\overline{\Omega} \mapsto \Omega \qquad \varphi=id+u$$</span><br /> For the static case treated here, the deformation is time independent. The deformation and displacement mappings are required to be two times continuously differentiable but this reqirement can be relaxed in the variational formulation of the equations. I denote the coordinates in the reference configuration with <span class="math inline"><em>x</em></span> and and those in the deformed configuration with <span class="math inline"><em>x</em><sup><em>φ</em></sup> = <em>φ</em>(<em>x</em>)</span>. In engineering Textbooks those coordinates are sometimes referred to as Lagrange- and Euler-coordinates respectively.</p>
+<p>The elasticity theory is then build on the follwowing two contibutions from Cauchy of which the second is fundamental to continuum dynamics:</p>
+<ol type="1">
+<li><p>Axiom of force balance:</p>
+<p>Given volume- and surface-force-densities as <span class="math inline"><em>f</em><sup><em>φ</em></sup></span> and <span class="math inline"><em>g</em><sup><em>φ</em></sup></span> in the deformed configuration then for every subset <span class="math inline"><em>A</em><sup><em>φ</em></sup> ⊂ <em>Ω</em></span> the following equality holds: <br /><span class="math display">∫<sub><em>A</em><sup><em>φ</em></sup></sub><em>f</em><sup><em>φ</em></sup>(<em>x</em><sup><em>φ</em></sup>)<em>d</em><em>x</em><sup><em>φ</em></sup> + ∫<sub>∂<em>A</em><sup><em>φ</em></sup></sub><em>t</em><sup><em>φ</em></sup>(<em>x</em><sup><em>φ</em></sup>, <em>n</em><sup><em>φ</em></sup>)<em>d</em><em>a</em><sup><em>φ</em></sup> = 0</span><br /> Here, <span class="math inline"><em>d</em><em>x</em><sup><em>φ</em></sup></span> and <span class="math inline"><em>d</em><em>a</em><sup><em>φ</em></sup></span> are the volume and surface elements in the deformed configuration, <span class="math inline"><em>n</em><sup><em>φ</em></sup></span> is the surface-unit-normal and <span class="math inline"><em>t</em><sup><em>φ</em></sup></span> is the cauchy stress vectorfield: <br /><span class="math display"><em>t</em><sup><em>φ</em></sup> : <em>Ω</em> × 𝕊<sub>1</sub> ↦ ℝ<sup>3</sup> <em>w</em><em>h</em><em>e</em><em>r</em><em>e</em> 𝕊<sub>1</sub> := {<em>v</em> ∈ ℝ<sup>3</sup> | ∥<em>v</em>∥ = 1}</span><br /> Note that the cauchy stress vector <span class="math inline"><em>t</em><sup><em>φ</em></sup></span> depends on the given Volume <span class="math inline"><em>A</em></span> only through the normal vector at a surface point and that any surface-force dictated on part of <span class="math inline">∂<em>A</em> ∩ ∂<em>Ω</em></span> must be dispersed through the remaining part of <span class="math inline">∂<em>A</em></span>.</p></li>
+<li><p>Stress Tensor theorem:</p>
+<p>Assuming that <span class="math inline"><em>f</em><sup><em>φ</em></sup></span> is continuous and <span class="math inline"><em>t</em><sup><em>φ</em></sup> ∈ C<sup>1</sup>(<em>Ω</em>) ∩ C(𝕊<sub>1</sub>)</span>, then <span class="math inline"><em>t</em><sup><em>φ</em></sup></span> is linear w.r.t. to the surface normal i.e.:</p>
+<p>where <span class="math inline"><em>Γ</em><sub><em>g</em></sub><sup><em>φ</em></sup></span> is the part of <span class="math inline">∂<em>Ω</em></span> where the boundary condition <span class="math inline"><em>g</em></span> is prescribed and <span class="math inline">div<em>T</em> = ∂<sub><em>j</em></sub><em>T</em><sub><em>i</em><em>j</em></sub>, <em>e</em><sub><em>i</em></sub></span> <span class="citation" data-cites="philippe_ciarlet_mathematical_1990">(See Ciarlet 1990, pp.63–65 for the proof)</span></p></li>
+</ol>
+<p>Notice that the forumulation above uses the stress tensor in the deformed configuration where it is symmetric. The pullback of the tensor onto the reference configuration is achieved with the piola-transform after which it needs to be symmetrized again. This then yields the so-called first and second Piola-Kirchhoff-Stress-Tensors of which the latter is denoted with <span class="math inline"><em>Σ</em></span>. A change in the force densities due to the deformation is often ignored. These forces are then called dead loads <span class="citation" data-cites="philippe_ciarlet_mathematical_1990">(see Ciarlet 1990, chap.2.7)</span>.</p>
+<p>The equilibirum equations for them are omitted here for brevity but the second Piola-Kirchhoff-Stress is the stress tensor to be determined in the next chapter.</p>
+<p>Another thing that is important is that the boundary condition can and will be only prescribed on a part of the boundary.</p>
+<h3 id="stess-strain-and-the-equations-of-equilibrium-in-the-linear-case"><span class="header-section-number">2.1.2</span> Stess, strain and the equations of equilibrium in the linear case</h3>
+<p>So far the theory is valid for all continuums but there are also nine unknown functions, namely the three components of the deformation and the six components of the stress tensor tensor. However, several simplifictaions can be made in case of isotropic and homogeneous media that lead to a remarkably simple form of the tensor.</p>
+<p>To this end the (right-) Chauchy (Green) strain tensor <span class="math inline"><em>C</em></span> and its difference from unity <span class="math inline"><em>E</em></span> is introduced. I will refer to <span class="math inline"><em>E</em></span> simply as the strain tensor. They describes the first order local change in length-scale under a deformation and are defined via the Fréchet derivative of the mapping <span class="math inline"><em>φ</em>: ∇<em>φ</em></span>:</p>
+<p><br /><span class="math display">$$\nabla \varphi = \begin{pmatrix}
+            \partial_1 u_1 &amp; \partial_2 u_1 &amp;  \partial_3 u_1 \\
+            \partial_1 u_2 &amp; \partial_2 u_2 &amp;  \partial_3 u_2 \\
+            \partial_1 u_3 &amp; \partial_2 u_3 &amp;  \partial_3 u_3 \\
+            \end{pmatrix}
+            $$</span><br /></p>
+<p><br /><span class="math display"><em>C</em> = ∇<em>φ</em><sup><em>T</em></sup>∇<em>φ</em> = <em>I</em> + ∇<em>u</em><sup><em>T</em></sup> + ∇<em>u</em> + ∇<em>u</em><sup><em>T</em></sup>∇<em>u</em> = <em>I</em> + 2<em>E</em></span><br /> Viewed in a different light, the deformed state can be considered a manifold with <span class="math inline"><em>C</em></span> as the metric-tensor.</p>
+<p>The simplification of the second Piola-Kichhoff-Stress-tensor follows these steps:</p>
+<ol type="1">
+<li>The stress tensor can only depend on <span class="math inline"><em>φ</em></span> through its derivative <span class="math inline">∇<em>φ</em></span> (Elasticity)</li>
+<li>Material-Frame Indifference</li>
+<li>Isotropy</li>
+<li>Rivlin-Ericksen representation theorem</li>
+<li>Homogeneity</li>
+</ol>
+<p>Details on these steps can again be found in <span class="citation" data-cites="philippe_ciarlet_mathematical_1990">(Ciarlet 1990, chap.3)</span>. After following these steps, <span class="math inline"><em>Σ</em></span> takes on the following form: <br /><span class="math display"><em>Σ</em>(<em>C</em>) = <em>λ</em>(<em>t</em><em>r</em><em>E</em>)<em>I</em> + 2<em>μ</em><em>E</em> + <em>o</em>(∥<em>E</em>∥)</span><br /></p>
+<p>Here, <span class="math inline"><em>λ</em></span> and <span class="math inline"><em>μ</em></span> are the lamé coefficients of the material and <span class="math inline"><em>I</em></span> is the identity tensor. In the linear theory that is used as the basis for the topology optimization, the strain <span class="math inline"><em>E</em></span> is replaced with the linearized version <span class="math inline"><em>ε</em></span>: <br /><span class="math display">$$\varepsilon = \frac{1}{2}( \nabla u^T + \nabla u )$$</span><br /></p>
+<p>this yields the following even simpler form of the tensor which is referred to as <span class="math inline"><em>σ</em></span>:</p>
+<p><br /><span class="math display"><em>σ</em> = <em>λ</em>(∇<em>u</em>)<em>I</em> + <em>μ</em>(∇<em>u</em>+∇<em>u</em><sup><em>T</em></sup>)</span><br /> The more prominent form of which is called Hooks-law and written with the so-called stiffness tensor that is unfortunately also named <span class="math inline"><em>C</em></span> in the literature: </p>
+<p>Where the following tensoroperation for rank 2 tensors is introduced that will be used in the coming sections: <br /><span class="math display"><em>G</em> : <em>V</em> := ∑<sub><em>i</em>, <em>j</em></sub><em>G</em><sub><em>i</em><em>j</em></sub><em>V</em><sub><em>i</em><em>j</em></sub></span><br /> The last form is written in vector form for the components of the tensors.</p>
+<h3 id="variational-formulation"><span class="header-section-number">2.1.3</span> Variational formulation</h3>
+<p>For finite-element simulations and reduced smoothness requirements of the displacement, a variatonal formulation of the equilibrium equations  must be formulated.</p>
+<p>For this we first define the space <br /><span class="math display"><em>H</em><sub><em>D</em></sub><sup>1</sup> = {<em>θ</em> ∈ <em>H</em><sup>1</sup>(<em>Ω</em>)|<em>θ</em> = 0 on <em>Γ</em><sub><em>D</em></sub> = ∂<em>Ω̄</em> − <em>Γ</em><sub><em>g</em></sub>}</span><br /> to exclude the boundary term on <span class="math inline"><em>Γ</em><sub><em>D</em></sub></span> from contributing force terms.</p>
+<p>Multiplying equation  with a test function <span class="math inline"><em>θ</em></span> from this space on both sides and integrating yields: <br /><span class="math display">∫<sub><em>Ω</em><sup><em>φ</em></sup></sub>div<sup><em>φ</em></sup><em>T</em><sup><em>φ</em></sup> ⋅ <em>θ</em><sup><em>φ</em></sup><em>d</em><em>x</em><sup><em>φ</em></sup> =  − ∫<sub><em>Ω</em><sup><em>φ</em></sup></sub><em>f</em><sup><em>φ</em></sup><em>θ</em><sup><em>φ</em></sup><em>d</em><em>x</em><sup><em>φ</em></sup> + ∫<sub><em>Γ</em><sub><em>g</em></sub><sup><em>φ</em></sup></sub><em>g</em><sup><em>φ</em></sup><em>θ</em><sup><em>φ</em></sup></span><br /> Which has to hold for all test functions <span class="math inline"><em>θ</em> ∈ <em>H</em><sub><em>D</em></sub><sup>1</sup></span></p>
+<p>Using the Greens-formula for Tensor fields: <br /><span class="math display">∫<sub><em>Ω̄</em></sub>div<em>H</em> ⋅ <em>θ</em><em>d</em><em>x</em> =  − ∫<sub><em>Ω̄</em></sub><em>H</em> : ∇<em>θ</em><em>d</em><em>x</em> + ∫<sub><em>Γ</em></sub><em>H</em><em>n</em> ⋅ <em>θ</em><em>d</em><em>a</em></span><br /> and applying the pullback to the reference configuration with the second Piola-Kirchhoff-Stress-tensor then gives:</p>
+<p><br /><span class="math display">∫<sub><em>Ω̄</em></sub>∇<em>φ</em> : <em>Σ</em>∇<em>θ</em><em>d</em><em>x</em> = ∫<sub><em>Ω̄</em></sub><em>f</em> ⋅ <em>θ</em><em>d</em><em>x</em> + ∫<sub><em>Γ</em></sub><em>g</em> ⋅ <em>θ</em><em>d</em><em>a</em>  ∀<em>θ</em> ∈ <em>H</em><sub><em>D</em></sub><sup>1</sup></span><br /></p>
+<p>For All sufficiently vector fields <span class="math inline"><em>θ</em> : <em>Ω̄</em> ↦ ℝ<sup>3</sup></span> from <span class="math inline"><em>H</em><sub><em>D</em></sub><sup>1</sup></span>. This is also called the ‘principle of virtual work’ (in the reference configuration).</p>
+<p>For very small strains the deformation gradient in front of <span class="math inline"><em>Σ</em></span> can be dropped since the diplacement gradient multiplied with the stress-tensor is of second order in <span class="math inline">∇<em>u</em></span>. <span class="citation" data-cites="braess_finite_2013">(see Braess 2013, p.280)</span></p>
+<p>Furthermore, since the product of a symmetric tensor with an antisymmetric one is zero, we split <span class="math inline">∇<em>θ</em></span> into: <span class="math inline">$\left[ \frac{1}{2}(\nabla \theta + \nabla \theta^T) + \frac{1}{2} (\nabla \theta - \nabla \theta^T)\right]$</span></p>
+<p>And thus we write the equilibrium equation in the variational form as: </p>
+<p>For the following sections we denote this as the following shorthand notation using the inner product and the stiffness tensor from : <span class="math inline">⟨<em>A</em>, <em>B</em>⟩<sub><em>C</em></sub> = ∫<sub><em>Ω̄</em></sub><em>A</em> : <em>C</em><em>B</em></span> :</p>
+<p></p>
+<p>The well posedness of the weak formulation is proved using the Lax-Milgram Lemma and Korns Inequality in <span class="citation" data-cites="blank_relating_2014">(Blank et al. 2014)</span></p>
+<p>For an actual deformation rather than a virtual one, the functional <span class="math inline"><em>F</em></span> in  is called the compliance of the structure. This compliance is what is to be optimized in the following section.</p>
+<h2 id="topology-optimization"><span class="header-section-number">2.2</span> Topology optimization</h2>
+<p>The topology optimization procedure used in this work is a direct implementation of the works of <span class="citation" data-cites="blank_relating_2014">(Blank et al. 2014)</span>. As a result of this I frequently refer to this paper and those relating to it and only strive to give a compact summary of the steps. A phase field based topology optimization was first introduced by <span class="citation" data-cites="bourdin_design-dependent_2003">(Bourdin &amp; Chambolle 2003)</span>.</p>
+<p>The term topology optimization was coined in the context of optimizing mechanical structures. It is not bound to a certain implementation but to the requirement that a structure under load may change its topology under the optimization procedure. This is generally understood in the sense as to allow the nucleation of holes in a previously filled material rather than forming new strucutres in the void.</p>
+<p>The method used throughout this work that accomplishes this uses the compliance minimization functional with a regularized phase field description of the structure. In effect, compliance minimization maximizes the stiffness of the structure under a mass- or volume constraint while the phase field describes where material is placed in the domain.</p>
+<p>The use of a phase-function description allows to incorporate a computationally cheap perimeter regularization via an additional term in the optimization functional. This is needed since the compliance minimization in itself is not well posed and allows high variation in the microstructure of a part that cannot be manufactured and is not numerically stable.</p>
+<h3 id="compliance-minimization"><span class="header-section-number">2.2.1</span> Compliance minimization</h3>
+<p>Compliance is a very common goal function for topology optimization and defined as in equation : <br /><span class="math display"><em>F</em>(<em>u</em>) = ∫<sub><em>Ω̄</em></sub><em>f</em> ⋅ <em>u</em> + ∫<sub><em>Γ</em></sub><em>g</em> ⋅ <em>u</em></span><br /></p>
+<p>Here, <span class="math inline"><em>u</em></span> is the displacement solution of the mechanical system in the left-hand side of equation </p>
+<p>However, it is still open at this time how the compliance depends on the structure of the part. This dependence is actually encoded in the Stiffness-tensor <span class="math inline"><em>C</em></span> of the mechanical system that will be constructed from the phase field after this has been defined in the next section.</p>
+<h3 id="the-phase-field-description-and-regularization-energy"><span class="header-section-number">2.2.2</span> The phase-field description and regularization energy</h3>
+<p>For the modeling of structures either a level set method or a phase field description is viable. In case of the phase-field a continuous function is chosen that here can take on values in the range from 0 to 1 where 0 represents the void and 1 the material: <br /><span class="math display">0 ≤ <em>φ</em> ≤ 1</span><br /></p>
+<p>A penalty term is then added to the optimization to force the phasefield to condensate to either 0 or 1 depending on a forcing term from the compliance minimization. Consequently an interface forms that can expand or retract and this falls into the category of advancing front algorithms. For details see <span class="citation" data-cites="barles_front_1993">(Barles et al. 1993)</span>. The resulting equation driving the interface is an Allan-Cahn Equation as discussed in <span class="citation" data-cites="blank_phase-field_2010">(Blank et al. 2010)</span>. However, for the general understanding the optimality conditions are of more avail.</p>
+<p>Since integrating the phase field over a region gives the volume, a volume constraint is imposed by requiring said integral to be equal to a parameter <span class="math inline"><em>m</em></span> which then dictates how much of the design domain is allowed to be material: <br /><span class="math display">∫<sub><em>Ω</em></sub><em>φ</em><em>d</em><em>x</em> = <em>m</em> ⋅ vol(<em>Ω</em>)</span><br /></p>
+<p>Notice that values in the intermediate range of <span class="math inline"><em>φ</em></span> distort this relationship. However, since they only occur in the interfacial region that will be forced to occupy a neglible portion of the domain, this is can be neglected.</p>
+<p>For the reading convenience we stipulate the requirements on <span class="math inline"><em>φ</em></span> in the following space: <br /><span class="math display">𝒢<sup><em>m</em></sup> = {<em>φ</em> ∈ <em>H</em><sup>1</sup>(<em>Ω</em>, ℝ)) | 0 ≤ <em>φ</em> ≤ 1 and ∫<sub><em>Ω</em></sub><em>φ</em><em>d</em><em>x</em> = <em>m</em> ⋅ vol(<em>Ω</em>)}</span><br /> These requirements are later taken care of by terms from the Karush-Kuhn-Tucker theory, namely the complementary slackness and a lagrange multiplier.</p>
+<p>As stated, an additional term has to be added to the compliance functional as to force condensation of the phasefield and regularize the occurence of jumps. The term used is due to <span class="citation" data-cites="takezawa_shape_2010">(Takezawa et al. 2010)</span> and is sometimes called the Ginzburg-Landau Energy:</p>
+<p><br /><span class="math display">$$ E^\varepsilon = \int_\Omega \frac{\varepsilon}{2} |\nabla \varphi|^2 + \frac{1}{\varepsilon} \Psi(\varphi) dx $$</span><br /></p>
+<p>The potential <span class="math inline"><em>Ψ</em>(<em>φ</em>)</span> serves as the condensation potential that forces the phase field to either 0 or 1. Here, an obstacle potential is used while for the analysis, a differentiable double-well potential is considered: <br /><span class="math display">$$\Psi_\text{dw}(\varphi) = \frac{1}{4} (\varphi^2 - \varphi)^2$$</span><br /></p>
+<p><br /><span class="math display">$$\Psi_\text{obs} = \begin{cases} (1-\varphi)\varphi,  \quad \text{if}\ \varphi \in [0,1]\\
+                       \infty \quad \text{else}
+\end{cases}$$</span><br /> The two potentials are displayed in figure </p>
+<figure>
+<img src="source/figures/double_well.png" style="width:70.0%" alt="" /><figcaption>The two potentials in the Ginzburg-Landau energy term </figcaption>
+</figure>
+<h3 id="interpolation-of-the-stiffness-tensor-and-gravitational-force"><span class="header-section-number">2.2.3</span> Interpolation of the stiffness tensor and gravitational force</h3>
+<p>Using this phasefield, an interpolating stiffness tensor can be constructed. The stiffness tensor in the void is modeled by a very soft material <span class="math inline"><em>C</em><sub>void</sub></span>. For the interpolation in the interfacial region towards the material tensor <span class="math inline"><em>C</em><sub>mat</sub></span> a linear interpolation with a superimposed transition function <span class="math inline"><em>t</em>(<em>φ</em>) = <em>φ</em><sup>3</sup></span> is used: <br /><span class="math display"><em>C</em>(<em>φ</em>) = <em>C</em><sub>mat</sub><em>t</em>(<em>φ</em>) + <em>C</em><sub><em>v</em><em>o</em><em>i</em><em>d</em></sub>(1 − <em>t</em>(<em>φ</em>))</span><br /></p>
+<p>Also, the force <span class="math inline"><em>f</em></span> occuring in the mechanical system can now be made concrete. Namely the phase-field acts as a direct scaling factor for the mass density <span class="math inline"><em>ρ</em><sub>mat</sub></span> and excludes the void from contributing any forces:</p>
+<p><br /><span class="math display">$$f = \varphi \cdot \rho_\text{mat} \cdot G_z \quad \text{with} \  G_z=9.81 \cdot [0, 0, 1]^T \: "N"$$</span><br /></p>
+<p><br /><span class="math display"><em>F</em>(<em>u</em>, <em>φ</em>) = ∫<sub><em>Ω̄</em></sub><em>φ</em> ⋅ <em>ρ</em><sub>mat</sub> ⋅ <em>G</em><sub><em>z</em></sub> ⋅ <em>u</em> + ∫<sub><em>Γ</em><sub><em>g</em></sub></sub><em>g</em> ⋅ <em>u</em></span><br /></p>
+<h3 id="the-optimal-control-problem"><span class="header-section-number">2.2.4</span> The optimal control problem</h3>
+<p>I now state the first order necessary optimality conditions for a minimum which are given by the Karush-Kuhn-Tucker theory.</p>
+<p>As indicdated before, the goal is to minimize the functional made up of the compliance and the Ginzburg-Landau term: <br /><span class="math display">$$ \text{min}\ J(u, \varphi) := \gamma E(\varphi) + \alpha F(u, \varphi) \quad \text{with} \ \varphi \in \mathcal{G}^m \text{ and } u\ 
+\text{ fulfills eq }\eqref{eq:compliance}$$</span><br /></p>
+<p>To write down the optimality conditions in a concise form, consider the control-to-state operator <span class="math inline"><em>S</em>(<em>φ</em>) = <em>u</em></span> defined implicitly by equation . It’s directional derivative <span class="math inline"><em>S</em>′(<em>φ</em>)<em>h</em> = <em>p</em></span> is given by the solution to:</p>
+<p></p>
+<p><span class="citation" data-cites="blank_relating_2014">(see Blank et al. 2014 theorem 3.3)</span></p>
+<p>It follows from the definition of the total differential and the chain rule that the reduced functional <span class="math inline"><em>J̃</em>(<em>φ</em>) = <em>J</em>(<em>S</em>(<em>φ</em>), <em>φ</em>)</span> is Fréchet-differentiable with the derivative: <br /><span class="math display">$$\tilde{J}'(\varphi) h = \frac{\partial}{\partial u} J(u,\varphi) p + \frac{\partial}{\partial \varphi} J (u, \varphi) h$$</span><br /></p>
+<p>Since <span class="math inline"><em>E</em>(<em>φ</em>)</span> is independent of <span class="math inline"><em>u</em></span>, the partial derivative with respect to <span class="math inline"><em>u</em></span> is just the right-hand side of the state equation:</p>
+<p><br /><span class="math display">$$\frac{\partial}{\partial u} J(u, \varphi) p = F(p,\varphi) $$</span><br /></p>
+<p>Which is, since <span class="math inline"><em>p</em> ∈ <em>H</em><sub><em>D</em></sub><sup>1</sup>(<em>Ω</em>, ℝ<sup><em>d</em></sup>)</span> is an admissible test function, equal to the left hand side of the state equation. Note that if this was not the case, an auxillary state <span class="math inline"><em>q</em> ∈ <em>H</em><sub><em>D</em></sub><sup>1</sup></span> could have been introduced which would solve a system sometimes called the adjoint system as to make the following equality hold.</p>
+<p>Now using equation  with <span class="math inline"><em>u</em></span> as a test function this can be written as:</p>
+<p></p>
+<p>The calculation of the partial derivative of <span class="math inline"><em>J</em></span> with respect to <span class="math inline"><em>φ</em></span> is straightforward:</p>
+<p><br /><span class="math display">$$\frac{\partial}{\partial \varphi}J(u,\varphi) \xi = \varepsilon \int_\Omega (\nabla \varphi , \nabla \xi) \ dx +
+\int_\Omega \frac{1}{\varepsilon} \Psi'(\varphi) \xi \ dx  + F(u,\xi)$$</span><br /></p>
+<p>Summing up and using <span class="math inline"><em>ξ</em> = <em>h</em></span> as the direction in which to derive, the reduced functional has the following directional derivative: </p>
+<p>To incorporate the constraints on <span class="math inline"><em>φ</em></span> we now follow the Karush-Kush-Tucker theory. For this to work we have to make sure a constraint qualification is satisfied. Here we consider the slater condition that, for an itermediate density material distribution in the whole domain is obviously satisfied. Thus we can assume strong duality and the complentarity follows.</p>
+<p>To reconsider, we have the following additional requirements</p>
+<p></p>
+<p>Introducing lagrange multipliers <span class="math inline"><em>κ</em>, <em>μ</em>, <em>λ</em></span> the KKT-first order necessary optimality conditions then read:</p>
+<p></p>
+<p>Where the last three conditions arise due to complementarity.</p>
+<h3 id="numerial-soution"><span class="header-section-number">2.2.5</span> Numerial soution</h3>
+<h4 id="pseudo-time-stepping"><span class="header-section-number">2.2.5.1</span> Pseudo time stepping</h4>
+<p>Now, we solve for <span class="math inline"><em>φ̃</em></span> in the optimality conditions. Equation  defines a linear functional on <span class="math inline"><em>H</em><sub><em>D</em></sub><sup>1</sup></span> which I refer to as <span class="math inline">∇ℒ(<em>ω</em>)</span>. Using a scalar product this functional can be identified with a funtion on <span class="math inline"><em>L</em><sup>2</sup></span> that we loosely call the gradient. This approach is called a gradient flow. Consequently a gradient descent in conjunction with a semi-implicit stepping scheme is used.</p>
+<p><br /><span class="math display">(∂<sub><em>t</em></sub><em>φ</em>,<em>ω</em>) = ∇ℒ(<em>ω</em>)</span><br /></p>
+<p>Expanding the functional gives:</p>
+<p></p>
+<p>We start with some initial function <span class="math inline"><em>φ</em><sup><em>k</em></sup>, <em>k</em> = 0</span>. Inserting for <span class="math inline">∂<sub><em>t</em></sub><em>φ</em></span> its approximation <span class="math inline">$\frac{\varphi^{k+1}-\varphi^k}{\tau}$</span> and using <span class="math inline">∇<em>φ</em><sup><em>k</em> + 1</sup></span> for <span class="math inline">∇<em>φ</em></span> we end up with:</p>
+<p> Where, as before, <span class="math inline"><em>u</em></span> solves the mechanical system . This defines the principal iterative scheme for a descent.</p>
+<h4 id="primal-dual-active-set-strategy"><span class="header-section-number">2.2.5.2</span> Primal-dual active set strategy</h4>
+<p>So far we have left out the complementarity conditions in the calculation of the descent direction. For this, a primal dual active set strategy (PDAS) is used. PDAS maintains a set of active constraints for every point. A constraint is inactive if the corresponding lagrange multiplier is zero and active if <span class="math inline"><em>φ</em></span> takes on the corresponding bound - One of which has to hold due to the equations  and .</p>
+<p>Consequently the gradient descent step is calculated with <span class="math inline"><em>φ</em></span> taking on a fixed value on the active set and being unbounded (lagrange multiplier =0) on the inactive set. Afterwards the</p>
+<h3 id="isosurface-extraction"><span class="header-section-number">2.2.6</span> Isosurface extraction</h3>
+<p>After a calculation has converged, a 0.5 isofurface is used that represents the surface of the part.</p>
+<p>Since the Finite-Element-Mesh is providing a 3D-tesselation of the domain, which in this case consists of tetrahedra, the generation of an isosurface is handled as in the marching-tetrahedra algorithm. Tetrahedra, as opposed to cubes, can only have 3 distinct cases of edge intersections that differ in terms of their makeup of triangular faces. No intersections, intersection at 3 edges(1 triangle) and intersection at 4 edges (2 triangles). See figure  for an illustration.</p>
+<p>For the edge intersections, a linear interpolation of the values between two vertices is used. The intersections are then found via simple line intersections comparable to the section of the x-axis for a line. If 3 intersections are found one triangle is generated with the vertices of the intersections and if 4 intersections are found 2 triangles are generated. Susequently the ordering of the vertices is checked so that looking from the outside, the vertices are ordered counterclockwise in accordance with the stl-specification<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. For this, the function values at the tetrahedra-nodes are considered to find a point that is inside (has a value greater than 0). This is especially important since the orientation is used in the remeshing procedure and can only be correctly determined at this step.</p>
+<figure>
+<img src="source/figures/tetrahedrons.svg" style="width:80.0%" alt="" /><figcaption>In the case of a 3D-Tetrahedra tesselation only 3 distinct cases can appear a)intersection at three edges(left) or b)intersection at 4 edges(right) or c)no intersections(not displayed)</figcaption>
+</figure>
+<h2 id="radial-basis-function-theory"><span class="header-section-number">2.3</span> radial basis function theory</h2>
+<h3 id="rbf-interpolation"><span class="header-section-number">2.3.1</span> RBF Interpolation</h3>
+<p>Interpolation can be viewed as a special kind of approximation in which, for an approximant <span class="math inline"><em>S</em></span> to some function <span class="math inline"><em>F</em></span>, it is demanded that the interpolant reproduces the original functions values at special points <span class="math inline"><em>x</em><sub><em>i</em></sub></span> i.e.:  Where <span class="math inline"><em>Ξ</em></span> is some finite (possibly scattered) set of pairwise distinct points from <span class="math inline">ℝ<sup><em>d</em></sup></span> (multivariate) ie. a set <span class="math inline">{<em>x</em><sub><em>i</em></sub>|<em>x</em><sub><em>i</em></sub> ∈ ℝ<sup><em>d</em></sup>, <em>i</em> = 1, .., <em>N</em>, <em>x</em><sub><em>i</em></sub> ≠ <em>x</em><sub><em>j</em></sub>}</span>. The functions considered here are scalar valued multivariate functions but a vector-valued interpolant may be constructed from scalar-valued-component functions.</p>
+<p>Interpolants are constructed from some function space which in this case is made up of radial basis functions centered at the interpolation centers. This dependence on the centers means that the radial basis function-spaces are individual to each dataset <span class="math inline"><em>Ξ</em></span>.</p>
+<p>radial basis functions are multivariate functions constructed from univariate functions of the form <span class="math inline"><em>ϕ</em> : [0, ∞) ↦ ℝ</span> superimposed over the Euclidean norm: <br /><span class="math display"><em>Φ</em>(<em>x</em>) = <em>ϕ</em>(∥<em>x</em>∥<sub>2</sub>)  <em>x</em> ∈ ℝ<sup><em>d</em></sup></span><br /> Special monotonicity properties of those functions lead to unisolvent interpolation (unique solvability) as explained in the next section. Radial basis functions can also be introduced as general multivariate functions <span class="math inline"><em>Φ</em> : ℝ<sup><em>d</em></sup> ↦ ℝ</span> that then need to be even: <span class="math inline"><em>Φ</em>(<em>x</em>) = <em>Φ</em>( − <em>x</em>)</span>. The norm usually denotes the standard Euclidean norm which is essential for the convergence results. Some information about other norms is given in <span class="citation" data-cites="wendland_scattered_2005">(Wendland 2005, pp.83, 84)</span>. In the following <span class="math inline"><em>d</em></span> will be 3 as required for the generation of implicit 2-d surfaces.</p>
+<p>Notably, radial basis functions are special in that they allow easy interpolation of scattered multivariate data of arbitrary dimension with guaranteed existence and uniqueness results. At the time of writing this is unique to these functions and can not be achieved by for example “classical” polynomial interpolation.</p>
+<p>As for the approximation quality, different interpolants do behave differently for the space in between the data sites and are distinguished by their approximation and or convergence properties for special classes of interpolated functions <span class="math inline"><em>F</em></span>. However, when no such functions (just the values <span class="math inline"><em>F</em>(<em>x</em><sub><em>i</em></sub>)</span>) are given, the accuracy of an interpolation can not generally be assessed. Because this is the case here, determining qualities for the RBF-interpolant are discussed in <span class="citation" data-cites="sec:surf_cond">(<span class="citeproc-not-found" data-reference-id="sec:surf_cond"><strong>???</strong></span>)</span>.</p>
+<p>The interpolant <span class="math inline"><em>S</em></span> is constructed as a linear combination of scaled radial basis functions centered at the data sites: <br /><span class="math display">$$S(x) = \sum_j^N \alpha_j\phi(\lVert x-x_j\rVert)$$</span><br /></p>
+<p>By introducing the interpolation matrix <span class="math inline"><em>A⃗</em></span> as:  we can write the interpolation condition  as:  Where <span class="math inline"><em>F⃗</em></span> contains the values <span class="math inline"><em>F</em>(<em>x</em><sub><em>i</em></sub>)</span>.</p>
+<p>The immediate requirement then is that this system is uniquely solvable which is determined by the invertibility of the interpolation matrix <span class="math inline"><em>A</em></span></p>
+<h3 id="existence-and-uniqueness-results"><span class="header-section-number">2.3.2</span> Existence and Uniqueness results</h3>
+<p>The invertbility of the interpolation matrix <span class="math inline"><em>A</em></span> for all pairwise distinct combinations of centers in <span class="math inline">ℝ<sup><em>d</em></sup></span> is considered. This property can be guaranteed for certain radial basis functions which satisfiy a montonicity property.</p>
+<dl>
+<dt>Definition:</dt>
+<dd>A continuous function <span class="math inline"><em>Φ</em> : ℝ<sup><em>d</em></sup> ↦ ℝ</span> is called positive definite if, for all <span class="math inline"><em>N</em> ∈ ℕ</span> and all sets of pairwise distinct points <span class="math inline"><em>X</em> = {<em>x</em><sub>1</sub>, ..., <em>x</em><sub><em>N</em></sub>} ⊆ ℝ<sup><em>d</em></sup></span> and all <span class="math inline"><em>α</em> ∈ ℝ<sup><em>N</em></sup></span> the following quadratic form is (nonnegative) positive: <br /><span class="math display">$$\sum_{j=1}^N \sum_{k=1}^N \alpha_j \alpha_k \Phi(x_j - x_k)$$</span><br />
+</dd>
+</dl>
+<p>Analogously, I call the univatiate functions <span class="math inline"><em>ϕ</em></span> positive (semi-) definite if the induced function <span class="math inline"><em>Φ</em></span> satisfies the definition.</p>
+<p>Such induced positive semi definiteness of a function can be shown via a property called complete monotonicity: <br /><span class="math display">( − 1)<sup><em>l</em></sup><em>g</em><sup><em>l</em></sup>(<em>t</em>) ≥ 0 ∀<em>l</em> ∈ ℕ ∀<em>t</em> &gt; 0</span><br /> Where <span class="math inline"><em>g</em><sup><em>l</em></sup></span> denotes the l-th derivative of a function <span class="math inline"><em>g</em> : ℝ ↦ ℝ</span>. The prototype of a complete monotone function is the exponential function <span class="math inline"><em>e</em><sup> − <em>α</em><em>t</em></sup></span> for some non negative <span class="math inline"><em>α</em></span>.</p>
+<dl>
+<dt>Theorem:</dt>
+<dd>If <span class="math inline">$\phi(\sqrt{\cdot})$</span> is completely monotone on <span class="math inline">[0, ∞)</span> and not constant, then <span class="math inline"><em>ϕ</em></span> is positive definite.
+</dd>
+</dl>
+<p>The proof requires some theory on measure spaces and generalized fourier transforms and rests on the Bernstein-Widder representation of such functions. Since these are a bit out of scope I refer to <span class="citation" data-cites="wendland_scattered_2005">(Wendland 2005 theorem 7.14)</span>.</p>
+<p>A first formal proof of a positive definite function was completed for the multiquadratics function by <span class="citation" data-cites="micchelli_interpolation_1986">(Micchelli 1986)</span>. Multiquadratics are not completely monotone but rather one can show that it actually suffices that the first derivative of <span class="math inline"><em>ϕ</em></span> is completely monotone <span class="citation" data-cites="buhmann_radial_2003">(Buhmann 2003 theorem 2.2)</span>.</p>
+<p>Complete monotonicity of only some derivative motivates a weaker concept called conditionally positive definiteness and requires an added polynomial for unisolvence. This is described in the Appendix <span class="citation" data-cites="sec:conditional">(<span class="citeproc-not-found" data-reference-id="sec:conditional"><strong>???</strong></span>)</span>.</p>
+<h3 id="commonly-used-radial-basis-functions"><span class="header-section-number">2.3.3</span> Commonly used Radial basis functions</h3>
+<p>I now state some of the more often used RBFs and give some detail on the local functions that were used for the actual implementation. During the course of writing the interpolation program it became clear that only local basis functions would be good candidates for a surface interpolation due to the number of vertices used in most triangular meshes and the resulting size of a dense interpolation matrix. But also the conditon number of the interpolation matrix is problematic for large interpolation sets. To this end the compactly supported basis functions are also much more forgiving. I recite some estimates of the condition number in the Appendix.</p>
+<p>Local, piecewise polynomial RBFs are generally dimension dependent in that they are not positive definite for <span class="math inline"><em>d</em> &gt; <em>d</em><sub>0</sub></span> in <span class="math inline">ℝ<sup><em>d</em></sup></span> where <span class="math inline"><em>d</em><sub>0</sub></span> depends on the function. For this application <span class="math inline"><em>d</em><sub>0</sub> = 3</span> is required and reflected in the chosen Wendland function.</p>
+<p>Now commonly used are the Wendland functions <span class="citation" data-cites="wendland_piecewise_1995">(see Wendland 1995)</span> which are of minimal degree with respect to the space dimension and smoothness and are positive definite. For the surface interpolation I use the twice continuously differentiable function and it’s derivative in table <span class="citation" data-cites="tbl:local_RBF">(<span class="citeproc-not-found" data-reference-id="tbl:local_RBF"><strong>???</strong></span>)</span></p>
+<table>
+<caption>RBF functions with global support</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">function</th>
+<th style="text-align: center;">name</th>
+<th style="text-align: right;">definiteness</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline"><em>e</em><sup> − <em>r</em><sup>2</sup></sup></span></td>
+<td style="text-align: center;">gaussian</td>
+<td style="text-align: right;">pd</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline">$\sqrt{r^2 +1}$</span></td>
+<td style="text-align: center;">multiquadratics</td>
+<td style="text-align: right;">pd</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">$1/\sqrt{r^2+1}$</span></td>
+<td style="text-align: center;">inverse multiquadratics</td>
+<td style="text-align: right;">pd</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline"><em>r</em><sup>3</sup></span></td>
+<td style="text-align: center;">polyharmonic spline</td>
+<td style="text-align: right;">cpd</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption>Local RBF functions introduced by Wendland <span class="citation" data-cites="wendland_piecewise_1995">(Wendland 1995)</span>{#tbl:local_RBF}</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">function</th>
+<th style="text-align: left;">name</th>
+<th style="text-align: left;">definiteness</th>
+<th>smoothness</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">(1 − <em>r</em>)<sub>+</sub><sup>2</sup></span></td>
+<td style="text-align: left;"><span class="math inline"><em>ϕ</em><sub>3, 0</sub>(<em>r</em>)</span></td>
+<td style="text-align: left;">pd</td>
+<td><span class="math inline"><em>C</em><sup>0</sup></span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline">(1 − <em>r</em>)<sub>+</sub><sup>4</sup>(4<em>r</em> + 1)</span></td>
+<td style="text-align: left;"><span class="math inline"><em>ϕ</em><sub>3, 1</sub>(<em>r</em>)</span></td>
+<td style="text-align: left;">pd</td>
+<td><span class="math inline"><em>C</em><sup>2</sup></span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">(1 − <em>r</em>)<sub>+</sub><sup>6</sup>(35<em>r</em><sup>2</sup> + 18<em>r</em> + 3)</span></td>
+<td style="text-align: left;"><span class="math inline"><em>ϕ</em><sub>3, 2</sub>(<em>r</em>)</span></td>
+<td style="text-align: left;">pd</td>
+<td><span class="math inline"><em>C</em><sup>4</sup></span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline">(1 − <em>r</em>)<sub>+</sub><sup>8</sup>(32<em>r</em><sup>3</sup> + 25<em>r</em><sup>2</sup> + 8<em>r</em> + 1)</span></td>
+<td style="text-align: left;"><span class="math inline"><em>ϕ</em><sub>3, 3</sub>(<em>r</em>)</span></td>
+<td style="text-align: left;">pd</td>
+<td><span class="math inline"><em>C</em><sup>6</sup></span></td>
+</tr>
+</tbody>
+</table>
+<figure>
+<img src="source/figures/rbf_functions.png" id="fig:rbf_funcs" style="width:100.0%" alt="" /><figcaption>Comparison of different RBF functions. Note that multiquadratics are special in their growth to infinity. The Wendland functions become zero after r=1</figcaption>
+</figure>
+<h3 id="sec:rbf_interpol"><span class="header-section-number">2.3.4</span> Scaling of RBF functions, ambiguities and interpolation properties</h3>
+<p>The Wendland RBF functions have a fixed support radius of 1 as seen in <span class="citation" data-cites="fig:rbf_funcs">(<span class="citeproc-not-found" data-reference-id="fig:rbf_funcs"><strong>???</strong></span>)</span>. Since spacing of the interpolation data is not fixed, a scaling of the radial argument needs to be introduced that scales <span class="math inline"><em>r</em></span> such that the RBFs extend into the space between the data sites. Otherwise the interpolant might just have, in the exteme case, spikes at the sites to attain the required values. To this end I scale <span class="math inline"><em>r</em></span> with a scale parameter <span class="math inline"><em>c</em> &gt; 0</span> as <span class="math inline"><em>r</em>′ = <em>r</em>/<em>c</em></span> since that makes the Wendland functions extend to exactly the value of this scale parameter.</p>
+<p>This scaling parameter, in general can be nonuniform over the interpolated values but this comes with uncertainty for the solvability of the interpolation system.</p>
+<p>Moreover, it cannot be generally stated which value of a scale parameter is more accurate in an interpolation unless there is a target to which the interpolant can be compared. See <span class="citation" data-cites="fig:wendland_scales">(<span class="citeproc-not-found" data-reference-id="fig:wendland_scales"><strong>???</strong></span>)</span></p>
+<figure>
+<img src="source/figures/wendland_scale_factors.png" id="fig:wendland_scales" style="width:100.0%" alt="" /><figcaption>Wendland C2 functions for different scaling parameters c. The interpolation values were set to (1,2,1,2,1) at (0,1,2,3,4).</figcaption>
+</figure>
+<figure>
+<img src="source/figures/MQ_2D_comb.png" id="fig:MQ_2D" style="width:100.0%" alt="" /><figcaption>Different Radial-Basis-Funtions may have different behaviours for off-site values. Multiquadratics can even grow toward infinity. Displayed is a 1-2 comb in two dimensions</figcaption>
+</figure>
+<h3 id="sec:surface_interpol"><span class="header-section-number">2.3.5</span> surface interpolation</h3>
+<p>Surface descriptions are either explicit or implicit. Explicit means that the surface is the graph of a function <span class="math inline"><em>F</em> : <em>Ω</em> ⊂ ℝ<sup>2</sup> ↦ ℝ</span> which can be very difficult to construct. Especially for complicated topologies, this can usually be only done via 2d-parametric patches of the surface which are difficult to match at the boundaries. Implicit surfaces on the other hand are defined via a functions level set (usually the zero level i.e. <span class="math inline"><em>F</em>(<em>x</em>) = 0</span>) which is easier to construct but is harder to visualise. Common methods for visualization include marching-cubes and raytracing methods.</p>
+<p>For the surface interpolation with an implicit function this translates to the interpolant being zero at the data sites: <span class="math inline"><em>S</em>(<em>x</em><sub><em>i</em></sub>) = 0</span>. Since the zero function would be a trivial solution to this, off-surface constraints must be given. This is usually done with points generated from normalvectors to the original surface if such surface exists. The pointvalues are then assigned the valuea of the signed distance function to the surface:</p>
+<p><br /><span class="math display"><em>S</em>(<strong>x</strong><sub><em>i</em></sub> + <em>ϵ</em><strong>n</strong><sub><em>i</em></sub>) = <em>F</em>(<strong>x</strong><sub><em>i</em></sub> + <em>ϵ</em><strong>n</strong><sub><em>i</em></sub>) = <em>ϵ</em></span><br />{#eq:off_surface_points} For a stronger falloff(rise) of the interpolant larger values than <span class="math inline"><em>ϵ</em></span> can be chosen as interpolation values on the right hand side. If not available, the normalvectors can be generated from a cotangent plane that is constructed via a principal component analysis of nearest neighbors.</p>
+<p>In my case the vectors could be obtained from an average of the normals of the adjacent triangles scaled with the inverse of the corresponding edgelengths: <br /><span class="math display">$$\vec{n} = \sum_{T \in \mathcal{N}_T} \frac{1}{\lVert \vec{n}_T \rVert} \vec{n}_T$$</span><br /> These offset-points were generated for every vertex of the original mesh and in both directions (on the inside and on the outside) such as to have a guaranteed area of convergence of a gradient descent projection.</p>
 <h2 id="remeshing-operations"><span class="header-section-number">2.4</span> Remeshing operations</h2>
-<h2 id="higher-dimensional-embedding"><span class="header-section-number">2.5</span> Higher dimensional embedding</h2>
+<p>Different approaches exist to remesh a surface. Most fall into one of the following categories:</p>
+<ul>
+<li>triangulate a commpletely new mesh, usually with delauney triangulation and go from there</li>
+<li>incremental triangulation, with new nodes inserted or removed one at a time.</li>
+<li>local mesh modifications / pliant remeshing</li>
+</ul>
+<p>Additionally most methods utilize some form of vertex-smoothing as this is an straightforward iterative procedure that improves themesh globally and is guaranteed to converge.</p>
+<p>The approach used here falls into the latter category and uses consecutive loops of local mesh modifications of the following kinds:</p>
+<ul>
+<li>Edge collapse</li>
+<li>Edge split</li>
+<li>Edge flip</li>
+<li>Vertex smoothing</li>
+</ul>
+<p>Which of the modification is applied depends on an edges length in comparison to a target-edge-length.</p>
+<h3 id="edge-collapse"><span class="header-section-number">2.4.1</span> Edge collapse</h3>
+<p>Edge collapse, as the name suggests removes an edge from the mesh thereby deleting two adjacent triangles and removing one point. Special conditions have to be checked as there are certain configurations that would result in an illegal triangulation. See figures <span class="citation" data-cites="fig:collapse_e2">(<span class="citeproc-not-found" data-reference-id="fig:collapse_e2"><strong>???</strong></span>)</span> and <span class="citation" data-cites="fig:collapse_e1">(<span class="citeproc-not-found" data-reference-id="fig:collapse_e1"><strong>???</strong></span>)</span>. To avoid having to project a new midpoint to the surface, the two vertices of the edge are joined at either one of them.</p>
+<figure>
+<img src="source/figures/edge_collapse.svg" id="fig:collapse" alt="" /><figcaption>Edge collapse with the new point at one of the endpoints</figcaption>
+</figure>
+<figure>
+<img src="source/figures/edge_collapse_error2.svg" id="fig:collapse_e2" style="width:95.0%" alt="" /><figcaption>Illegal edge collapse with more than two common neighbors for the edges endpoints</figcaption>
+</figure>
+<figure>
+<img src="source/figures/edge_collapse_error1.svg" id="fig:collapse_e1" alt="" /><figcaption>Illegal edge collapse with a triangle flip</figcaption>
+</figure>
+<p>Both cases are easily cared for. The case of more than two common neighbors can be checked in a graph datastructure and to check if a triangle was flipped the normal before and after the operation have to be compared.</p>
+<h3 id="edge-split"><span class="header-section-number">2.4.2</span> Edge split</h3>
+<p>The edge split is a straightforward operation as no special cases have to be taken care of. A new vertex is put at the surface projected midpoint of the existing edge and 4 new edges as well as 4 new triangles replace the split edge and it’s adjacent triangles.</p>
+<p>The only pitfall than can occur is that the projection of the midpoint with a gradient descent can sometimes project inside another triangle therefore yielding flipped triangles. This again need to be checked with a normal-flip check</p>
+<h3 id="edge-flip"><span class="header-section-number">2.4.3</span> Edge flip</h3>
+<figure>
+<img src="source/figures/edge_flip.svg" id="fig:edge_flip" alt="" /><figcaption>Edge flip</figcaption>
+</figure>
+<p>An edge flip can dramatically increase the aspect ratio of a triangle if the right conditions are met. Consider the edge in <span class="citation" data-cites="fig:edge_flip">(<span class="citeproc-not-found" data-reference-id="fig:edge_flip"><strong>???</strong></span>)</span>. Such an edge is flippable if:</p>
+<ul>
+<li>The edge does not belong to the boundary of the mesh</li>
+<li>The edge CD does not already belong to the mesh</li>
+<li><span class="math inline"><em>ϕ</em><sub><em>A</em><em>B</em><em>C</em></sub> + <em>ϕ</em><sub><em>A</em><em>B</em><em>D</em></sub> &lt; <em>π</em> and <em>ϕ</em><sub><em>B</em><em>A</em><em>C</em></sub> + <em>ϕ</em><sub><em>B</em><em>A</em><em>D</em></sub> &lt; <em>π</em></span><br />
+</li>
+<li>The angle between the normals of the triangles is not too big to not cast “ridges”</li>
+</ul>
+<p>I do a flip similar to <span class="citation" data-cites="dassi_novel_2016">(Dassi et al. 2016)</span> if the 6d angles of the opposing angles <span class="math inline"><em>ϕ</em><sub><em>B</em><em>D</em><em>A</em></sub> and <em>ϕ</em><sub><em>A</em><em>C</em><em>B</em></sub></span> together are larger than a threshold value <span class="math inline"><em>κ</em><em>π</em> with <em>κ</em> ≤ 1</span>:</p>
+<p><br /><span class="math display"><em>ϕ</em><sub><em>B</em><em>D</em><em>A</em></sub><sup>6<em>d</em></sup> + <em>ϕ</em><sub><em>A</em><em>C</em><em>B</em></sub><sup>6<em>d</em></sup> ≥ <em>κ</em><em>π</em></span><br /></p>
+<p>For the definition of those angles see <span class="citation" data-cites="sec:HDE">(<span class="citeproc-not-found" data-reference-id="sec:HDE"><strong>???</strong></span>)</span>. A value of <span class="math inline"><em>κ</em></span> near one is problematic in conjunction with the higher dimensional embedding since the HDE angle seldom takes on values of <span class="math inline"><em>π</em>/2</span> or larger due to the surface-normals in the 6d-scalar product not being orthogonal. This results in flips not actually taking place.</p>
+<h3 id="vertex-smoothing"><span class="header-section-number">2.4.4</span> Vertex smoothing</h3>
+<figure>
+<img src="source/figures/vertex_smoothing.svg" style="width:70.0%" alt="" /><figcaption>Vertex smoothing </figcaption>
+</figure>
+<p>Vertex smoothing finds a new position for a given vertex based on the distance to its neighbors according to the following formula: <br /><span class="math display"><em>p⃗</em>′ = <em>p⃗</em> + <em>α</em>∑<sub><em>j</em> ∈ 𝒩</sub><em>f</em>(∥<em>p⃗</em> − <em>p⃗</em><sub><em>j</em></sub>∥)(<em>p⃗</em> − <em>p⃗</em><sub><em>j</em></sub>)</span><br /></p>
+<p>Wherein <span class="math inline">𝒩</span> stands for the neighbors, <span class="math inline"><em>α</em></span> is a normalization constant and <span class="math inline"><em>f</em></span> is a weight function. Different weights have been investigated in <span class="citation" data-cites="bossen_pliant_1998">(Bossen &amp; Heckbert 1998)</span> where they constructed a well performing weight function. Given a target edge length <span class="math inline"><em>t</em></span> and an actual edge length <span class="math inline"><em>l</em></span> a normalized edge length is defined as <span class="math inline"><em>d</em> = <em>l</em>/<em>t</em></span> and the weight function reads: <br /><span class="math display"><em>f</em>(<em>d</em>) = (1 − <em>d</em><sup>4</sup>) ⋅ <em>e</em><sup> − <em>d</em><sup>4</sup></sup></span><br /></p>
+<p>This function pushes if <span class="math inline"><em>l</em> &lt; <em>t</em></span> and slightly pulls if <span class="math inline"><em>t</em> &gt; <em>l</em></span> as opposed to the frequently used Laplace-smoothing which only pulls. The function is plotted in figure  versus Laplace weights. Additionally, I clipped the movedistance to 80% of the minium of the adjacent triangles heights. This is done because moves that exceed this distance are likely to cause triangles that are excessively tilted against the surface yet not flipped. These might then cause problems in later operations.</p>
+<p>One of those problems occurs due to the pushing nature of the smoothing that tends to squish larger triangles into thin strips when attached short edges are pushing the vertex into the direction of least resistance. Thin strip triangles should then usually be flipped and consequently push back but this can fail due to the requirements for the edge flip and consequently yield distorted triangles.</p>
+<figure>
+<img src="source/figures/weight_funcs.png" style="width:70.0%" alt="" /><figcaption>The weight function used compared to the laplace weights </figcaption>
+</figure>
+<h3 id="projection-of-vertices-onto-the-surface"><span class="header-section-number">2.4.5</span> Projection of vertices onto the surface</h3>
+<p>Both in an edge split as well as in vertex smoothing a constructed new vertex must be projected onto the surface. To this end I use a simple gradient descent iterations with a fixed steplength of one. This has proven much faster convergence than the exact steplength. This is due to the fact that around the surface the slope of the function is one by construction.</p>
+<p>The descent algorithm reads as follows</p>
+
+<h2 id="sec:HDE"><span class="header-section-number">2.5</span> Higher dimensional embedding</h2>
+<p>The term higher dimensional embedding may sound a bit exaggerated for what is actually done. Namely, the pointnormals are included in an edges length calculation as to enlarge the edge when the normals differ. Thereby, the the enlarged edges are remeshed more finely. Formally this reads as follows. Given a vertex <span class="math inline"><em>x</em></span> on the surface, it is concatenated with the surface normal <span class="math inline"><em>n</em></span> at this point:</p>
+<p><br /><span class="math display"><em>Ψ</em>(<em>x</em>) = (<em>x</em>, <em>y</em>, <em>z</em>, <em>σ</em><em>n</em><sub><em>x</em></sub>, <em>σ</em><em>n</em><sub><em>y</em></sub>, <em>σ</em><em>n</em><sub><em>z</em></sub>)<sup><em>T</em></sup></span><br /></p>
+<p>Here <span class="math inline"><em>σ</em></span> is a parameter of the embedding and in effect controls how much an edge will be enlarged. With this new <span class="math inline"><em>Ψ</em></span> the edgelength between two points <span class="math inline"><em>a</em></span> and <span class="math inline"><em>b</em></span> will now be defined with the 6d Euclidean scalar product as: <br /><span class="math display">$$l_{ab}^{6d}= \lVert \Psi(a) - \Psi(b)\rVert_{6d} = \sqrt{(\Psi(a)-\Psi(b), \Psi(a)-\Psi(b))_{6d}}$$</span><br /></p>
+<p>And in the same manner an angle between the points <span class="math inline"><em>a</em>, <em>b</em>, <em>c</em></span> is defined via: <br /><span class="math display">$$cos(\theta^{6d}_{abc})= \frac{(\Psi(a)-\Psi(c), \Psi(b)-\Psi(c))_{6d}}{l_{ac}^{6d}l_{bc}^{6d}}$$</span><br /></p>
+<p>These edgelengths are subsequently used as the regulator for the local mesh modifications in the remeshing algorithm. The 6d angles are therein used in the edge flips.</p>
 <h1 id="algorithm-description-and-implemenation-details"><span class="header-section-number">3</span> Algorithm description and implemenation details</h1>
-<h1 id="test-case-szenarios"><span class="header-section-number">4</span> Test case szenarios</h1>
-<h1 id="results"><span class="header-section-number">5</span> Results</h1>
-<h2 id="parameter-survey"><span class="header-section-number">5.1</span> Parameter survey</h2>
-<h2 id="convergence-behaviour"><span class="header-section-number">5.2</span> convergence behaviour</h2>
-<h1 id="problems-outlook-and-future-work"><span class="header-section-number">6</span> Problems, outlook and future work</h1>
-<h1 id="references"><span class="header-section-number">7</span> References</h1>
-<h1 id="appendix-1-some-extra-stuff" class="unnumbered">Appendix 1: Some extra stuff</h1>
-<!-- 
-This could be a list of papers by the author for example 
--->
-<p>Add appendix 1 here. Vivamus hendrerit rhoncus interdum. Sed ullamcorper et augue at porta. Suspendisse facilisis imperdiet urna, eu pellentesque purus suscipit in. Integer dignissim mattis ex aliquam blandit. Curabitur lobortis quam varius turpis ultrices egestas.</p>
-<h1 id="appendix-2-some-more-extra-stuff" class="unnumbered">Appendix 2: Some more extra stuff</h1>
-<!-- 
-This could include extra figures or raw data
--->
-<p>Add appendix 2 here. Aliquam rhoncus mauris ac neque imperdiet, in mattis eros aliquam. Etiam sed massa et risus posuere rutrum vel et mauris. Integer id mauris sed arcu venenatis finibus. Etiam nec hendrerit purus, sed cursus nunc. Pellentesque ac luctus magna. Aenean non posuere enim, nec hendrerit lacus. Etiam lacinia facilisis tempor. Aenean dictum nunc id felis rhoncus aliquam.</p>
+<h2 id="interpolation"><span class="header-section-number">3.1</span> interpolation</h2>
+<p>The vertices of the extracted isosurface are the principal points for the interpolation.</p>
+<p>As stated in <span class="citation" data-cites="sec:surface_interpol">(<span class="citeproc-not-found" data-reference-id="sec:surface_interpol"><strong>???</strong></span>)</span>, additionally, the off-surface values both in the positive as well as the negative direction are incorporated into the interpolation. These are calculated via the original meshes vertices <span class="math inline"><em>v</em></span> and triangle normals <span class="math inline"><em>n</em><sub><em>T</em></sub></span> as follows:</p>
+<p></p>
+<p>where <span class="math inline">$\vec{n_v}$</span> is assembled of the triangles <span class="math inline">𝒩<sub><em>T</em></sub></span> containing <span class="math inline"><em>v</em></span> as a vertex:</p>
+<p><br /><span class="math display">$$\vec{n_v} = \sum_{T \in \mathcal{N}_T} \frac{1}{\lVert \vec{v} - \vec{v^T_\text{cent}} \rVert} \vec{n}_T$$</span><br /></p>
+<p>Here <span class="math inline">$\vec{v^T_{\text{cent}}}$</span> is the centroid of the triangle.</p>
+<p>Since the normals of the triangles point outward of the structure as in the stl specification we have higher interpolant values outside the object and a gradient pointing outwards.</p>
+<p>Experimentation with <span class="math inline"><em>ε</em></span> only yielded surfaces that were vertiable for projection for small values. I settled with a general forumla setting <span class="math inline"><em>ε</em></span> as the average between the longest edge in the mesh and the smallest edge divided by 10, ie.: <br /><span class="math display">$$\varepsilon = \frac{e_{\text{longest}} + e_{\text{shortest}}}{20}$$</span><br /></p>
+<p>The scale factor of the rbf functions was set to 2.5 times the longest edge in the mesh where lower values would disrupt the contiguous surface.</p>
+<h2 id="sec:surf_cond"><span class="header-section-number">3.2</span> surface conditioning</h2>
+<p>A principal problem is that of the values of the interpolant in between the datasites. In the case of an implicitly defined surface this influences not only the shape of the zero level set but also the slope at the zero crossing. As an illustration take a look at <span class="citation" data-cites="fig:centroid_normalprobe">(<span class="citeproc-not-found" data-reference-id="fig:centroid_normalprobe"><strong>???</strong></span>)</span>. Displayed are the interpolant values along the triangle normals of the initial model which were centered at each triangles centroid. The zero crossing mostly occur in the neighborhood of zero as is to be expected from the intended smoothness of the surface. However, for some normal traces or plots a stronger deviation can be made out and the existence of a zero crossing is questionable. If in fact the scale parameter is chosen too small then there might be no zero crossings at all for some triangles which, in the best case will only inhibit refinement in that area as the vertex projection cannot converge. In the worst case though the projection might yield a vertex that results in an invalid mesh (flipped triangle or non-manifold surface or self intersection).</p>
+<figure>
+<img src="./source/figures/centroid_normalprobe.png" id="fig:centroid_normalprobe" alt="" /><figcaption>Interpolant values along the normal direction sampled at the triangle centroids</figcaption>
+</figure>
+<p>The interpolation matrix  is then constructed as a sparse matrix with a scale factor <span class="math inline"><em>c</em></span> as explained in <span class="citation" data-cites="sec:rbf_interpol">(<span class="citeproc-not-found" data-reference-id="sec:rbf_interpol"><strong>???</strong></span>)</span> and the system  is subsequently solved for the coefficients.</p>
+<p>Throughout the implementation of the algorithm a cat model was used that is pictured in figure  together with it’s interpolated surface (the isosurface was generated with marching cubes).</p>
+<img src="./source/figures/cat_raw.png" style="width:50.0%" /> <img src="./source/figures/cat_cubes_isosurf.png" style="width:50.0%" />
+
+<p>An intersection through the cat surface is shown in <span class="citation" data-cites="fig:cat_isolines">(<span class="citeproc-not-found" data-reference-id="fig:cat_isolines"><strong>???</strong></span>)</span>. The isolines show that the surface is generally well behaved with the isolines being mostly parallel. Deviations can occur in areas of high curvature of the original mesh (the feet) and where other parts of the model are in proximity (this is no issue in this case).</p>
+<p>For models with very close proximity of parts in relation to a coarser original mesh the slope around zero given by equation  should be adapted.</p>
+<figure>
+<img src="./source/figures/cat_isolines.png" id="fig:cat_isolines" alt="" /><figcaption>An 2d section through the interpolant of the cat model with 7 isolines around 0</figcaption>
+</figure>
+<h2 id="smoothing"><span class="header-section-number">3.3</span> Smoothing</h2>
+<p>The resulting isosurfaces of the topology optimization generally had rough surfaces with seemingly random small surface features like bumbs dents. Since an interpolation rather than a fit were used, these features would be preserved and result in small refinement for those features.</p>
+<p>To circumvent this, a mesh smoothing method was employed to smooth the isosruface mesh. Since the often used laplace smoothing diminishes volume I opted for taubin smoothing as described in <span class="citation" data-cites="taubin_curve_1995">(Taubin 1995)</span>.</p>
+<p>The smoothing is very similar to the introduced vertex-smoothing above. For a vertex <span class="math inline"><em>v</em><sub><em>i</em></sub></span> and neighbors <span class="math inline"><em>v</em><sub><em>j</em></sub></span>, the position of the vertex is shifted with a weighed average of the neigbors positions: <br /><span class="math display"><em>Δ</em><em>v</em><sub><em>i</em></sub> = ∑<sub><em>j</em> ∈ 𝒩<sub><em>i</em></sub></sub><em>w</em><sub><em>i</em><em>j</em></sub>(<em>v</em><sub><em>j</em></sub> − <em>v</em><sub><em>i</em></sub>)</span><br /> Where the weights <span class="math inline"><em>w</em><sub><em>i</em><em>j</em></sub></span> are just set as the inverse number of neighbors <span class="math inline"><em>w</em><sub><em>i</em><em>j</em></sub> = 1/|𝒩<sub><em>i</em></sub>|</span>. The shift is then added partially to the original vertex. <br /><span class="math display"><em>v</em><sub><em>i</em></sub>′ = <em>v</em><sub><em>i</em></sub> + <em>λ</em><em>Δ</em><em>v</em><sub><em>i</em></sub>  0 &lt; <em>λ</em> &lt; 1</span><br /></p>
+<p>For taubin smoothing an analogous second smoothing step is introduced with a negative <span class="math inline"><em>λ</em></span> ie. an expansion. The coefficient for this is denoted <span class="math inline"><em>μ</em></span> with the restriction that <span class="math inline">0 &lt; <em>λ</em> &lt;  − <em>μ</em></span>. In <span class="citation" data-cites="taubin_curve_1995">(Taubin 1995)</span> taubin shows that this acts as a lowpass filter and limits shrinkage of the model.</p>
+<p>For the application I used values of <span class="math inline"><em>λ</em> = 0.40</span>, <span class="math inline"><em>μ</em> =  − 0.50</span> and made 40 smoothing iterations. The smoothing effect is displayed in figure <span class="citation" data-cites="fig:dragon">(<span class="citeproc-not-found" data-reference-id="fig:dragon"><strong>???</strong></span>)</span>.</p>
+<figure>
+<img src="./source/figures/dragon_smoothing.png" id="fig:dragon" alt="" /><figcaption>The mesh smoothing method applied to a dragon test model</figcaption>
+</figure>
+<h2 id="projection-step"><span class="header-section-number">3.4</span> Projection step</h2>
+<p>Inserting a new vertex in an edge split and smoothing a vertex requires a projection of a midpoint onto the surface. For sufficiently small distances to the surface this projection is assumed to be orthogonal since the gradient has no components in the tangent plane to the isosurface. This is however no requirement since vertex smoothing will take care of adjusting the positions of the vertices on the surface later on.</p>
+<figure>
+<img src="./source/figures/projection_steps.png" id="fig:projection" alt="" /><figcaption>Fast convergence of the gradient descent onto the surface for a steplength of 1</figcaption>
+</figure>
+<h2 id="remeshing"><span class="header-section-number">3.5</span> Remeshing</h2>
+<p>Generally, points on the boundary are not included in the remeshing procedure as the coplanarity of points on the boundary could not be preserved.</p>
+<p>The remeshing algorithm is implemented as in <span class="citation" data-cites="dassi_novel_2016">(Dassi et al. 2016)</span>:</p>
+
+<h1 id="results"><span class="header-section-number">4</span> Results</h1>
+<p>As mentioned before there is a fundamental challenge in the surface interpolation with radial basis functions that is due to the fact that the surface is given implicitly by the zero-level of the 3-dimensional interpolant. Since the interpolant is only guaranteed to have a zero crossing at the interpolation points and not in between them, the surface can be non-contiguous. More precisely there is no topological guarantee for a manifold surface over a cluster of islands.</p>
+<p>Sevel parameters influcence that situation. Those being:</p>
+<ul>
+<li>the spacing and values of the offset points and if they are uniform or not</li>
+<li>the scale-factor(s) of the radial-basis-functions and if they are uniform or not</li>
+</ul>
+<p>To assess the acceptance of different parameter-combinations in that regard I conducted a parameter-survey. The aim was to have a general heuristic for an always working or at least ‘as good as it gets’ parameter set for the following remeshings.</p>
+<p>As a essential feature the values of the RBF-interpolant along an outward line through the triangle-centroids were probed for: a) the existence of a zero-crossing (mandatory) b) the witdh between minima and maxima adjacent to the zero crossing (convergence area of the projection)</p>
+<figure>
+<img src="source/figures/vertex_normal_plot.png" style="width:100.0%" alt="" /><figcaption>At the vertices of the mesh in between the offset interpolation points the RBF-interpolant is well behaved. The offset interpolation points are located at <span class="math inline">±</span> 0.78 in units of the actual mesh </figcaption>
+</figure>
+<h2 id="the-topology-optimization-models"><span class="header-section-number">4.1</span> The topology optimization models</h2>
+<p>The implementations for the following calculation were kindly provided by Moritz Ebeling from the Weierstraß Institute. They are based on the pdelib library developed at the Weiserstraß Institute.</p>
+<h3 id="the-bridge"><span class="header-section-number">4.1.1</span> The bridge</h3>
+<p>The bride model posesses an x-y mirror symmetry and has a force square on top, visible in figure . The force square with a Neumann load is visible as the green square on the top of the domain in the first picture. The symmetry is imposed by a homogeneous dirichlet condition in the x direction on the orange and in the y-direction on the green part of the domain also visible in the first picture. The second picture shows the dirichlet clamp on the bottom (in blue) where x and y movements are penalized. The model was calculated using 294231 tetrahedra and the model parameters are: <span class="math inline"><em>γ</em> = 6.25<em>e</em><sup> − 5</sup></span> <span class="math inline"><em>ϵ</em> = 0.00175</span> <span class="math inline"><em>τ</em> = 0.01</span> <span class="math inline"><em>λ</em> = 1599<em>e</em><sup>6</sup></span> <span class="math inline"><em>μ</em> = 685<em>e</em><sup>6</sup></span></p>
+<p>After 60 iterations the following mesh was extracted.</p>
+<img src="./source/figures/bridge_grid_front.png" style="width:50.0%" /> <img src="./source/figures/bridge_grid_back.png" style="width:50.0%" />
+
+<figure>
+<img src="./source/figures/bridge_solo_raw.png" alt="" /><figcaption>Isosurface of bridge after extraction</figcaption>
+</figure>
+<figure>
+<img src="./source/figures/bridge_raw.png" alt="" /><figcaption>Bridge model after accounting for the mirror symmetry</figcaption>
+</figure>
+<figure>
+<img src="./source/figures/bridge_with_zoom2.png" alt="" /><figcaption>After remeshing with $l^{6d} =$2x longest edge and doing 10 iterations</figcaption>
+</figure>
+<ul>
+<li>parameters: gamma, eps</li>
+<li>domain description and boundary conditions</li>
+<li>how many tetrahedra</li>
+</ul>
+<h3 id="the-table"><span class="header-section-number">4.1.2</span> The table</h3>
+<p>The table model has a large force rectangle with non-homogeneous neumann conditions on top and 4 x-y sliding dirichlet conditions on the bottom. The rest of the boundary has a homogeneous Neumann condition.</p>
+<img src="./source/figures/tisch3d_grid_bottom.png" /> <img src="./source/figures/tisch3d_grid_top.png" />
+
+<h3 id="the-tower"><span class="header-section-number">4.1.3</span> The tower</h3>
+<!--![The boundary conditions of the bridge model](./source/figures/bridge_grid.png)-->
+<h2 id="analysis-of-the-results-and-problem"><span class="header-section-number">4.2</span> Analysis of the results and problem</h2>
+<h1 id="problems-outlook-and-future-work"><span class="header-section-number">5</span> Problems, outlook and future work</h1>
+<p>Combine interpolation and smoothing into one step with a lower order RBF function that is fitted rather than interpolates. See Buhmann Chapter 8 or &gt;Reconstruction and Representation of 3D Objects with Radial Basis Functions paper&lt;</p>
 
 <!-- 
 Do not edit this page.
@@ -267,7 +668,77 @@ References are automatically generated from the BibTex file (References.bib)
 
 ...which you should create using your reference manager.
 -->
-<h1 id="references-1"><span class="header-section-number">8</span> References</h1>
+<h1 id="references"><span class="header-section-number">6</span> References</h1>
+<div id="refs" role="doc-bibliography">
+<div id="ref-barles_front_1993">
+<p>Barles, G., Soner, H. &amp; Souganidis, P., 1993. Front propagation and phase field theory. <em>SIAM Journal on Control and Optimization</em>, 31(2), pp.439–469. Available at: <a href="https://epubs.siam.org/doi/abs/10.1137/0331021">https://epubs.siam.org/doi/abs/10.1137/0331021</a> [Accessed October 5, 2019].</p>
+</div>
+<div id="ref-blank_relating_2014">
+<p>Blank, L. et al., 2014. Relating phase field and sharp interface approaches to structural topology optimization. <em>Control, Optimisation and Calculus of Variations (ESAIM-COCV)</em>, 20, pp.1025–1058. Available at: <a href="https://epub.uni-regensburg.de/34578/">https://epub.uni-regensburg.de/34578/</a> [Accessed October 5, 2019].</p>
+</div>
+<div id="ref-blank_phase-field_2010">
+<p>Blank, L. et al., 2010. Phase-field approaches to structural topology optimization. Available at: <a href="https://epub.uni-regensburg.de/14656/">https://epub.uni-regensburg.de/14656/</a> [Accessed October 5, 2019].</p>
+</div>
+<div id="ref-bossen_pliant_1998">
+<p>Bossen, F. &amp; Heckbert, P., 1998. A pliant method for anisotropic mesh generation. <em>Proceedings of the 5th International Meshing Roundtable</em>.</p>
+</div>
+<div id="ref-bourdin_design-dependent_2003">
+<p>Bourdin, B. &amp; Chambolle, A., 2003. Design-dependent loads in topology optimization. <em>ESAIM: Control, Optimisation and Calculus of Variations</em>, 9, pp.19–48. Available at: <a href="https://www.esaim-cocv.org/articles/cocv/abs/2003/01/cocv248/cocv248.html">https://www.esaim-cocv.org/articles/cocv/abs/2003/01/cocv248/cocv248.html</a> [Accessed October 29, 2019].</p>
+</div>
+<div id="ref-braess_finite_2013">
+<p>Braess, D., 2013. <em>Finite Elemente: Theorie, schnelle Löser und Anwendungen in der Elastizitätstheorie</em> 5., überarb. Aufl., Berlin: Springer Spektrum.</p>
+</div>
+<div id="ref-buhmann_radial_2003">
+<p>Buhmann, M.D., 2003. <em>Radial basis functions</em>, New York, NY, USA: Cambridge University Press.</p>
+</div>
+<div id="ref-philippe_ciarlet_mathematical_1990">
+<p>Ciarlet, P., 1990. Mathematical elasticity, volume i: Three-dimensional elasticity. <em>Acta Applicandae Mathematica</em>, 18(2), pp.190–195. Available at: <a href="https://doi.org/10.1007/BF00046568">https://doi.org/10.1007/BF00046568</a> [Accessed September 29, 2019].</p>
+</div>
+<div id="ref-dassi_novel_2016">
+<p>Dassi, F., Farrell, P. &amp; Si, H., 2016. A novel surface remeshing scheme via higher dimensional embedding and radial basis functions.</p>
+</div>
+<div id="ref-micchelli_interpolation_1986">
+<p>Micchelli, C.A., 1986. Interpolation of scattered data: Distance matrices and conditionally positive definite functions. <em>Constructive Approximation</em>, 2(1), pp.11–22. Available at: <a href="https://doi.org/10.1007/BF01893414">https://doi.org/10.1007/BF01893414</a> [Accessed October 15, 2019].</p>
+</div>
+<div id="ref-takezawa_shape_2010">
+<p>Takezawa, A., Nishiwaki, S. &amp; Kitamura, M., 2010. Shape and topology optimization based on the phase field method and sensitivity analysis. <em>Journal of Computational Physics</em>, 229(7), pp.2697–2718. Available at: <a href="http://www.sciencedirect.com/science/article/pii/S0021999109006962">http://www.sciencedirect.com/science/article/pii/S0021999109006962</a> [Accessed October 5, 2019].</p>
+</div>
+<div id="ref-taubin_curve_1995">
+<p>Taubin, G., 1995. Curve and surface smoothing without shrinkage. In <em>Proceedings of IEEE international conference on computer vision</em>. Proceedings of IEEE international conference on computer vision. pp. 852–857.</p>
+</div>
+<div id="ref-wendland_piecewise_1995">
+<p>Wendland, H., 1995. Piecewise polynomial, positive definite and compactly supported radial functions of minimal degree. <em>Advances in Computational Mathematics</em>, 4, pp.389–396.</p>
+</div>
+<div id="ref-wendland_scattered_2005">
+<p>Wendland, H., 2005. <em>Scattered data approximation</em>,</p>
+</div>
+</div>
+<h1 id="appendix-1-some-extra-stuff" class="unnumbered">Appendix 1: Some extra stuff</h1>
+<!-- 
+This could be a list of papers by the author for example 
+-->
+<h1 id="non-manifold-errors-of-meshes"><span class="header-section-number">7</span> Non manifold-errors of meshes</h1>
+<p>Triangluar meshes can have a multitude of minor errors that unfortunately are very much tolerated in cad-programs and 3D-software but can cause issues with</p>
+<h1 id="sec:conditional"><span class="header-section-number">8</span> Interpolation with conditionally positive definite functions</h1>
+<dl>
+<dt>Definition:</dt>
+<dd>A continuous even function <span class="math inline"><em>Φ</em> : ℝ<sup><em>d</em></sup> ↦ ℝ</span> is conditionally positive (semi) definite of order m if and only if for all pairwise distinct <span class="math inline"><em>X</em> = <em>x</em><sub>1</sub>, ..., <em>x</em><sub><em>N</em></sub> ⊂ ℝ<sup><em>d</em></sup></span> and all <span class="math inline"><em>α</em> ∈ ℝ<sup><em>d</em></sup> \ {0}</span> that satisfy <br /><span class="math display">$$\sum_j^N \alpha_j p(x_j) = 0 \qquad \forall p\in \Pi_{\mathbb{R}^d}^m$$</span><br /> the quadratic form <br /><span class="math display">$$\sum_{j,k}^N \alpha_j \alpha_k \Phi(x_j - x_k)$$</span><br /> is (nonnegative) positive. Here <span class="math inline"><em>Π</em><sub>ℝ<sup><em>d</em></sup></sub><sup><em>m</em></sup></span> is the space of polynomials of maximal order m.
+</dd>
+<dt>Theorem:</dt>
+<dd>Let a univariate function <span class="math inline"><em>ϕ</em> ∈ <em>C</em>[0, ∞)⋂<em>C</em><sup>∞</sup>(0, ∞)</span> be given.<br />
+The mutlivariate function <span class="math inline"><em>Φ</em></span> defined by <span class="math inline"><em>Φ</em> = <em>ϕ</em>(∥ ⋅ ∥<sub>2</sub><sup>2</sup>)</span> is conditionally positive semi definite of order <span class="math inline"><em>m</em> ∈ ℕ</span> on every <span class="math inline">ℝ<sup><em>d</em></sup></span> if and only if <span class="math inline">( − 1)<sup><em>m</em></sup><em>ϕ</em><sup>(<em>m</em>)</sup></span> is completely monotone on <span class="math inline">(0, ∞)</span> <span class="citation" data-cites="wendland_scattered_2005">(Wendland 2005 theorem 8.19)</span>
+</dd>
+</dl>
+<p>The interpolation condition is then to be modified and the the interpolant takes the following form: <br /><span class="math display">$$S(x) = \sum_{j=1}^N \alpha_j \Phi(x - x_j) + \sum_{k=1}^Q \beta_k p_k(x)$$</span><br /></p>
+<p>Where <span class="math inline"><em>Q</em></span> is the dimension of the polynomial space and the <span class="math inline"><em>p</em><sub><em>k</em></sub></span> form a basis. The interpolation condition is complemented by the the condition: <br /><span class="math display">$$\sum_{j=1}^N \alpha_j p_k(x_j) = 0 \qquad 1\leq k \leq Q$$</span><br /></p>
+<p>The linear interpolation system can then be written in the compact form: </p>
+<p>With <span class="math inline"><em>P</em> = <em>p</em><sub><em>k</em></sub>(<em>k</em><sub><em>j</em></sub>) ∈ ℝ<sup><em>Q</em> × <em>N</em></sup></span> This system is solvable if <span class="math inline"><em>Φ</em></span> is conditionally positive definite <span class="citation" data-cites="wendland_scattered_2005">(Wendland 2005 theorem 8.21)</span></p>
+<section class="footnotes" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1" role="doc-endnote"><p>stl is one of the primary file formats for triangular meshes<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
             </body>
 </html>
 

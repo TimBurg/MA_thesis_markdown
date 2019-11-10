@@ -4,7 +4,7 @@
 First I present the theory for the topology optimization that was used. 
 This includes a brief recapitulation of linear elasticity and compliance minimization and then a short 
 derivation of the optimality conditionn and the numerics that follow were used to implement it.
-After that the extration of the isosurface, the Radial-basis-function based surface interpolation and the basic remeshing operations are introduced.
+After that the extration of the isosurface, the radial basis function based surface interpolation and the basic remeshing operations are introduced.
 
 ## Linear elasticity
 
@@ -40,7 +40,7 @@ The elasticity theory is then build on the follwowing two contibutions from Cauc
    Assuming that $f^\varphi$ is continuous and 
    ${t^\varphi \in \textrm{C}^1(\Omega) \cap \textrm{C}(\mathbb{S}_1)}$,
    then $t^\varphi$ is linear w.r.t. 
-   to the surface normal ie.:
+   to the surface normal i.e.:
    \begin{subequations}\label{eq:equilibrium}
    \begin{align}
    t^\varphi (x^\varphi, n) &= T^\varphi (x^\varphi)n \qquad \forall x^\varphi \in \Omega, \! &\forall n \in \mathbb{S}_1\\
@@ -115,7 +115,7 @@ The last form is written in vector form for the components of the tensors.
 For finite-element simulations and reduced smoothness requirements of the displacement, a variatonal formulation of the equilibrium equations \eqref{eq:equilibrium} must be formulated.
 
 For this we first define the space $$
-H^1_D = \{\theta \in H^1(\Omega) | \theta=0 \text{ on } \Gamma_D=\partial \bar{\Omega} - \Gamma_g \}$$
+H^1_D = \{\theta \in H^1(\Omega, \mathbb{R}^3) \mid \theta=0 \text{ on } \Gamma_D=\partial \bar{\Omega} - \Gamma_g \}$$
 to exclude the boundary term on $\Gamma_D$ from contributing force terms.
 
 Multiplying equation \eqref{eq:divT} with a test function $\theta$ from this space on both sides and integrating yields:
@@ -130,7 +130,7 @@ and applying the pullback to the reference configuration with the second Piola-K
 $$\int_{\bar{\Omega}} \nabla \varphi : \Sigma \nabla \theta dx = \int_{\bar{\Omega}} f 
 \cdot \theta dx + \int_\Gamma g \cdot \theta da \qquad \forall \theta \in H^1_D$$
 
-For All sufficiently vector fields $\theta: \bar{\Omega} \mapsto \mathbb{R}^3$ from $H^1_D$.
+For All vector fields $\theta: \bar{\Omega} \mapsto \mathbb{R}^3$ from $H^1_D$.
 This is also called the 'principle of virtual work' (in the reference configuration).
 
 For very small strains the deformation gradient in front of $\Sigma$ can be dropped since the 
@@ -162,19 +162,22 @@ This compliance is what is to be optimized in the following section.
 
 The topology optimization procedure used in this work is a direct implementation of the works of [@blank_relating_2014].
 As a result of this I frequently refer to this paper and those relating to it and only strive to give a compact summary of the steps.
-A phase field based topology optimization was first introduced by [@bourdin_design-dependent_2003].
+A phase field based topology optimization was first introduced by [@bourdin_design-dependent_2003]. It has has similarities to the 
+SIMP-method[^1]
+introduced by Bendsøe over a decade earlier (see [@bendsoe_topology_2004] for a reference thereof).
 
 The term topology optimization was coined in the context of optimizing mechanical structures.
 It is not bound to a certain implementation but to the requirement that a structure under load may change its topology under the optimization procedure.
-This is generally understood in the sense as to allow the nucleation of holes in a previously filled material rather than forming new 
-strucutres in the void.
+For this the facility of nucleation of holes in a previously filled material is generally needed.
 
-The method used throughout this work that accomplishes this uses the compliance minimization functional
-with a regularized phase field description of the structure.
-In effect, compliance minimization maximizes the stiffness of the structure under a mass- or volume constraint while the phase field describes where material is placed in the domain. 
+The method used throughout this work that accomplishes this is based on minimizing a functional with gradient based optimization.
+The functional is constructed from a compliance term with a regularized phase field description of the structure.
+In effect, compliance minimization maximizes the stiffness of the structure while a mass- or volume constraint formulated via the phase field controls where material is placed in the domain. 
 
 The use of a phase-function description allows to incorporate a computationally cheap perimeter regularization via an additional term in the optimization functional.
 This is needed since the compliance minimization in itself is not well posed and allows high variation in the microstructure of a part that cannot be manufactured and is not numerically stable.
+
+[^1]:Solid Isotropic Material with Penalization
 
 ### Compliance minimization
 
@@ -195,9 +198,10 @@ that here can take on values in the range from 0 to 1 where 0 represents the voi
 $$ 0 \leq \varphi \leq 1$$
 
 A penalty term is then added to the optimization to force the phasefield to condensate to either 0 or 1 depending on a forcing term from the compliance minimization.
-Consequently an interface forms that can expand or retract and this falls into the category of advancing front algorithms. For details see [@barles_front_1993].
-The resulting equation driving the interface is an Allan-Cahn Equation as discussed in [@blank_phase-field_2010].
-However, for the general understanding the optimality conditions are of more avail.
+Consequently an interface between the two phases forms that is subject to an Allen-Cahn type equation which can drive the interface in
+the direction of its normal. This falls into the category of advancing-front algorithms. For details see [@barles_front_1993]
+or [@blank_phase-field_2010].
+For an understanding of the convergence of these dynamics I consider the optimality conditions of the system.
 
 
 Since integrating the phase field over a region gives the volume, a volume constraint
@@ -246,8 +250,10 @@ $$F(u, \varphi) = \int_{\bar{\Omega}} \varphi \cdot \rho_\text{mat} \cdot G_z \c
 I now state the first order necessary optimality conditions for a minimum which are given by the Karush-Kuhn-Tucker theory.  
 
 As indicdated before, the goal is to minimize the functional made up of the compliance and the Ginzburg-Landau term:
-$$ \text{min}\ J(u, \varphi) := \gamma E(\varphi) + \alpha F(u, \varphi) \quad \text{with} \ \varphi \in \mathcal{G}^m \text{ and } u\ 
+$$ \text{min}\ J(u, \varphi) := \gamma E(\varphi) + F(u, \varphi) \quad \text{with} \ \varphi \in \mathcal{G}^m \text{ and } u\ 
 \text{ fulfills eq }\eqref{eq:compliance}$$ 
+Here $\gamma$ is a parameter that controls the influence of the regularization term and it's will value will determine the fineness of 
+the obtained structure.
 
 To write down the optimality conditions in a concise form, consider the control-to-state operator 
 $S(\varphi) = u$ defined implicitly by equation \eqref{eq:compliance}. 
@@ -258,7 +264,7 @@ It's directional derivative $S'(\varphi)h = p$ is given by the solution to:
  \label{eq:control_to_state}
  \end{equation}
 
-[see @blank_relating_2014 theorem 3.3]
+[see @blank_relating_2014 theorem 3.3]. Here $p$ is also a function from $H^1_D$.
 
 It follows from the definition of the total differential and the chain rule that the reduced functional 
 $\widetilde{J}(\varphi)= J(S(\varphi), \varphi)$ is
@@ -268,9 +274,10 @@ $$\tilde{J}'(\varphi) h = \frac{\partial}{\partial u} J(u,\varphi) p + \frac{\pa
 Since $E(\varphi)$ is independent of $u$, the partial derivative with respect to $u$ is just the right-hand side of the state equation:
 
 $$\frac{\partial}{\partial u} J(u, \varphi) p = F(p,\varphi) $$
+Here I have used that the Fréchet derivative of a linear functional in a direction $p$ is the functional applied to that direction.
 
 
-Which is, since $p \in H^1_D(\Omega, \mathbb{R}^d)$ is an admissible test function, equal to the left hand side of the state equation.
+This is, since $p \in H^1_D$ is an admissible test function in the state equation, equal to the left hand side of the state equation.
 Note that if this was not the case, an auxillary state $q \in H^1_D$ could have been introduced which would solve a system sometimes called the adjoint system as to make the following equality hold. 
 
 Now using equation \eqref{eq:control_to_state} with $u$ as a test function this can be written as:
@@ -282,14 +289,14 @@ Now using equation \eqref{eq:control_to_state} with $u$ as a test function this 
 
 The calculation of the partial derivative of $J$ with respect to $\varphi$ is straightforward:
 
-$$\frac{\partial}{\partial \varphi}J(u,\varphi) \xi = \varepsilon \int_\Omega (\nabla \varphi , \nabla \xi) \ dx +
-\int_\Omega \frac{1}{\varepsilon} \Psi'(\varphi) \xi \ dx  + F(u,\xi)$$
+$$\frac{\partial}{\partial \varphi}J(u,\varphi) \xi = \gamma \varepsilon \int_\Omega (\nabla \varphi , \nabla \xi) \ dx +
+\gamma \int_\Omega \frac{1}{\varepsilon} \Psi'(\varphi) \xi \ dx  + F(u,\xi)$$
 
 Summing up and using $\xi = h$ as the direction in which to 
 derive, the reduced functional has the following
 directional derivative:
 \begin{equation}
-\frac{d}{d \varphi} \tilde{J}(\varphi) \xi = 2 \cdot F(u, \xi) +\int_\Omega \varepsilon \nabla \varphi \nabla \xi +
+\frac{d}{d \varphi} \tilde{J}(\varphi) \xi = 2 \cdot F(u, \xi) + \gamma \int_\Omega \varepsilon \nabla \varphi \nabla \xi +
 \frac{1}{\varepsilon} \Psi'(\varphi) \xi \ dx 
  - \langle \varepsilon(u), \varepsilon(u)\rangle_{C'(\varphi)\xi}
 \end{equation}
@@ -307,15 +314,15 @@ To reconsider, we have the following additional requirements
 -\varphi   &\leq 0 
 \end{align}
 
-Introducing lagrange multipliers $\kappa, \mu, \lambda$ the KKT-first order necessary optimality conditions then read:
+Introducing lagrange multipliers $\kappa \in \mathbb{R}, \text{ and } \mu_+, \mu_- \in L^2(\Omega)$ the KKT-first order necessary optimality conditions then read:
 
 \begin{align}
-\frac{d}{d\varphi} \tilde{J}(\tilde{\varphi}) \omega + \kappa \int_\Omega \omega \ dx + \mu \omega - \lambda \omega  &= 0 \quad \forall \omega \in H^1_D \label{eq:gradient}\\
-\langle \varepsilon(\tilde{u}) \varepsilon(v)\rangle_{C(\varphi)} &= F(\tilde{u}, v)  \quad \forall v \in H^1_D \\
-\int_\Omega \tilde{\varphi} - m \ dx &= 0 \\
-\mu \geq 0,& \quad \lambda \geq 0 \\
-(\mu, \tilde{\varphi} -1) &= 0 \quad \text {a.e. in } \Omega \label{eq:complementary1}\\
-(\lambda, -\tilde{\varphi}) &= 0 \quad \text {a.e. in } \Omega \label{eq:complementary2}
+\frac{d}{d\varphi} \tilde{J}(\tilde{\varphi}) \omega + \kappa \int_\Omega \omega \ dx + \mu_+ \omega - \mu_- \omega  &= 0 \quad \forall \omega \in H^1_D \label{eq:gradient}\\
+\langle \varepsilon(\tilde{u}), \varepsilon(v)\rangle_{C(\varphi)} &= F(\tilde{u}, v)  \quad \forall v \in H^1_D \\
+\int_\Omega \tilde{\varphi} - m \ dx &= 0 \label{eq:mass_constraint}\\
+\mu_+ \geq 0,& \quad \mu_- \geq 0 \quad \text {a.e. in } \Omega\\
+(\mu_+, \tilde{\varphi} -1) &= 0 \quad \text {a.e. in } \Omega \label{eq:complementary1}\\
+(\mu_-, -\tilde{\varphi}) &= 0 \quad \text {a.e. in } \Omega \label{eq:complementary2}
 \end{align}
 
 Where the last three conditions arise due to complementarity.
@@ -323,20 +330,22 @@ Where the last three conditions arise due to complementarity.
 ### Numerial soution
 
 #### Pseudo time stepping
-Now, we solve for $\tilde{\varphi}$ in the optimality conditions. Equation \eqref{eq:gradient} 
+Suppose for a moment that $\kappa, \mu_+ \text{ and } \mu_-$ were given.
+This is reasonable because in the next section, iterates for those functions are given by means of a Primal-Dual Active Set strategy. 
+Then we could solve for $\tilde{\varphi}$ in the optimality conditions as follows. Equation \eqref{eq:gradient} 
 defines a linear functional on $H^1_D$ which I refer to as $\nabla \mathcal{L} (\omega)$. Using a scalar product this functional can be identified
 with a funtion on $L^2$ that we loosely call the gradient. This approach is called a gradient flow. 
-Consequently a gradient descent in conjunction with a semi-implicit stepping scheme is used.
+Consequently a gradient descent in conjunction with a semi-implicit stepping scheme can be used.
 
 $$\left( \partial_t \varphi, \omega \right) = \nabla \mathcal{L} (\omega)$$
 
-Expanding the functional gives:
+Expanding the functional would give:
 
 \begin{equation}
 \begin{split}
-\left( \partial_t \varphi, \omega \right) =&  \varepsilon \int_\Omega \nabla \varphi \nabla \omega
-+ \int_\Omega \frac{1}{\varepsilon} \Psi'(\varphi) \omega \ dx + 2 \cdot F(u, \omega) \\
- &- \langle \varepsilon(u), \varepsilon(u)\rangle_{C'(\varphi)\omega} + \kappa \int_\Omega \omega \ dx + \mu \omega - \lambda \omega  
+\left( \partial_t \varphi, \omega \right) =&  \gamma  \int_\Omega \varepsilon \nabla \varphi \nabla \omega
++ \frac{1}{\varepsilon} \Psi'(\varphi) \omega \: dx + 2 \cdot F(u, \omega) \\
+ &- \langle \varepsilon(u), \varepsilon(u)\rangle_{C'(\varphi)\omega} + \kappa \int_\Omega \omega \ dx + \mu_+ \omega - \mu_- \omega  
 \end{split} \label{eq:gradflow}
 \end{equation}
 
@@ -346,23 +355,54 @@ and using $\nabla \varphi^{k+1}$ for $\nabla \varphi$ we end up with:
 
 \begin{equation}
 \begin{split}
-\frac{1}{\tau} \int_\Omega \varphi^{k+1} \omega dx + \varepsilon \int_\Omega \nabla \varphi^{k+1}:\nabla\omega dx =&
+\frac{1}{\tau} \int_\Omega \varphi^{k+1} \omega dx + \gamma \varepsilon \int_\Omega \nabla \varphi^{k+1} \nabla\omega dx =&
 \frac{1}{\tau} \int_\Omega \varphi^{k} \omega dx \\
-&+ \frac{1}{\varepsilon} \int_\Omega \Psi'(\varphi^k) \omega dx + \langle \varepsilon(u) \varepsilon(u)\rangle_{C'(\varphi^k)\omega} \\
-&- 2 \int_\Omega \omega \rho_0 g u dx + \kappa \int_\Omega \omega \ dx + \mu \omega - \lambda \omega
+&+ \frac{\gamma}{\varepsilon} \int_\Omega \Psi'(\varphi^k) \omega dx + \langle \varepsilon(u), \varepsilon(u)\rangle_{C'(\varphi^k)\omega} \\
+&- 2 \int_\Omega \omega \rho_0 g u dx + \kappa \int_\Omega \omega \ dx + \mu_+ \omega - \mu_- \omega
 \end{split}
+\label{eq:descent_iteration}
 \end{equation}
 Where, as before, $u$ solves the mechanical system \eqref{eq:equi_variational}.
-This defines the principal iterative scheme for a descent.
+This defines an iterative scheme for a descent.
 
 #### Primal-dual active set strategy
-So far we have left out the complementarity conditions in the calculation of the descent direction.
-For this, a primal dual active set strategy (PDAS) is used. PDAS maintains a set of active constraints for every point.
+As stated the 
+A sophisticated method to alleviate the Lagrange multipliers $\mu_+$ and $\mu_-$ from this equation is the Primal-Dual Active Set strategy (PDAS).
+The theory to this approach was developed in [@blank_primal-dual_2013].
+
+In essence, PDAS maintains a set of active constraints for every point.  
 A constraint is inactive if the corresponding lagrange multiplier is zero and active if $\varphi$ takes on the corresponding bound -
 One of which has to hold due to the equations \eqref{eq:complementary1} and \eqref{eq:complementary2}.
 
-Consequently the gradient descent step is calculated with $\varphi$ taking on a fixed value on the active set and being unbounded (lagrange multiplier =0) on the inactive set. 
-Afterwards the 
+These sets are then updated by first solving the so-called primal problem which is \eqref{eq:descent_iteration} without $\mu_\pm$ but 
+\eqref{eq:mass_constraint} explicitly cared for.
+With the then obtained $\varphi$ and $\kappa$ a dual problem for the $\mu_\pm$ Lagrange multipliers is solved.
+
+More precisely, let $\mu = \mu_+ - \mu_-$ then \eqref{eq:complementary1} and \eqref{eq:complementary2} can be equivalently written as
+$$c(\varphi(x) -1) + \mu(x) \geq 0 \quad \text{and} \quad c(- \varphi(x)) + \mu(x) \leq 0$$
+respectively for any $c > 0$.
+
+With this the active sets $\mathcal{A}^+ \text{ and } \mathcal{A}^-$ as well as the inactive set $\mathcal{I}$ are defined as:
+\begin{equation}
+\begin{split}
+\mathcal{A}^+ &= \{x\in \Omega \mid c(\varphi(x) -1) + \mu(x) \geq 0 \}\\
+\mathcal{A}^- &= \{x \in \Omega \mid c(- \varphi(x)) + \mu(x) \leq 0 \}\\
+\mathcal{I}   &= \Omega \setminus (\mathcal{A}^+ \cup \mathcal{A}^-) 
+\end{split}
+\end{equation}
+
+Starting with a guess of those sets, $\varphi$ is set 1 on $\mathcal{A}^+$ and 0 on $\mathcal{A}^-$.
+Consequently the unconstrained iteration step \eqref{eq:descent_iteration} (where $\mu_\pm$ is 0) with \eqref{eq:mass_constraint} explicitly 
+accounted for is solved only on the set $\mathcal{I}$.
+This is referred to as the primal problem.
+Note that due to the definition, $\mathcal{I}$ is synonymous to the interfacial region that takes up a very small portion of the space
+thereby making this calculation efficient.
+
+Subsequently the Lagrange multiplier $\mu$ can be updated on $\mathcal{A}^\pm$ with a dual formulation according to [@blank_primal-dual_2013 (PDAS-I)] as follows:
+$$\mu = \kappa - \frac{1}{\tau}(\varphi^{k+1} - \varphi^k) + \varepsilon \gamma \Delta \varphi^{k+1} + \frac{\gamma}{\varepsilon} \varphi^{k+1} $$
+
+With this updated $\mu$, the active and inactive sets are recalculated and if no change is detected the descent step is complete.
+Otherwise reiterate with the new sets.
 
 
 ### Isosurface extraction
@@ -383,52 +423,58 @@ This is especially important since the orientation is used in the remeshing proc
 ![In the case of a 3D-Tetrahedra tesselation only 3 distinct cases can appear a)intersection
 at three edges(left) or b)intersection at 4 edges(right) or c)no intersections(not displayed)\label{fig:isocuttetraeder}](source/figures/tetrahedrons.svg){width=80%}
 
-## Radial-basis-function theory
+## radial basis function theory
 
 ### RBF Interpolation
 
 Interpolation can be viewed as a special kind of approximation in which, for an approximant $S$ to some function $F$,
-it is demanded that the interpolant reproduces the original functions values at special points $x_i$ ie.:
-\begin{equation}S(x_i) = F(x_i) \quad \forall i\in \Xi \label{eq:interpolation_condition} \end{equation}
-Where $\Xi$ is some finite (possibly scattered) dataset in $\mathbb{R}^N$ (multivariate) ie. a set $(\xi, f_\xi) \in \mathbb{R}^N \times \mathbb{R}$.
-The functions considered here are scalar valued. A construction of vector-valued interpolants from scalar-valued-component ones ist straightforward.
+it is demanded that the interpolant reproduces the original functions values at special points $x_i$ i.e.:
+\begin{equation}S(x_i) = F(x_i) \quad \forall x_i \in \Xi \label{eq:interpolation_condition} \end{equation}
+Where $\Xi$ is some finite (possibly scattered) set of pairwise distinct points from $\mathbb{R}^d$ (multivariate) ie. a 
+set $\{x_i \mid x_i \in \mathbb{R}^d, i=1,..,N, x_i \neq x_j\}$.
+The functions considered here are scalar valued multivariate functions but a vector-valued interpolant may be constructed from scalar-valued-component functions.
 
-Interpolants are constructed from some function space which in this case is made up of Radial-basis-functions centered at 
-the interpolation centers. Due to this dependence on the centers the spaces are individual to the interpolation.
+Interpolants are constructed from some function space which in this case is made up of radial basis functions centered at 
+the interpolation centers. This dependence on the centers means that the radial basis function-spaces are individual to each dataset $\Xi$.
 
-Radial-basis-functions are multivariate functions constructed from univariate functions of  the form 
-$\varphi:[0,\infty)\mapsto\mathbb{R}$ superimposed over the euclidean norm. 
-Special monotonicity properties of those functions lead to unisolvent interpolation as explained in the next section.
-Radial basis functions can also be introduced as multivariate functions $\varphi:\mathbb{R}^3\mapsto\mathbb{R}$ that then need
-to be even ie. $\varphi(x) = \varphi(-x)$.
-The norm usually denotes the standard euclidian norm which is essential for the convergence results.
-Some information about other norms is given in [@wendland_scattered_2005 p.83,84]
+Radial basis functions are multivariate functions constructed from univariate functions of the form 
+$\phi:[0,\infty)\mapsto\mathbb{R}$ superimposed over the Euclidean norm:
+$$\Phi(x) = \phi(\lVert x \rVert_2) \qquad x\in \mathbb{R}^d$$
+Special monotonicity properties of those functions lead to unisolvent interpolation (unique solvability) as explained in the next section.
+Radial basis functions can also be introduced as general multivariate functions $\Phi:\mathbb{R}^d\mapsto\mathbb{R}$ that then need
+to be even: $\Phi(x) = \Phi(-x)$.
+The norm usually denotes the standard Euclidean norm which is essential for the convergence results.
+Some information about other norms is given in [@wendland_scattered_2005 p.83,84].
+In the following $d$ will be 3 as required for the generation of implicit 2-d surfaces.
 
-Radial-basis-functions are special in that they allow easy interpolation of scattered multivariate data of arbitrary dimension with 
+
+Notably, radial basis functions are special in that they allow easy interpolation of scattered multivariate data of arbitrary dimension with 
 guaranteed existence and uniqueness results. 
-This is unique to this method and can not be achieved by polynomial interpolation for example. 
+At the time of writing this is unique to these functions and can not be achieved by for example "classical" polynomial interpolation. 
 
 
-In general, different interpolants do behave differently for the space in between the datasites and are distinguished by 
-their approximation and or convergence properties for special classes or cases of $F$.
-However, when no original function(just the values $F(x_i)$) is given the accuracy of an interpolation can not generally be assessed.
-Because this is the case here, determining qualities for the RBF-interpolant are discussed in [@sec:surf_cond]
+As for the approximation quality, different interpolants do behave differently for the space in between the data sites and are distinguished by 
+their approximation and or convergence properties for special classes of interpolated functions $F$.
+However, when no such functions (just the values $F(x_i)$) are given, the accuracy of an interpolation can not generally be assessed.
+Because this is the case here, determining qualities for the RBF-interpolant are discussed in [@sec:surf_cond].
 
-The interpolant $S$ is constructed as a linear combination of scaled Radial-basis-functions centered at the
-datasites:
-$$S(x) = \sum_i \alpha_i\varphi(\lVert x-x_i\rVert)$$
+The interpolant $S$ is constructed as a linear combination of scaled radial basis functions centered at the
+data sites:
+$$S(x) = \sum_j^N \alpha_j\phi(\lVert x-x_j\rVert)$$
 
 
-By introducing the interpolation matrix $A$ as:
-\begin{equation}A= \varphi(\lVert x_i - x_j\rVert)|_{i,j} \label{eq:interpolation_matrix}\end{equation}
+By introducing the interpolation matrix $\vec{A}$ as:
+\begin{equation}A_{ij}= \phi(\lVert x_i - x_j\rVert)|_{i,j} \label{eq:interpolation_matrix}\end{equation}
 we can write the interpolation condition \eqref{eq:interpolation_condition} as:
-\begin{equation}A\alpha = F \label{eq:interpolation_system}\end{equation}
+\begin{equation}\vec{A}\alpha = \vec{F} \label{eq:interpolation_system}\end{equation}
+Where $\vec{F}$ contains the values $F(x_i)$.
 
+The immediate requirement then is that this system is uniquely solvable which is determined by the invertibility of the interpolation matrix $A$
 
 ### Existence and Uniqueness results
 The invertbility of the interpolation matrix $A$ for all pairwise distinct combinations of 
-centers in $\mathbb{R}^d$ is of key importance.
-As stated this property can be guaranteed for certain classes of functions which satisfiy a montonicity property.
+centers in $\mathbb{R}^d$ is considered.
+This property can be guaranteed for certain radial basis functions which satisfiy a montonicity property.
 
 Definition:
   ~ A continuous function $\Phi:\mathbb{R}^d \mapsto \mathbb{R}$ is called positive \mbox{(semi-)}definite if, for all $N \in \mathbb{N}$ and
@@ -436,30 +482,29 @@ Definition:
     following quadratic form is (nonnegative) positive:
     $$\sum_{j=1}^N \sum_{k=1}^N \alpha_j \alpha_k \Phi(x_j - x_k)$$
 
-This property is analogously used for the univatiate functions $\varphi$.
+Analogously, I call the univatiate functions $\phi$ positive (semi-) definite if the induced function $\Phi$ satisfies the definition.
 
-Such positive semi definiteness of a function can be shown via a property called complete monotonicity: 
+Such induced positive semi definiteness of a function can be shown via a property called complete monotonicity: 
 $$(-1)^l g^l(t) \ge 0 \quad \forall l \in \mathbb{N} \quad \forall t>0$$
-Where $g^l$ means the l-th derivative of a function $g: \mathbb{R} \mapsto \mathbb{R}$.
-The prototype of a complete monotone function is the exponential function $e^{-\alpha t}$ for some non negative alpha.
+Where $g^l$ denotes the l-th derivative of a function $g: \mathbb{R} \mapsto \mathbb{R}$.
+The prototype of a complete monotone function is the exponential function $e^{-\alpha t}$ for some non negative $\alpha$.
 
-If $\varphi(\sqrt{\cdot})$ is completely monotone on $[0, \infty)$ and not constant, then $\varphi$ is positive definite.
+Theorem:
+  ~ If $\phi(\sqrt{\cdot})$ is completely monotone on $[0, \infty)$ and not constant, then $\phi$ is positive definite.
+
 The proof requires some theory on measure spaces and generalized fourier transforms and rests on the Bernstein-Widder representation of 
 such functions.
 Since these are a bit out of scope I refer to [@wendland_scattered_2005 theorem 7.14].
 
-A first formal proof was completed for the multiquadratics function by [@micchelli_interpolation_1986].
-For multiquadratics it actually suffices that the first derivative of $\varphi$ is 
+A first formal proof of a positive definite function was completed for the multiquadratics function by [@micchelli_interpolation_1986].
+Multiquadratics are not completely monotone but rather one can show that it actually suffices that the first derivative of $\phi$ is 
 completely monotone [@buhmann_radial_2003 theorem 2.2].
 
-This motivates a weaker concept called conditionally positive definiteness and requires an added polynomial for unisolvence.
-This is described in the Appendix.
-
-A weaker requirement is that only one of the derivatives must be completely monotone.
-This then motivates the concept of conditonally positive definite functions in which a polynomial is added to the interpolant. 
+Complete monotonicity of only some derivative motivates a weaker concept called conditionally positive definiteness and requires an added polynomial for unisolvence.
+This is described in the Appendix [@sec:conditional].
 
 ### Commonly used Radial basis functions 
-I now recite some of the more often used RBFs and give some detail on the local functions that were used for the actual implementation.
+I now state some of the more often used RBFs and give some detail on the local functions that were used for the actual implementation.
 During the course of writing the interpolation program it became clear that only local basis functions would be good 
 candidates for a surface interpolation due to the number of vertices used in most triangular meshes
 and the resulting size of a dense interpolation matrix.
@@ -468,11 +513,12 @@ To this end the compactly supported basis functions are also much more forgiving
 I recite some estimates of the condition number in the Appendix.
 
 Local, piecewise polynomial RBFs are generally dimension dependent in that they are not positive definite 
-for $d>d_0$ in $\mathbb{R}d^d$ where $d_0$ depends on the function. For this application $d_0 = 3$ is obviously the requirement.
+for $d>d_0$ in $\mathbb{R}^d$ where $d_0$ depends on the function. For this application $d_0 = 3$ is required and 
+reflected in the chosen Wendland function.
 
 Now commonly used are the Wendland functions [see @wendland_piecewise_1995] which are of 
 minimal degree with respect to the space dimension and smoothness and are positive definite. 
-For the surface interpolation I use the two times continuously differentiable function and it's derivative.
+For the surface interpolation I use the twice continuously differentiable function and it's derivative in table [@tbl:local_RBF]
 
 function             name                     definiteness 
 -----------------   ------------------------ -------------
@@ -485,54 +531,56 @@ Table: RBF functions with global support
 
 function                         name                     definiteness  smoothness
 -----------------                ------------------------ ------------- ----------
-$(1-r)_+^2$                      $\varphi_{3,0}(r)$           pd           $C^0$
-$(1-r)_+^4(4r+1)$                $\varphi_{3,1}(r)$           pd           $C^2$
-$(1-r)_+^6(35r^2+18r+3)$         $\varphi_{3,2}(r)$           pd           $C^4$
-$(1-r)_+^8(32r^3+25r^2+8r+1)$    $\varphi_{3,3}(r)$           pd           $C^6$
+$(1-r)_+^2$                      $\phi_{3,0}(r)$           pd           $C^0$
+$(1-r)_+^4(4r+1)$                $\phi_{3,1}(r)$           pd           $C^2$
+$(1-r)_+^6(35r^2+18r+3)$         $\phi_{3,2}(r)$           pd           $C^4$
+$(1-r)_+^8(32r^3+25r^2+8r+1)$    $\phi_{3,3}(r)$           pd           $C^6$
 
-Table: Local RBF functions introduced by Wendland [@wendland_piecewise_1995]
+Table: Local RBF functions introduced by Wendland [@wendland_piecewise_1995]{#tbl:local_RBF}
 
-![Comparison of different RBF functions. Note that a convergence to zero is not mandatory.
-However, the Wendland functions become zero after r=1](source/figures/rbf_functions.png){#fig:rbf_funcs width=70%}
+
+![Comparison of different RBF functions. Note that multiquadratics are special in their growth to infinity.
+The Wendland functions become zero after r=1](source/figures/rbf_functions.png){#fig:rbf_funcs width=100%}
 
 ### Scaling of RBF functions, ambiguities and interpolation properties {#sec:rbf_interpol}
-The Wendland RBF functions have a fixed spread of 1 as seen in @fig:rbf_funcs.
-Since spacing of the interpolation data is not fixed, a scaling of the radial argument needs to be introduced that scales r such that the RBFs
- extend into the space between the datasites. Otherwise the interpolant might just have, in the exteme case, spikes at the sites to attain the required values.
-To this end I scale r by $c$, ie. $r' = r/c$ with a scale parameter $c$ since that makes the Wendland functions extend to exactly the value of this parameter.
+The Wendland RBF functions have a fixed support radius of 1 as seen in @fig:rbf_funcs.
+Since spacing of the interpolation data is not fixed, a scaling of the radial argument needs to be introduced that scales $r$ such that the RBFs
+ extend into the space between the data sites. Otherwise the interpolant might just have, in the exteme case, spikes at the sites to attain the required values.
+To this end I scale $r$ with a scale parameter $c > 0$ as $r' = r/c$ since that makes the Wendland functions extend to exactly the value of this scale parameter.
+
 
 This scaling parameter, in general can be nonuniform over the interpolated values but this comes with uncertainty for the solvability of the interpolation system.
 
 Moreover, it cannot be generally stated which value of a scale parameter is more accurate in an interpolation unless there is a target to which the interpolant can be compared. See @fig:wendland_scales
 
 ![Wendland C2 functions for different scaling parameters c. The interpolation values were set to (1,2,1,2,1) at (0,1,2,3,4).
-](source/figures/wendland_scale_factors.png){#fig:wendland_scales width=90%}
+](source/figures/wendland_scale_factors.png){#fig:wendland_scales width=100%}
 
-![Different Radial-Basis-Funtions have different behaviours for off-site values. Multiquadratics grow toward infinity.
-Displayed is a 1-2 comb in two dimensions](source/figures/MQ_2D_comb.png){#fig:wendland_scales width=90%}
+![Different Radial-Basis-Funtions may have different behaviours for off-site values. Multiquadratics can even grow toward infinity.
+Displayed is a 1-2 comb in two dimensions](source/figures/MQ_2D_comb.png){#fig:MQ_2D width=100%}
 
 ### surface interpolation {#sec:surface_interpol}
 Surface descriptions are either explicit or implicit. Explicit means that the surface is the graph of a function
-$F:\Omega\subset\mathbb{R}^2 \mapsto \mathbb{R}$ which can be very complicated to construct.
+$F:\Omega\subset\mathbb{R}^2 \mapsto \mathbb{R}$ which can be very difficult to construct.
 Especially for complicated topologies, this can usually be only done via 2d-parametric patches of the surface which are difficult to 
 match at the boundaries.
-Implicit surfaces on the other hand are defined via a functions level set (usually the zero level ie. $F(x) = 0$) which is 
+Implicit surfaces on the other hand are defined via a functions level set (usually the zero level i.e. $F(x) = 0$) which is 
 easier to construct but is harder to visualise. Common methods for visualization include marching-cubes and raytracing methods.
 
-For the surface interpolation with an implicit function this translates to the interpolant being zero at the datasites: $S(x_i) = 0$.
+For the surface interpolation with an implicit function this translates to the interpolant being zero at the data sites: $S(x_i) = 0$.
 Since the zero function would be a trivial solution to this, off-surface constraints must be given.
 This is usually done with points generated from normalvectors to the original surface if such surface exists.
 The pointvalues are then assigned the valuea of the signed distance function to the surface:
 
 $$ S(\mathbf{x}_i + \epsilon \mathbf{n}_i) = F(\mathbf{x}_i+\epsilon \mathbf{n}_i) = \epsilon  
 $${#eq:off_surface_points}
+For a stronger falloff(rise) of the interpolant larger values than $\epsilon$ can be chosen as interpolation values on the right hand side.
 If not available, the normalvectors can be generated from a cotangent plane that is constructed via  a principal component analysis of nearest neighbors. 
 
 In my case the vectors could be obtained from an average of the normals of the adjacent triangles scaled with the inverse of the corresponding edgelengths:
 $$\vec{n} = \sum_{T \in \mathcal{N}_T} \frac{1}{\lVert \vec{n}_T \rVert} \vec{n}_T$$
-These offset-points were generated for every vertex of the original mesh and in both directions (on the inside and on the outside) such as to give the interpolant a constant slope of one around the surface.
-This is done to have an area of convergence for a simple gradient-descent projection algorithm.
-
+These offset-points were generated for every vertex of the original mesh and in both directions (on the inside and on the outside) such as to have
+a guaranteed area of convergence of a gradient descent projection.
 
 
 ## Remeshing operations
@@ -558,14 +606,14 @@ Which of the modification is applied depends on an edges length in comparison to
 
 Edge collapse, as the name suggests removes an edge from the mesh thereby deleting two adjacent triangles and removing one point.
 Special conditions have to be checked as there are certain configurations that would result in an illegal triangulation.
-See figures @fig:collapse_e2 and \ref{fig:collapse_e1}
+See figures [@fig:collapse_e2] and [@fig:collapse_e1].
 To avoid having to project a new midpoint to the surface, the two vertices of the edge are joined at either one of them.
 
-![Edge collapse with the new point at one of the endpoints \label{fig:collapse}](source/figures/edge_collapse.svg){width=100%}
+![Edge collapse with the new point at one of the endpoints](source/figures/edge_collapse.svg){#fig:collapse}
 
-![Illegal edge collapse with more than two common neighbors for the edges endpoints \label{fig:collapse_e2}](source/figures/edge_collapse_error2.svg){#fig:collapse_e2 width=95%}
+![Illegal edge collapse with more than two common neighbors for the edges endpoints](source/figures/edge_collapse_error2.svg){#fig:collapse_e2 width=95%}
 
-![Illegal edge collapse with a triangle flip \label{fig:collapse_e1}](source/figures/edge_collapse_error1.svg){width=100%}
+![Illegal edge collapse with a triangle flip](source/figures/edge_collapse_error1.svg){#fig:collapse_e1}
 
 Both cases are easily cared for.
 The case of more than two common neighbors can be checked in a graph datastructure
@@ -575,16 +623,16 @@ and to check if a triangle was flipped the normal before and after the operation
 The edge split is a straightforward operation as no special cases have to be taken care of. 
 A new vertex is put at the surface projected midpoint of the existing edge and 4 new edges as well as 4 new triangles replace the split edge and it's adjacent triangles.
 
-The only pitall than can occur is that the projection of the midpoint with a gradient descent can sometimes project into another
+The only pitfall than can occur is that the projection of the midpoint with a gradient descent can sometimes project inside another
 triangle therefore yielding flipped triangles.
 This again need to be checked with a normal-flip check
 
-### Edge flip
+### Edge flip{#sec:edge_flip}
 
-![Edge flip \label{fig:edge_fip}](source/figures/edge_flip.svg){width=100%}
+![Edge flip ](source/figures/edge_flip.svg){#fig:edge_flip}
 
 An edge flip can dramatically increase the aspect ratio of a triangle if the right conditions are met.
-Consider the edge in figure \ref{fig:edge_flip}
+Consider the edge in [@fig:edge_flip].
 Such an edge is flippable if:
 
 - The edge does not belong to the boundary of the mesh
@@ -592,13 +640,14 @@ Such an edge is flippable if:
 - $\phi_{ABC} + \phi_{ABD} < \pi \quad \text{and} \quad \phi_{BAC}+ \phi_{BAD} < \pi$  
 - The angle between the normals of the triangles is not too big to not cast "ridges"
 
-I do a flip similar to [@dassi_novel_2016] if the 6d angles of the opposing angles $\phi_{BDA} \text{ and } \phi_{ACB}$ together are larger than a threshold value $\kappa \pi \text{ with } \kappa \leq 1$:
+I do a flip according to [@dassi_novel_2016] if the 6d angles of the points opposing the to-be flipped edge $\phi_{BDA} \text{ and } \phi_{ACB}$ together are larger than $\pi$:
 
-$$\phi_{BDA}^{6d} + \phi_{ACB}^{6d} \geq \kappa \pi$$
+$$\phi_{BDA}^{6d} + \phi_{ACB}^{6d} \geq \pi$$
 
+For the definition of those angles see [@sec:HDE].
 A value of $\kappa$ near one is problematic in conjunction with the higher dimensional embedding
 since the HDE angle seldom takes on values of $\pi/2$ or larger due to the surface-normals
-in the 6d-scalar product not being orthogonal.
+in the 6d-scalar product not being orthogonal. This results in flips not actually taking place.
 
 
 ### Vertex smoothing
@@ -644,7 +693,7 @@ The descent algorithm reads as follows
 \DontPrintSemicolon
 \SetAlgoLined
 \SetKwInOut{Input}{Input}\SetKwInOut{Output}{Output}
-\Input{$x_0 \text{ and } eps$}
+\Input{$x_0 \text{ and } eps \text{ and interpolant } f$}
 \BlankLine
 i=0 \;
 \While{$i<$ steplimit}{
@@ -662,7 +711,7 @@ i=0 \;
 
 
 
-## Higher dimensional embedding 
+## Higher dimensional embedding{#sec:HDE} 
 
 The term higher dimensional embedding may sound a bit exaggerated for what is actually done. 
 Namely, the pointnormals are included in an edges length calculation as to enlarge the edge when the normals differ.
@@ -673,10 +722,13 @@ Given a vertex $x$ on the surface, it is concatenated with the surface normal $n
 $$\Psi(x) = (x,y,z, \sigma n_x, \sigma n_y, \sigma n_z)^T$$
 
 Here $\sigma$ is a parameter of the embedding and in effect controls how much an edge will be enlarged.
-With this new $\Psi$ the edgelength between two points $a$ and $b$ will now be defined as:
-$$l_{ab}^{6d}= \lVert \Psi(a) - \Psi(b)\rVert = \sqrt{(\Psi(a)-\Psi(b), \Psi(a)-\Psi(b))}$$
+With this new $\Psi$ the edgelength between two points $a$ and $b$ will now be defined with the 6d Euclidean scalar product as:
+$$l_{ab}^{6d}= \lVert \Psi(a) - \Psi(b)\rVert_{6d} = \sqrt{(\Psi(a)-\Psi(b), \Psi(a)-\Psi(b))_{6d}}$$
 
 And in the same manner an angle between the points $a,b,c$ is defined via:
 $$cos(\theta^{6d}_{abc})= \frac{(\Psi(a)-\Psi(c), \Psi(b)-\Psi(c))_{6d}}{l_{ac}^{6d}l_{bc}^{6d}}$$
+
+These edgelengths are subsequently used as the regulator for the local mesh modifications in the remeshing algorithm.
+The 6d angles are therein used in the edge flips.
 
 

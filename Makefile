@@ -28,7 +28,7 @@ pdf:
 	pandoc "$(INPUTDIR)"/*.md \
 	-o "$(OUTPUTDIR)/thesis.pdf" \
 	-H "$(STYLEDIR)/preamble.tex" \
-	-F pandoc-crossref \
+	-F pandoc-crossref  \
 	-F pandoc-citeproc \
 	--template="$(STYLEDIR)/template.tex" \
 	--bibliography="$(BIBFILE)" 2>pandoc.log \

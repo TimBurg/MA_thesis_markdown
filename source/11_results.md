@@ -19,12 +19,31 @@ b) the witdh between minima and maxima adjacent to the zero crossing (convergenc
 The offset interpolation points are located at $\pm$ 0.78 in units of the actual mesh  \label{my_label}](source/figures/vertex_normal_plot.png){ width=100% }
 
 ## The topology optimization models
-The templates for the following calculation were kindly provided by Moritz Ebeling from the Weierstraß Institute 
-for which this work was written.
+The implementations for the following calculation were kindly provided by Moritz Ebeling from the Weierstraß Institute.
+They are based on the pdelib library developed at the Weiserstraß Institute.
+
+All the models were calculated with the lame coefficients set to that of the 3d-printing plastic PLA:
+$$\lambda = 1599e^6 \quad \mu = 685e^6$$
+
+The parameters for the Ginzburg-Landau term were set to:
+$\gamma = 6.25e^{-5}$ $\epsilon = 0.00175$ $\tau = 0.01$
+
 
 
 ### The bridge
-The calculation 
+The bride model posesses an x-y mirror symmetry and has a force square on top, visible in figure \ref{fig:bridge_grid}.
+The force square with a Neumann load is visible as the green square on the top of the domain in the first picture.
+The symmetry is imposed by a homogeneous dirichlet condition in the x direction on the orange and in the y-direction on the green part of the domain
+also visible in the first picture.
+The second picture shows the dirichlet clamp on the bottom (in blue) where x and y movements are penalized.
+
+The dimensions of the domain are 5cm in the x-direction, 1.5cm in the y-direction and 2cm in the z-direction.
+The force square has a size of 1 by 1 cm and a load density of 2400 N/m² in the z-direction resulting in a total load of 0.24N or approximately 24g.
+
+The model was calculated using 294231 tetrahedra.
+
+After 60 iterations the mesh in [@fig:bridge_raw] was extracted.
+In the closeup [@fig:closeup_bridge] the it can be seen that the triangle size and shape is very unregular.
 
 ![](./source/figures/bridge_grid_front.png){width=50%}
 ![](./source/figures/bridge_grid_back.png){width=50%}
@@ -33,19 +52,41 @@ The calculation
 \label{fig:bridge_grid}
 \end{figure}
 
-![Isosurface of bridge after extraction](./source/figures/bridge_raw.png)
+Subsequently the mesh was mirrored at the symmetry axes and merged into one stl model.
 
-![After remeshing with $l^{6d} =$2x longest edge and doing 10 iterations](./source/figures/bridge_remeshed.png)
+![Isosurface of the bridge model after extraction](./source/figures/bridge_solo_raw.png){#fig:bridge_raw width=90%}
 
-- parameters: gamma, eps
-- domain description and boundary conditions
-- how many tetrahedra
+![Closeup of the bridges isosurface](./source/figures/closeup_bridge.png){#fig:closeup_bridge width=90%}
+
+![Bridge model after accounting for the mirror symmetry](./source/figures/bridge_raw.png)
+
+![After remeshing with $l^{6d} =$2x longest edge and doing 10 iterations](./source/figures/bridge_with_zoom2.png)
 
 ### The table
-![The boundary conditions of the bridge model](./source/figures/tisch3d_grid_bottom.png)
-![The boundary conditions of the bridge model](./source/figures/tisch3d_grid_top.png)
+The table model has a large force rectangle with non-homogeneous neumann conditions on top and 4 x-y sliding dirichlet conditions on the bottom.
+The rest of the boundary has a homogeneous Neumann condition.
+
+The domain has size 9.6cm(x) by 2.8cm(y) by 2cm(z) and the force square is 8 x 2cm with a force density of 2400 N/m² resulting in a load of 384g.
+
+The model was calculated with 1120591 tetrahedra and ran for 60 iterations.
+
+![](./source/figures/tisch3d_grid_bottom.png){width=50%}
+![](./source/figures/tisch3d_grid_top.png){width=50%}
+\begin{figure}[!h]
+\caption{The table model with a large force rectangle on the top and 4 x-y sliding dirichlet conditions on the bottom}
+\label{fig:table_grid}
+\end{figure}
 
 ### The tower
 <!--![The boundary conditions of the bridge model](./source/figures/bridge_grid.png)-->
 
 ## Analysis of the results and problem 
+
+- The unstructured graph datastructure scaled very poorly to larger meshes ie. excessive cache misses yielded a poor performance.
+  This is a fundamental problem for pliant remeshing and may be adressed with good datastructures that preserve neighborhood to some degree. 
+- fitting with RBFs would have been more appropiate to incorporate the smoothing and reduce the number of RBFs.
+  However, projections might not work so well without offset constraints.
+- 6d flips work poorly for refinement due to mesh normals being a limited indicator of mesh accuracy -> some long edges remain due to equal normals.
+- surface interpolation works well and projections were fast and reliable.
+
+Immediate requirement for a practicable method: faster datastructure and mesh fitting.

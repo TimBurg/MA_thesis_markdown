@@ -8,7 +8,7 @@ This could be a list of papers by the author for example
 
 Triangluar meshes can have a multitude of minor errors that unfortunately are very much tolerated in cad-programs and 3D-software but can cause issues with 
 
-# Interpolation with conditionally positive definite functions
+# Interpolation with conditionally positive definite functions {#sec:conditional}
 
 Definition:
   ~ A continuous even function $\Phi:\mathbb{R}^d \mapsto \mathbb{R}$ is conditionally positive (semi) definite

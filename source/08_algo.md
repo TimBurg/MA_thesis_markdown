@@ -57,6 +57,7 @@ The interpolation matrix \ref{eq:interpolation_matrix} is then constructed as a 
 Throughout the implementation of the algorithm a cat model was used that is pictured in figure \ref{fig:cat_model} 
 together with it's interpolated surface (the isosurface was generated with marching cubes).
 
+
 ![](./source/figures/cat_raw.png){width=50%}
 ![](./source/figures/cat_cubes_isosurf.png){width=50%}
 \begin{figure}[!h]
@@ -86,15 +87,18 @@ Since the often used laplace smoothing diminishes volume I opted for taubin smoo
 The smoothing is very similar to the introduced vertex-smoothing above. For a vertex $v_i$ and neighbors $v_j$, the position
 of the vertex is shifted with a weighed average of the neigbors positions:
 $$\Delta v_i = \sum_{j \in \mathcal{N}_i} w_{ij} (v_j - v_i)$$
-With $w_{ij}=1/|\mathcal{N}_i|$ as the number of neighbors. The shift is then added partially to the original vertex.
+Where the weights $w_{ij}$ are just set as the inverse number of neighbors $w_{ij}=1/|\mathcal{N}_i|$. The shift is then added partially to the original vertex.
 $$v_i' = v_i + \lambda \Delta v_i \qquad 0<\lambda<1$$
 
 For taubin smoothing an analogous second smoothing step is introduced with a negative $\lambda$ ie. an expansion.
 The coefficient for this is denoted $\mu$ with the restriction that $0< \lambda < -\mu$.
-In [@taubin_curve_1995] taubin shows that this acts as a lowpass filter and prevents shrinkage of the model.
+In [@taubin_curve_1995] taubin shows that this acts as a lowpass filter and limits shrinkage of the model.
 
-For the application I used values of $\lambda = 0.40$, $\mu=-0.52$ and made 40 smoothing iterations.
+For the application I used values of $\lambda = 0.40$, $\mu=-0.50$ and made 40 smoothing iterations.
+The smoothing effect is displayed in figure [@fig:dragon].
 
+
+![The mesh smoothing method applied to a dragon test model](./source/figures/dragon_smoothing.png){#fig:dragon} 
 
 
 ## Projection step
@@ -109,9 +113,10 @@ This is however no requirement since vertex smoothing will take care of adjustin
 
 ## Remeshing 
 
-Generally, points on the boundary are not touched since they form a fixed interface to 
+Generally, points on the boundary are not included in the remeshing procedure as the coplanarity of points on the boundary 
+could not be preserved.
 
-The remeshing algorithm is taken from [@dassi_novel_2016]
+The remeshing algorithm is implemented as in [@dassi_novel_2016]:
 
 \begin{algorithm}[H]
 \DontPrintSemicolon
@@ -141,7 +146,19 @@ i=0 \;
 \caption{The remeshing procedure}
 \end{algorithm} 
 
+## Higher dimensional embedding
 
+The parameter for the embedding is $\sigma$. Due to the 
 
-### convergence analysis
+<!--As mentioned in [@sec:edge_flip] a too large angle condition for the 6d-angles on the opposing points of a to-be-flipped edge can lead to-->
+<!--very few flips being done at all.-->
+<!--For why this is consider the triangle depicted in [@fig:tri_strip]. The triangle angle $\beta$ at the point B is calculated with the following forumla.-->
+<!--Let $A^{6d}$ be the vector $(\text{A}, \sigma \text{n}_\text{A})$ and analogously for B and C. Then-->
+<!--$$\beta = \text{arccos}\Big( \frac{(A-B, C-B)_{3d} + \sigma^2 (n_A - n_B, n_C - n_B )}{\lVert A^{6d} - B^{6d} \rVert_{6d} \lVert C^{6d} - B^{6d}\rVert_{6d}}\Big)$$-->
+
+<!--Take a look at the scalar product after $\sigma^2$. For a n angle of $\pi/2$ this term would need to become zero. This will can only happen if-->
+<!--$n_A = n_B \text{ or } n_C = n_B$ or $n_A - n_B \perp n_C - n_B$ which-->
+
+<!--![A thin strip triangle on a curved surface](./source/figures/triangle_strip.svg){#fig:tri_strip width=50%}-->
+
 
