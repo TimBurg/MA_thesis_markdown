@@ -198,10 +198,10 @@ However, it is still open at this time how the compliance depends on the structu
 This dependence is actually encoded in the Stiffness-tensor $C$ of the mechanical system that will be constructed from the 
 phase field after it is defined in the next section.
 
-### The phase-field description and regularization energy
+### The phasefield description and regularization energy
 
 For the modeling of structures either a level set method or a phase field description is viable.
-In case of the phase-field a continuous function is chosen 
+In case of the phasefield a continuous function is chosen 
 that here can take on values in the range from 0 to 1 where 0 represents the void and 1 the material:
 $$ 0 \leq \varphi \leq 1$$
 
@@ -236,9 +236,9 @@ $$\Psi_\text{dw}(\varphi) = \frac{1}{4} (\varphi^2 - \varphi)^2$$
 $$\Psi_\text{obs} = \begin{cases} (1-\varphi)\varphi,  \quad \text{if}\ \varphi \in [0,1]\\
 			           \infty \quad \text{else}
 \end{cases}$$
-The two potentials are displayed in figure \ref{fig:potentials}
+The two potentials are displayed in figure [@fig:potentials].
 
-![The two potentials in the Ginzburg-Landau energy term \label{fig:potentials}](source/figures/double_well.png){width=70%}
+![The two considered potentials for the Ginzburg-Landau energy term](source/figures/double_well.png){#fig:potentials width=70%}
 
 ### Interpolation of the stiffness tensor and gravitational force
 Using this phasefield, an interpolating stiffness tensor can be constructed.
@@ -248,44 +248,42 @@ transition function $t(\varphi) = \varphi^3$ is used:
 $$C(\varphi) = C_\text{mat} t(\varphi) + C_{void} (1- t(\varphi)) $$
 
 Also, the force $f$ occuring in the mechanical system can now be made concrete.
-Namely the phase-field acts as a direct scaling factor for the mass density $\rho_{\text{mat}}$ and excludes the void from contributing any forces:
+Namely the phasefield acts as a direct scaling factor for the mass density $\rho_{\text{mat}}$ and excludes the void from contributing any forces:
 
 $$f = \varphi \cdot \rho_\text{mat} \cdot G_z \quad \text{with} \  G_z=9.81 \cdot [0, 0, 1]^T \: "N"$$
 
 $$F(u, \varphi) = \int_{\bar{\Omega}} \varphi \cdot \rho_\text{mat} \cdot G_z \cdot  u + \int_{\Gamma_g} g \cdot u $$
 
 ### The optimal control problem
-I now state the first order necessary optimality conditions for a minimum which are given by the Karush-Kuhn-Tucker theory.  
+I now state the first order necessary optimality conditions for a minimum which are provided by the Karush-Kuhn-Tucker theory.  
 
 As indicdated before, the goal is to minimize the functional made up of the compliance and the Ginzburg-Landau term:
 $$ \text{min}\ J(u, \varphi) := \gamma E(\varphi) + F(u, \varphi) \quad \text{with} \ \varphi \in \mathcal{G}^m \text{ and } u\ 
 \text{ fulfills eq }\eqref{eq:compliance}$$ 
-Here $\gamma$ is a parameter that controls the influence of the regularization term and it's will value will determine the fineness of 
+Here $\gamma$ is a parameter that controls the influence of the regularization term and it's will value will determine the porosity/filigreeness of 
 the obtained structure.
 
 To write down the optimality conditions in a concise form, consider the control-to-state operator 
 $S(\varphi) = u$ defined implicitly by equation \eqref{eq:compliance}. 
-It's directional derivative $S'(\varphi)h = p$ is given by the solution to:
-
+Its directional derivative in the direction $h \in H^1(\Omega, \mathbb{R})$, $S'(\varphi)h = p$ is given by the solution to:
 \begin{equation}\langle \varepsilon(p), \varepsilon(\eta)\rangle_{C(\varphi)} =
  \langle \varepsilon(u), \varepsilon(\eta)\rangle_{C'(\varphi)h} - \int_{\bar{\Omega}} h \cdot f \cdot \eta  \quad \forall \eta \in H^1_D
  \label{eq:control_to_state}
  \end{equation}
-
-[see @blank_relating_2014 theorem 3.3]. Here $p$ is also a function from $H^1_D$.
+where $p$ is also a function from $H^1_D$.[see @blank_relating_2014 theorem 3.3]. 
 
 It follows from the definition of the total differential and the chain rule that the reduced functional 
 $\widetilde{J}(\varphi)= J(S(\varphi), \varphi)$ is
 Fréchet-differentiable with the derivative:
 $$\tilde{J}'(\varphi) h = \frac{\partial}{\partial u} J(u,\varphi) p + \frac{\partial}{\partial \varphi} J (u, \varphi) h$$
 
-Since $E(\varphi)$ is independent of $u$, the partial derivative with respect to $u$ is just the right-hand side of the state equation:
+Since $E(\varphi)$ is independent of $u$, the partial derivative with respect to $u$ is just the right-hand side of the state equation \ref{eq:compliance}:
 
 $$\frac{\partial}{\partial u} J(u, \varphi) p = F(p,\varphi) $$
-Here I have used that the Fréchet derivative of a linear functional in a direction $p$ is the functional applied to that direction.
+Here I have used the fact that the Fréchet derivative of a linear functional in a direction $p$ is the functional applied to that direction.
 
 
-This is, since $p \in H^1_D$ is an admissible test function in the state equation, equal to the left hand side of the state equation.
+This is, since $p \in H^1_D$ is also an admissible test function in the state equation, equal to the left hand side of the state equation.
 Note that if this was not the case, an auxillary state $q \in H^1_D$ could have been introduced which would solve a system sometimes called the adjoint system as to make the following equality hold. 
 
 Now using equation \eqref{eq:control_to_state} with $u$ as a test function this can be written as:
@@ -295,7 +293,7 @@ Now using equation \eqref{eq:control_to_state} with $u$ as a test function this 
 &= -\langle \varepsilon(u), \varepsilon(u)\rangle_{C'(\varphi)h} -  \int_{\bar{\Omega}} h \cdot f \cdot u
 \end{align}
 
-The calculation of the partial derivative of $J$ with respect to $\varphi$ is straightforward:
+The calculation of the partial derivative of $J$ in the direction $\xi \in H^1(\Omega, \mathbb{R})$ with respect to $\varphi$ is straightforward:
 
 $$\frac{\partial}{\partial \varphi}J(u,\varphi) \xi = \gamma \varepsilon \int_\Omega (\nabla \varphi , \nabla \xi) \ dx +
 \gamma \int_\Omega \frac{1}{\varepsilon} \Psi'(\varphi) \xi \ dx  + F(u,\xi)$$
@@ -304,14 +302,14 @@ Summing up and using $\xi = h$ as the direction in which to
 derive, the reduced functional has the following
 directional derivative:
 \begin{equation}
-\frac{d}{d \varphi} \tilde{J}(\varphi) \xi = 2 \cdot F(u, \xi) + \gamma \int_\Omega \varepsilon \nabla \varphi \nabla \xi +
+\frac{d}{d \varphi} \tilde{J}(\varphi) \xi = 2 \cdot F(u, \xi) + \gamma \int_\Omega \varepsilon (\nabla \varphi, \nabla \xi) +
 \frac{1}{\varepsilon} \Psi'(\varphi) \xi \ dx 
  - \langle \varepsilon(u), \varepsilon(u)\rangle_{C'(\varphi)\xi}
 \end{equation}
 
 To incorporate the constraints on $\varphi$ we now follow the Karush-Kush-Tucker theory.
 For this to work we have to make sure a constraint qualification is satisfied.
-Here we consider the slater condition that, for an itermediate density material distribution in the whole domain 
+Here I consider the slater condition that, for a homogeneous itermediate density distribution in the whole domain that satisfies the volume constraint, 
 is obviously satisfied. Thus we can assume strong duality and the complentarity follows.
 
 To reconsider, we have the following additional requirements
@@ -322,16 +320,16 @@ To reconsider, we have the following additional requirements
 -\varphi   &\leq 0 
 \end{align}
 
-Introducing lagrange multipliers $\kappa \in \mathbb{R}, \text{ and } \mu_+, \mu_- \in L^2(\Omega)$ the KKT-first order necessary optimality conditions then read:
+Introducing Lagrange multipliers $\kappa \in \mathbb{R}, \text{ and } \mu_+, \mu_- \in L^2(\Omega)$ the KKT first-order necessary optimality conditions read:
 
-\begin{align}
-\frac{d}{d\varphi} \tilde{J}(\tilde{\varphi}) \omega + \kappa \int_\Omega \omega \ dx + \mu_+ \omega - \mu_- \omega  &= 0 \quad \forall \omega \in H^1_D \label{eq:gradient}\\
-\langle \varepsilon(\tilde{u}), \varepsilon(v)\rangle_{C(\varphi)} &= F(\tilde{u}, v)  \quad \forall v \in H^1_D \\
-\int_\Omega \tilde{\varphi} - m \ dx &= 0 \label{eq:mass_constraint}\\
-\mu_+ \geq 0,& \quad \mu_- \geq 0 \quad \text {a.e. in } \Omega\\
-(\mu_+, \tilde{\varphi} -1) &= 0 \quad \text {a.e. in } \Omega \label{eq:complementary1}\\
-(\mu_-, -\tilde{\varphi}) &= 0 \quad \text {a.e. in } \Omega \label{eq:complementary2}
-\end{align}
+\begin{alignat}{2}
+\frac{d}{d\varphi} \tilde{J}(\tilde{\varphi}) \omega + \kappa \int_\Omega \omega \ dx + \mu_+ \omega - \mu_- \omega  &= 0  &&\forall \omega \in H^1_D \label{eq:gradient}\\
+\langle \varepsilon(\tilde{u}), \varepsilon(v)\rangle_{C(\varphi)} &= F(\tilde{u}, v) \quad  &&\forall v \in H^1_D \\
+\int_\Omega \tilde{\varphi} - m \ dx &= 0 \label{eq:mass_constraint} && \\
+\mu_+ \geq 0,& \quad \mu_- \geq 0 \quad &&\text{a.e. in } \Omega\\
+(\mu_+, \tilde{\varphi} -1) &= 0 \quad &&\text{a.e. in } \Omega \label{eq:complementary1}\\
+(\mu_-, -\tilde{\varphi}) &= 0 \quad &&\text{a.e. in } \Omega \label{eq:complementary2}
+\end{alignat}
 
 Where the last three conditions arise due to complementarity.
 
@@ -379,7 +377,7 @@ A sophisticated method to alleviate the Lagrange multipliers $\mu_+$ and $\mu_-$
 The theory to this approach was developed in [@blank_primal-dual_2013].
 
 In essence, PDAS maintains a set of active constraints for every point.  
-A constraint is inactive if the corresponding lagrange multiplier is zero and active if $\varphi$ takes on the corresponding bound -
+A constraint is inactive if the corresponding Lagrange multiplier is zero and active if $\varphi$ takes on the corresponding bound -
 One of which has to hold due to the equations \eqref{eq:complementary1} and \eqref{eq:complementary2}.
 
 These sets are then updated by first solving the so-called primal problem which is \eqref{eq:descent_iteration} without $\mu_\pm$ but 
