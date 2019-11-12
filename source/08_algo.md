@@ -148,7 +148,53 @@ i=0 \;
 
 ## Higher dimensional embedding
 
-The parameter for the embedding is $\sigma$. Due to the 
+The parameter for the embedding is $\sigma$. By the nature of the extension, the additional edgelength due to the normals
+is independent of the scaling of the original mesh. Therefor the values of $\sigma$ depend on the input mesh.
+A good default value is set with the following formula utilizing an enclosing box (or bounding box) $B$ of a model $m$.
+$$\sigma_{default} = \frac{\text{size}_x(B) + \text{size}_y(B) +\text{size}_z(B) +}{10}$$
+The value 10 was obtained heuristically but depending on the model proportions and desired refinement,
+values as low as 5 or as high as 15 might be used.
+
+The effect of different $\sigma$ are shown in ...
+
+
+<div id="fig:sigma_values">
+![$\sigma=20$](./source/figures/fox_nose_sigma=20.png){width=50%}
+![$\sigma=28$](./source/figures/fox_nose_sigma=28.png){width=50%}\
+![$\sigma=36$](./source/figures/fox_nose_sigma=36.png){width=50%}
+![$\sigma=50$](./source/figures/fox_nose_sigma=50.png){width=50%}
+
+Greater values of $\sigma$ yield a refinement of curved surfaces. However, due to the irregularities due to small variation in normals
+can occur.
+</div>
+
+
+
+## Implementation details
+
+The programming language Python was used to build a datastructure for the mesh (that is called Trimesh) and implement 
+the remeshing operations from [@sec:remeshing_ops] with it.
+This Trimesh is an undirected graph made up of points with asociated pointnormals and references to their neighbors. Additionally each point
+stores references to the edges and triangles it takes part in.
+
+Also in the Trimesh are lists of edge and triangle objects that each hold references to their points and to each other. More so, a triangle has labels A,B,C for its points and a,b,c for its edges where the lower letter edge is located opposite to the respective capital letter Point.
+
+Also, the order of points in a triangle not only determines the normal vector but is used in finding 
+triangles left and right to an edge (looking from the outside).
+Therefor the correctness of these information is of fundamental importance.
+
+The richness of this datastructure has the benefit that the remeshing operations could be written in a relatively compact form.
+
+To then optimize the performance of this datastructure it was ported to the C-language with the cython transpiler where additional datatypes were added.
+
+However, performance was not a consideration from the beginning. And it was discovered that 
+unstructured graphs of relatively large python objects have a bad cache performance.
+Adding to this, for large input meshes, the calculation of interpolant values takes a lot of time since the distances to each 
+center need to be computed. 
+That is to say, the topology optimization meshes that were remeshed in the following section took
+several hours to remesh even though smaller meshes of only a few thousand vertices could be remeshed in acceptable times like 5 to 10 minutes.
+
+I will reconsider this issue in the outlook section.
 
 <!--As mentioned in [@sec:edge_flip] a too large angle condition for the 6d-angles on the opposing points of a to-be-flipped edge can lead to-->
 <!--very few flips being done at all.-->

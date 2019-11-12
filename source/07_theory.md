@@ -3,14 +3,14 @@
 
 First I present the theory for the topology optimization that was used. 
 This includes a brief recapitulation of linear elasticity and compliance minimization and then a short 
-derivation of the optimality conditionn and the numerics that follow were used to implement it.
-After that the extration of the isosurface, the radial basis function based surface interpolation and the basic remeshing operations are introduced.
+derivation of the optimality conditions and the discretizations that are applied to iterate towards them numerically.
+After that the extration of the isosurface, the radial basis function based surface interpolation and the remeshing operations are introduced.
 
 ## Linear elasticity
 
 ### The equations of static elasticity
 Mathematical elasticity can be considered a branch of continuum dynamics whose research reaches as far back as the late 16th century.
-I only give a short outline of the stepstones to linear elasticity and refer mostly to  
+I only give a short outline of the stepstones to linear elasticity that are mostly based on  
 the book mathematical elasticity by Ciarlet which is a comprehensive standard piece on the topic.
 
 Continuum dynamics deals with a body occupying a lipschitz-continuous reference configuration $\overline{\Omega}\subset \mathbb{R}^3$ under rest which is deformed to a
@@ -20,18 +20,18 @@ $$\varphi:\overline{\Omega} \mapsto \Omega \qquad \varphi=id+u$$
 For the static case treated here, the deformation is time independent.
 The deformation and displacement mappings are required to be two times continuously differentiable but this reqirement can be relaxed in the variational formulation of the equations. 
 I denote the coordinates in the reference configuration with $x$ and and those in the deformed configuration with $x^\varphi = \varphi(x)$. 
-In engineering Textbooks those coordinates are sometimes referred to as Lagrange- and Euler-coordinates respectively.
+In engineering textbooks those coordinates are sometimes referred to as Lagrange- and Euler-coordinates respectively.
 
-The elasticity theory is then build on the follwowing two contibutions from Cauchy of which the second is fundamental to continuum dynamics:
+The elasticity theory is then build on the following two contributions from Cauchy of which the second is fundamental to continuum dynamics:
 
 1. Axiom of force balance:
 
    Given volume- and surface-force-densities as $f^\varphi$ and $g^\varphi$  in the deformed configuration then for every subset
    $A^\varphi \subset \Omega$ the following equality holds:
    $$\int_{A^\varphi} f^\varphi(x^\varphi) dx^\varphi + \int_{\partial A^\varphi} t^\varphi(x^\varphi,n^\varphi)da^\varphi = 0$$
-   Here, $dx^\varphi$ and $da^\varphi$ are the volume and surface elements in the deformed configuration, $n^\varphi$ is the surface-unit-normal and $t^\varphi$ is the cauchy stress vectorfield:
+   Here, $dx^\varphi$ and $da^\varphi$ are the volume and surface elements in the deformed configuration, $n^\varphi$ is the surface-unit-normal and $t^\varphi$ is the Cauchy stress vectorfield defined as:
    $$t^\varphi:\Omega \times \mathbb{S}_1 \mapsto \mathbb{R}^3 \quad where \quad \mathbb{S}_1 := \{v \in \mathbb{R}^3\:|\: \lVert v \rVert = 1 \}$$
-   Note that the cauchy stress vector $t^\varphi$ depends on the given Volume $A$ only through the normal vector at a surface point and
+   Note that the Cauchy stress vector $t^\varphi$ depends on the given volume $A$ only through the normal vector at a surface point and
    that any surface-force dictated on part of $\partial A \cap \partial\Omega$ must be dispersed through 
    the remaining part of $\partial A$.
 
@@ -51,27 +51,28 @@ The elasticity theory is then build on the follwowing two contibutions from Cauc
    \end{align}\end{subequations}
    where $\Gamma_g^\varphi$ is the part of $\partial \Omega$ where the boundary condition $g$ is prescribed 
    and $\text{div}T = \partial_j T_{ij}, e_i$
-   [See @philippe_ciarlet_mathematical_1990 p.63-65 for the proof]  
+   [See @philippe_ciarlet_mathematical_1990 p.63-65 for the proof].
 
-Notice that the forumulation above uses the stress tensor in the deformed configuration where it is symmetric.
-The pullback of the tensor onto the reference configuration is achieved with the piola-transform after which it needs 
+Notice that the formulation above uses the stress tensor in the deformed configuration where it is symmetric.
+The pullback of the tensor onto the reference configuration is achieved with the Piola-transformation after which it needs 
 to be symmetrized again. This then yields the so-called first and second Piola-Kirchhoff-Stress-Tensors of 
 which the latter is denoted with $\Sigma$.
-A change in the force densities due to the deformation is often ignored. These forces are then called dead loads
+A change in the force densities due to the deformation is often ignored. Such forces are then called dead loads
 [see @philippe_ciarlet_mathematical_1990 chapter 2.7].
 
-The equilibirum equations for them are omitted here for brevity but the second Piola-Kirchhoff-Stress is the stress tensor to be determined in the next chapter.
+The equilibrium equations for them are omitted here for brevity but the second Piola-Kirchhoff-Stress is the stress tensor to be determined in the next chapter.
 
-Another thing that is important is that the boundary condition can and will be only prescribed on a part of the boundary.
+Another thing that is important is that the boundary condition can and will only be prescribed on a part of the boundary.
 
 ### Stess, strain and the equations of equilibrium in the linear case
-So far the theory is valid for all continuums but there are also nine unknown functions, namely the three components of the deformation and the six components of the stress tensor tensor.
-However, several simplifictaions can be made in case of isotropic and homogeneous media that lead to a remarkably simple form of the tensor.
+So far the theory is valid for all continuums but there are also nine unknown functions, 
+namely the three components of the deformation and the six components of the stress tensor.
+However, several simplifications can be made in the case of isotropic and homogeneous media that lead to a remarkably simple form of the tensor.
 
 To this end the (right-) Chauchy (Green) strain tensor $C$ and its difference from unity $E$ is introduced.
 I will refer to $E$ simply as the strain tensor.
-They describes the first order local change in length-scale under a deformation and are defined via the 
-Fréchet derivative of the mapping $\varphi\mathrm{:} \: \nabla \varphi$:
+They describe the first order change in local length-scale under a deformation and are defined via the 
+Fréchet derivative of the mapping $\varphi\mathrm{,} \: \nabla \varphi$:
 
 $$\nabla \varphi = \begin{pmatrix}
 			\partial_1 u_1 & \partial_2 u_1 &  \partial_3 u_1 \\
@@ -87,18 +88,18 @@ Viewed in a different light, the deformed state can be considered a manifold wit
 The simplification of the second Piola-Kichhoff-Stress-tensor follows these steps:
 
 1. The stress tensor can only depend on $\varphi$ through its derivative $\nabla \varphi$ (Elasticity) 
-2. Material-Frame Indifference
-3. Isotropy
-4. Rivlin-Ericksen representation theorem
-5. Homogeneity
+2. Material-Frame Indifference (invariance under changes of coordinates)
+3. Isotropy of the material
+4. Rivlin-Ericksen representation theorem for matrices
+5. Homogeneity of the material
 
 Details on these steps can again be found in [@philippe_ciarlet_mathematical_1990 chapter 3].
 After following these steps, $\Sigma$ takes on the following form:
 $$\Sigma(C) = \lambda (\mathrm{tr}E)I + 2\mu E + o(\lVert E \rVert)$$
 
-Here, $\lambda$ and $\mu$ are the lamé coefficients of the material and $I$ is the identity tensor.
+Here, $\lambda$ and $\mu$ are the Lamé coefficients of the material and $I$ is the identity tensor.
 In the linear theory that is used as the basis for the topology optimization, the strain $E$ is replaced with 
-the linearized version $\varepsilon$: 
+its linearized version $\varepsilon$: 
 $$\varepsilon = \frac{1}{2}( \nabla u^T + \nabla u )$$
 
 this yields the following even simpler form of the tensor which is referred to as $\sigma$:
@@ -107,28 +108,29 @@ $$\sigma = \lambda ( \nabla u) I + \mu \left(\nabla u + \nabla u^T \right)$$
 The more prominent form of which is called Hooks-law and written with the so-called stiffness tensor that is unfortunately also named $C$ in the literature:
 \begin{equation} \sigma = C : \varepsilon \qquad \text{or} \qquad \sigma = C \varepsilon \label{eq:stiffness}\end{equation}
 
-Where the following tensoroperation for rank 2 tensors  is introduced that will be used in the coming sections:
+Here, the second form is written in vector notation for the components of the tensors and
+the following tensoroperation for rank 2 tensors  is introduced that will be used in the coming sections:
 $$G:V :=  \sum_{i,j} G_{ij} V_{ij}$$
-The last form is written in vector form for the components of the tensors.
 
 ### Variational formulation
-For finite-element simulations and reduced smoothness requirements of the displacement, a variatonal formulation of the equilibrium equations \eqref{eq:equilibrium} must be formulated.
+For finite-element simulations and reduced smoothness requirements of the displacement, a variational formulation of the equilibrium equations \eqref{eq:equilibrium} must be formulated.
 
 For this we first define the space $$
-H^1_D = \{\theta \in H^1(\Omega, \mathbb{R}^3) \mid \theta=0 \text{ on } \Gamma_D=\partial \bar{\Omega} - \Gamma_g \}$$
-to exclude the boundary term on $\Gamma_D$ from contributing force terms.
+H^1_D = \{\theta \in H^1(\Omega, \mathbb{R}^3) \mid \theta=0 \text{ on } \Gamma_D=\partial \bar{\Omega} - \Gamma_g \}\, ,$$
+to exclude the boundary on $\Gamma_D$ from contributing its force terms.
 
-Multiplying equation \eqref{eq:divT} with a test function $\theta$ from this space on both sides and integrating yields:
-$$\int_{\Omega^\varphi} \text{div}^\varphi T^\varphi \cdot \theta^\varphi dx^\varphi = -\int_{\Omega^\varphi} f^\varphi
-\theta^\varphi dx^\varphi + \int_{\Gamma_g^\varphi} g^\varphi \theta^\varphi$$
-Which has to hold for all test functions $\theta \in H^1_D$
+Multiplying equation \eqref{eq:divT} with a test function $\theta$ from this space on both sides and integrating 
+yields ($\cdot$ denotes the scalar product):
+$$\int_{\Omega^\varphi} \text{div}^\varphi T^\varphi \cdot \theta^\varphi \: dx^\varphi = -\int_{\Omega^\varphi} f^\varphi \cdot
+\theta^\varphi \: dx^\varphi + \int_{\Gamma_g^\varphi} g^\varphi \cdot \theta^\varphi \: da^\varphi \, ,$$
+which has to hold for all test functions $\theta \in H^1_D$.
 
 Using the Greens-formula for Tensor fields:
-$$\int_{\bar{\Omega}} \text{div} H \cdot \theta dx = - \int_{\bar{\Omega}} H:\nabla \theta dx + \int_\Gamma Hn\cdot \theta da $$
+$$\int_{\bar{\Omega}} \text{div} H \cdot \theta \  dx = - \int_{\bar{\Omega}} H:\nabla \theta \ dx + \int_\Gamma Hn\cdot \theta \ da $$
 and applying the pullback to the reference configuration with the second Piola-Kirchhoff-Stress-tensor then gives:
 
-$$\int_{\bar{\Omega}} \nabla \varphi : \Sigma \nabla \theta dx = \int_{\bar{\Omega}} f 
-\cdot \theta dx + \int_\Gamma g \cdot \theta da \qquad \forall \theta \in H^1_D$$
+$$\int_{\bar{\Omega}} \nabla \varphi \Sigma : \nabla \theta \: dx = \int_{\bar{\Omega}} f 
+\cdot \theta \: dx + \int_\Gamma g \cdot \theta \: da \qquad \forall \theta \in H^1_D$$
 
 For All vector fields $\theta: \bar{\Omega} \mapsto \mathbb{R}^3$ from $H^1_D$.
 This is also called the 'principle of virtual work' (in the reference configuration).
@@ -146,16 +148,17 @@ And thus we write the equilibrium equation in the variational form as:
 \end{equation}
 
 
-For the following sections we denote this as the following shorthand notation using the inner product 
+For the following sections I denote this as the following shorthand notation using the inner product 
 and the stiffness tensor from \eqref{eq:stiffness}:
 $\langle A,B \rangle_C = \int_{\bar{\Omega}} A: CB$ :
 
-\begin{equation}\langle \varepsilon(u), \varepsilon(\theta)\rangle_{C(\varphi)} = \int_{\bar{\Omega}} f \cdot \theta + 
-\int_\Gamma g \cdot \theta =: F(\theta) \qquad \forall \theta \in H^1_D \label{eq:compliance}\end{equation}
+\begin{equation}\langle \varepsilon(u), \varepsilon(\theta)\rangle_{C(\varphi)} = \int_{\bar{\Omega}} f \cdot \theta \: dx + 
+\int_\Gamma g \cdot \theta \: da =: F(\theta) \qquad \forall \theta \in H^1_D \label{eq:compliance}\end{equation}
 
-The well posedness of the weak formulation is proved using the Lax-Milgram Lemma and Korns Inequality in [@blank_relating_2014]
+Notice that I sneaked a dependence of the stiffness tensor on a parameter $\varphi$ into the equation that will be made concrete in the following chapter.
+The well posedness of this weak formulation is proved using the Lax-Milgram Lemma and Korns Inequality in [@blank_relating_2014 Theorem 3.1]
 
-For an actual deformation rather than a virtual one, the functional $F$ in \eqref{eq:compliance} is called the compliance of the structure.
+For an actual deformation rather than a virtual one, the functional $F$ in \eqref{eq:compliance} represents the compliance of the structure.
 This compliance is what is to be optimized in the following section. 
 
 ## Topology optimization
@@ -166,16 +169,21 @@ A phase field based topology optimization was first introduced by [@bourdin_desi
 SIMP-method[^1]
 introduced by Bendsøe over a decade earlier (see [@bendsoe_topology_2004] for a reference thereof).
 
+![Example of a topology optimised structure in 2D. source:[@ebeling-rump_topology_2019]](./source/figures/ebeling_2d_bridge.png)
+
+
 The term topology optimization was coined in the context of optimizing mechanical structures.
 It is not bound to a certain implementation but to the requirement that a structure under load may change its topology under the optimization procedure.
 For this the facility of nucleation of holes in a previously filled material is generally needed.
 
-The method used throughout this work that accomplishes this is based on minimizing a functional with gradient based optimization.
-The functional is constructed from a compliance term with a regularized phase field description of the structure.
+The method used throughout this work which accomplishes this is based on minimizing a functional with gradient based optimization.
+The functional is constructed from a compliance term and a regularization term for the  phasefield.
 In effect, compliance minimization maximizes the stiffness of the structure while a mass- or volume constraint formulated via the phase field controls where material is placed in the domain. 
 
 The use of a phase-function description allows to incorporate a computationally cheap perimeter regularization via an additional term in the optimization functional.
-This is needed since the compliance minimization in itself is not well posed and allows high variation in the microstructure of a part that cannot be manufactured and is not numerically stable.
+This is needed since the compliance minimization in itself is not well posed and allows high variation in 
+the microstructure of a part that cannot be manufactured and is not numerically stable.
+This can manifest itself as a checkerboard like pattern in the phasefield.
 
 [^1]:Solid Isotropic Material with Penalization
 
@@ -188,7 +196,7 @@ Here, $u$ is the displacement solution of the mechanical system in the left-hand
 
 However, it is still open at this time how the compliance depends on the structure of the part.
 This dependence is actually encoded in the Stiffness-tensor $C$ of the mechanical system that will be constructed from the 
-phase field after this has been defined in the next section.
+phase field after it is defined in the next section.
 
 ### The phase-field description and regularization energy
 
@@ -198,26 +206,26 @@ that here can take on values in the range from 0 to 1 where 0 represents the voi
 $$ 0 \leq \varphi \leq 1$$
 
 A penalty term is then added to the optimization to force the phasefield to condensate to either 0 or 1 depending on a forcing term from the compliance minimization.
-Consequently an interface between the two phases forms that is subject to an Allen-Cahn type equation which can drive the interface in
+Consequently an interface between the two phases forms whose change is subject to the resulting Allen-Cahn type equation which can drive the interface in
 the direction of its normal. This falls into the category of advancing-front algorithms. For details see [@barles_front_1993]
 or [@blank_phase-field_2010].
-For an understanding of the convergence of these dynamics I consider the optimality conditions of the system.
+For an understanding of the convergence of the induced dynamics I consider the optimality conditions of the system.
 
 
 Since integrating the phase field over a region gives the volume, a volume constraint
-is imposed by requiring said integral to be equal to a parameter $m$ which then
+is imposed by requiring the integral to be equal to a parameter $m$ which then
 dictates how much of the design domain is allowed to be material:
-$$\int_\Omega \varphi dx = m \cdot \text{vol}(\Omega)$$
+$$\int_\Omega \varphi \: dx = m \cdot \text{vol}(\Omega)$$
 
-Notice that values in the intermediate range of $\varphi$ distort this relationship.
+Bear in mind that values in the intermediate range of $\varphi$ distort this relationship.
 However, since they only occur in the interfacial region that will be forced to occupy a neglible portion of the domain, this is can be neglected.
 
-For the reading convenience we stipulate the requirements on $\varphi$ in the following space:
+For the reading convenience I stipulate the requirements on $\varphi$ in the following space:
 $$\mathcal{G}^m = \big\{\varphi \in H^1(\Omega, \mathbb{R})) \quad \big| \quad 0\leq \varphi \leq 1 \quad \text{and} \quad \int_\Omega \varphi dx = m \cdot \text{vol}(\Omega) \big\}$$
-These requirements are later taken care of by terms from the Karush-Kuhn-Tucker theory, namely the complementary slackness and a lagrange multiplier.
+These requirements are later taken care of by terms from the Karush-Kuhn-Tucker theory, namely the complementary slackness and a Lagrange multiplier.
 
-As stated, an additional term has to be added to the compliance functional as to force condensation of the phasefield and 
-regularize the occurence of jumps. The term used is due to [@takezawa_shape_2010] and is sometimes called the Ginzburg-Landau Energy:
+As stated, an additional term has to be added to the compliance functional as to enforce a condensation of the phasefield and 
+regularize the occurence of jumps. The term used is due to [@takezawa_shape_2010] and is called the Ginzburg-Landau Energy:
 
 $$ E^\varepsilon = \int_\Omega \frac{\varepsilon}{2} |\nabla \varphi|^2 + \frac{1}{\varepsilon} \Psi(\varphi) dx $$
 
@@ -583,7 +591,7 @@ These offset-points were generated for every vertex of the original mesh and in 
 a guaranteed area of convergence of a gradient descent projection.
 
 
-## Remeshing operations
+## Remeshing operations{#sec:remeshing_ops}
 Different approaches exist to remesh a surface. Most fall into one of the following categories:
 
 - triangulate a commpletely new mesh, usually with delauney triangulation and go from there
