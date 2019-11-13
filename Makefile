@@ -32,7 +32,7 @@ pdf:
 	-F pandoc-citeproc \
 	--template="$(STYLEDIR)/template.tex" \
 	--bibliography="$(BIBFILE)" 2>pandoc.log \
-	--csl="$(STYLEDIR)/ref_format.csl" \
+	--csl="$(STYLEDIR)/universidade-de-sao-paulo-instituto-de-matematica-e-estatistica.csl" \
 	--highlight-style pygments \
 	-V fontsize=12pt \
 	-V papersize=a4paper \

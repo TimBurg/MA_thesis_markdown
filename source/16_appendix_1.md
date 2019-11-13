@@ -53,3 +53,8 @@ f \\
 
 With $P = p_k(k_j) \in \mathbb{R}^{Q \times N}$
 This system is solvable if $\Phi$ is conditionally positive definite [@wendland_scattered_2005 theorem 8.21]
+
+
+# References
+
+<div id="refs"></div>

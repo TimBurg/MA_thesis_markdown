@@ -16,10 +16,14 @@ fix,axes=plt.subplots(1,2, sharey=True, figsize=[5, 2.5])
 axes[0].axhline(xmax=2, color='k', linestyle='-')
 axes[1].axhline(xmax=2, color='k', linestyle='-')
 
-axes[0].set_title('laplace weights')
-axes[1].set_title('used weights')
-axes[0].set_xlabel('d')
-axes[1].set_xlabel('d')
+axes[0].set_title('Laplace weights')
+axes[1].set_title('Bossen & Heckbert')
+axes[0].set_xlabel('d', fontsize=13)
+axes[0].set_ylabel('f(d)', fontsize=13)
+axes[1].set_xlabel('d', fontsize=13)
+
+plt.tight_layout()
+
 
 plot1=axes[0].plot(plotting_range, np.array([laplace_weights(x) for x in plotting_range]))
 plot2=axes[1].plot(plotting_range, np.array([default_weights(x) for x in plotting_range]))

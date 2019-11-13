@@ -50,7 +50,7 @@ The elasticity theory is then build on the following two contributions from Cauc
      T^\varphi (x^\varphi) n^\varphi &= g^\varphi(x^\varphi)  &\forall x^\varphi \in \Gamma_g^\varphi
    \end{align}\end{subequations}
    where $\Gamma_g^\varphi$ is the part of $\partial \Omega$ where the boundary condition $g$ is prescribed 
-   and $\text{div}T = \partial_j T_{ij}, e_i$
+   and $T$ is the Cauchy stress tensor with $\text{div}T = \partial_j T_{ij}, e_i$
    [See @philippe_ciarlet_mathematical_1990 p.63-65 for the proof].
 
 Notice that the formulation above uses the stress tensor in the deformed configuration where it is symmetric.
@@ -72,7 +72,7 @@ However, several simplifications can be made in the case of isotropic and homoge
 To this end the (right-) Chauchy (Green) strain tensor $C$ and its difference from unity $E$ is introduced.
 I will refer to $E$ simply as the strain tensor.
 They describe the first order change in local length-scale under a deformation and are defined via the 
-Fréchet derivative of the mapping $\varphi\mathrm{,} \: \nabla \varphi$:
+Fréchet derivative of the mapping $\varphi$ called the deformation gradient $\nabla \varphi$:
 
 $$\nabla \varphi = \begin{pmatrix}
 			\partial_1 u_1 & \partial_2 u_1 &  \partial_3 u_1 \\
@@ -105,7 +105,7 @@ $$\varepsilon = \frac{1}{2}( \nabla u^T + \nabla u )$$
 this yields the following even simpler form of the tensor which is referred to as $\sigma$:
 
 $$\sigma = \lambda ( \nabla u) I + \mu \left(\nabla u + \nabla u^T \right)$$
-The more prominent form of which is called Hooks-law and written with the so-called stiffness tensor that is unfortunately also named $C$ in the literature:
+The more prominent form of which is called Hooks-law and written with the 4th order stiffness tensor that is unfortunately also named $C$ in some literature:
 \begin{equation} \sigma = C : \varepsilon \qquad \text{or} \qquad \sigma = C \varepsilon \label{eq:stiffness}\end{equation}
 
 Here, the second form is written in vector notation for the components of the tensors and
@@ -326,7 +326,8 @@ Introducing Lagrange multipliers $\kappa \in \mathbb{R}, \text{ and } \mu_+, \mu
 \frac{d}{d\varphi} \tilde{J}(\tilde{\varphi}) \omega + \kappa \int_\Omega \omega \ dx + \mu_+ \omega - \mu_- \omega  &= 0  &&\forall \omega \in H^1_D \label{eq:gradient}\\
 \langle \varepsilon(\tilde{u}), \varepsilon(v)\rangle_{C(\varphi)} &= F(\tilde{u}, v) \quad  &&\forall v \in H^1_D \\
 \int_\Omega \tilde{\varphi} - m \ dx &= 0 \label{eq:mass_constraint} && \\
-\mu_+ \geq 0,& \quad \mu_- \geq 0 \quad &&\text{a.e. in } \Omega\\
+0\leq \varphi & \leq 1 &&\text{a.e. in } \Omega \label{eq:zero_one_constraint}\\
+\mu_+ \geq 0, \quad \mu_- &\geq 0 \quad &&\text{a.e. in } \Omega\\
 (\mu_+, \tilde{\varphi} -1) &= 0 \quad &&\text{a.e. in } \Omega \label{eq:complementary1}\\
 (\mu_-, -\tilde{\varphi}) &= 0 \quad &&\text{a.e. in } \Omega \label{eq:complementary2}
 \end{alignat}
@@ -337,15 +338,15 @@ Where the last three conditions arise due to complementarity.
 
 #### Pseudo time stepping
 Suppose for a moment that $\kappa, \mu_+ \text{ and } \mu_-$ were given.
-This is reasonable because in the next section, iterates for those functions are given by means of a Primal-Dual Active Set strategy. 
-Then we could solve for $\tilde{\varphi}$ in the optimality conditions as follows. Equation \eqref{eq:gradient} 
+This is reasonable because in the next section, iterates for those multipliers are given by means of a Primal-Dual Active Set strategy. 
+We then we could solve for $\tilde{\varphi}$ in the optimality conditions as follows. Equation \eqref{eq:gradient} 
 defines a linear functional on $H^1_D$ which I refer to as $\nabla \mathcal{L} (\omega)$. Using a scalar product this functional can be identified
 with a funtion on $L^2$ that we loosely call the gradient. This approach is called a gradient flow. 
-Consequently a gradient descent in conjunction with a semi-implicit stepping scheme can be used.
+Consequently a gradient descent in conjunction with a semi-implicit stepping scheme is employed.
 
 $$\left( \partial_t \varphi, \omega \right) = \nabla \mathcal{L} (\omega)$$
 
-Expanding the functional would give:
+Expanding the functional gives:
 
 \begin{equation}
 \begin{split}
@@ -368,17 +369,16 @@ and using $\nabla \varphi^{k+1}$ for $\nabla \varphi$ we end up with:
 \end{split}
 \label{eq:descent_iteration}
 \end{equation}
-Where, as before, $u$ solves the mechanical system \eqref{eq:equi_variational}.
+Where, as before, $u$ solves the mechanical system \eqref{eq:compliance} and the primal feasibility \eqref{eq:mass_constraint} and \eqref{eq:zero_one_constraint} need to be cared for.
 This defines an iterative scheme for a descent.
 
 #### Primal-dual active set strategy
-As stated the 
 A sophisticated method to alleviate the Lagrange multipliers $\mu_+$ and $\mu_-$ from this equation is the Primal-Dual Active Set strategy (PDAS).
 The theory to this approach was developed in [@blank_primal-dual_2013].
 
 In essence, PDAS maintains a set of active constraints for every point.  
 A constraint is inactive if the corresponding Lagrange multiplier is zero and active if $\varphi$ takes on the corresponding bound -
-One of which has to hold due to the equations \eqref{eq:complementary1} and \eqref{eq:complementary2}.
+one of which has to hold due to the equations \eqref{eq:complementary1} and \eqref{eq:complementary2}.
 
 These sets are then updated by first solving the so-called primal problem which is \eqref{eq:descent_iteration} without $\mu_\pm$ but 
 \eqref{eq:mass_constraint} explicitly cared for.
@@ -388,7 +388,7 @@ More precisely, let $\mu = \mu_+ - \mu_-$ then \eqref{eq:complementary1} and \eq
 $$c(\varphi(x) -1) + \mu(x) \geq 0 \quad \text{and} \quad c(- \varphi(x)) + \mu(x) \leq 0$$
 respectively for any $c > 0$.
 
-With this the active sets $\mathcal{A}^+ \text{ and } \mathcal{A}^-$ as well as the inactive set $\mathcal{I}$ are defined as:
+With this, the active sets $\mathcal{A}^+ \text{ and } \mathcal{A}^-$ as well as the inactive set $\mathcal{I}$ are defined as:
 \begin{equation}
 \begin{split}
 \mathcal{A}^+ &= \{x\in \Omega \mid c(\varphi(x) -1) + \mu(x) \geq 0 \}\\
@@ -397,29 +397,28 @@ With this the active sets $\mathcal{A}^+ \text{ and } \mathcal{A}^-$ as well as 
 \end{split}
 \end{equation}
 
-Starting with a guess of those sets, $\varphi$ is set 1 on $\mathcal{A}^+$ and 0 on $\mathcal{A}^-$.
-Consequently the unconstrained iteration step \eqref{eq:descent_iteration} (where $\mu_\pm$ is 0) with \eqref{eq:mass_constraint} explicitly 
-accounted for is solved only on the set $\mathcal{I}$.
+To iterate, start with a guess of those sets, set $\varphi$ to 1 on $\mathcal{A}^+$ and 0 on $\mathcal{A}^-$.
+Then solve the unconstrained iteration step \eqref{eq:descent_iteration} with $\mu_\pm$ set to 0 and the primal feasibility cared for on the set $\mathcal{I}$.
 This is referred to as the primal problem.
 Note that due to the definition, $\mathcal{I}$ is synonymous to the interfacial region that takes up a very small portion of the space
 thereby making this calculation efficient.
 
-Subsequently the Lagrange multiplier $\mu$ can be updated on $\mathcal{A}^\pm$ with a dual formulation according to [@blank_primal-dual_2013 (PDAS-I)] as follows:
+Subsequently the Lagrange multiplier $\mu$ is updated on $\mathcal{A}^\pm$ with a dual formulation given by [@blank_primal-dual_2013 (PDAS-I)] as follows:
 $$\mu = \kappa - \frac{1}{\tau}(\varphi^{k+1} - \varphi^k) + \varepsilon \gamma \Delta \varphi^{k+1} + \frac{\gamma}{\varepsilon} \varphi^{k+1} $$
 
 With this updated $\mu$, the active and inactive sets are recalculated and if no change is detected the descent step is complete.
-Otherwise reiterate with the new sets.
+Otherwise reiterate the primal problem (using the same $u$) with the new different sets until a convergence is reached.
 
 
 ### Isosurface extraction
-After a calculation has converged, a 0.5 isofurface is used that represents the surface of the part. 
+After a configuration sufficiently close to the minimum has been found, an isofurface for $\varphi=0.5$ is extracted that represents the surface of the part. 
 
-Since the Finite-Element-Mesh is providing a 3D-tesselation of the domain, which in this case consists of tetrahedra, the generation of an isosurface is handled as in the marching-tetrahedra algorithm. 
+Since the Finite-Element-Mesh is providing a 3D-tesselation of the domain, which for my calculations consists of tetrahedra, the generation of an isosurface is handled as in the marching-tetrahedra algorithm [see @muller_visualization_1999;also @treece_regularised_1999].
 Tetrahedra, as opposed to cubes, can only have 3 distinct cases of edge intersections that differ in terms of their makeup of triangular faces. No intersections, intersection at 3 edges(1 triangle) and intersection at 4 edges (2 triangles). See figure \ref{fig:isocuttetraeder} for an illustration.
 
 For the edge intersections, a linear interpolation of the values between two vertices is used. 
-The intersections are then found via simple line intersections comparable to the section of the x-axis for a line.
-If 3 intersections are found one triangle is generated with the vertices of the intersections and if 4 intersections are found 2 triangles are generated.
+Possible intersections are then found via simple line intersections.
+If 3 intersections are found one triangle is created with the vertices of the intersections and if 4 intersections are found 2 triangles are generated.
 Susequently the ordering of the vertices is checked so that looking from the outside, 
 the vertices are ordered counterclockwise in accordance with the 
 stl-specification^[stl is one of the primary file formats for triangular meshes]. 
@@ -429,21 +428,21 @@ This is especially important since the orientation is used in the remeshing proc
 ![In the case of a 3D-Tetrahedra tesselation only 3 distinct cases can appear a)intersection
 at three edges(left) or b)intersection at 4 edges(right) or c)no intersections(not displayed)\label{fig:isocuttetraeder}](source/figures/tetrahedrons.svg){width=80%}
 
-## radial basis function theory
+## Radial basis function theory
 
 ### RBF Interpolation
 
 Interpolation can be viewed as a special kind of approximation in which, for an approximant $S$ to some function $F$,
-it is demanded that the interpolant reproduces the original functions values at special points $x_i$ i.e.:
+it is demanded that $S$ reproduces the original functions values at special points $x_i$ i.e.:
 \begin{equation}S(x_i) = F(x_i) \quad \forall x_i \in \Xi \label{eq:interpolation_condition} \end{equation}
 Where $\Xi$ is some finite (possibly scattered) set of pairwise distinct points from $\mathbb{R}^d$ (multivariate) ie. a 
 set $\{x_i \mid x_i \in \mathbb{R}^d, i=1,..,N, x_i \neq x_j\}$.
-The functions considered here are scalar valued multivariate functions but a vector-valued interpolant may be constructed from scalar-valued-component functions.
+The functions considered here are scalar valued functions but a vector-valued interpolant may be constructed from scalar-valued-component functions.
 
 Interpolants are constructed from some function space which in this case is made up of radial basis functions centered at 
-the interpolation centers. This dependence on the centers means that the radial basis function-spaces are individual to each dataset $\Xi$.
+the interpolation points. These are therefor often called interpolation centers. The dependence on the points means that the RBF function-spaces are individual to each dataset $\Xi$.
 
-Radial basis functions are multivariate functions constructed from univariate functions of the form 
+Radial basis functions themselves are multivariate functions constructed from univariate functions of the form 
 $\phi:[0,\infty)\mapsto\mathbb{R}$ superimposed over the Euclidean norm:
 $$\Phi(x) = \phi(\lVert x \rVert_2) \qquad x\in \mathbb{R}^d$$
 Special monotonicity properties of those functions lead to unisolvent interpolation (unique solvability) as explained in the next section.
@@ -462,7 +461,7 @@ At the time of writing this is unique to these functions and can not be achieved
 As for the approximation quality, different interpolants do behave differently for the space in between the data sites and are distinguished by 
 their approximation and or convergence properties for special classes of interpolated functions $F$.
 However, when no such functions (just the values $F(x_i)$) are given, the accuracy of an interpolation can not generally be assessed.
-Because this is the case here, determining qualities for the RBF-interpolant are discussed in [@sec:surf_cond].
+Because this is the case here, determining qualities for the RBF-interpolant in the context of surface interpolation are discussed in [@sec:surf_cond].
 
 The interpolant $S$ is constructed as a linear combination of scaled radial basis functions centered at the
 data sites:
@@ -472,13 +471,13 @@ $$S(x) = \sum_j^N \alpha_j\phi(\lVert x-x_j\rVert)$$
 By introducing the interpolation matrix $\vec{A}$ as:
 \begin{equation}A_{ij}= \phi(\lVert x_i - x_j\rVert)|_{i,j} \label{eq:interpolation_matrix}\end{equation}
 we can write the interpolation condition \eqref{eq:interpolation_condition} as:
-\begin{equation}\vec{A}\alpha = \vec{F} \label{eq:interpolation_system}\end{equation}
-Where $\vec{F}$ contains the values $F(x_i)$.
+\begin{equation}\vec{A}\vec{\alpha} = \vec{F} \label{eq:interpolation_system}\end{equation}
+where $\vec{F}$ contains the values $F(x_i)$.
 
 The immediate requirement then is that this system is uniquely solvable which is determined by the invertibility of the interpolation matrix $A$
 
 ### Existence and Uniqueness results
-The invertbility of the interpolation matrix $A$ for all pairwise distinct combinations of 
+The invertibility of the interpolation matrix $\vec{A}$ for all pairwise distinct combinations of 
 centers in $\mathbb{R}^d$ is considered.
 This property can be guaranteed for certain radial basis functions which satisfiy a montonicity property.
 
@@ -488,9 +487,9 @@ Definition:
     following quadratic form is (nonnegative) positive:
     $$\sum_{j=1}^N \sum_{k=1}^N \alpha_j \alpha_k \Phi(x_j - x_k)$$
 
-Analogously, I call the univatiate functions $\phi$ positive (semi-) definite if the induced function $\Phi$ satisfies the definition.
+Analogously, I call the univariate functions $\phi$ positive (semi-) definite if the induced function $\Phi$ satisfies the definition.
 
-Such induced positive semi definiteness of a function can be shown via a property called complete monotonicity: 
+Such induced positive (semi-) definiteness of a function can be shown via a property called complete monotonicity: 
 $$(-1)^l g^l(t) \ge 0 \quad \forall l \in \mathbb{N} \quad \forall t>0$$
 Where $g^l$ denotes the l-th derivative of a function $g: \mathbb{R} \mapsto \mathbb{R}$.
 The prototype of a complete monotone function is the exponential function $e^{-\alpha t}$ for some non negative $\alpha$.
@@ -500,30 +499,30 @@ Theorem:
 
 The proof requires some theory on measure spaces and generalized fourier transforms and rests on the Bernstein-Widder representation of 
 such functions.
-Since these are a bit out of scope I refer to [@wendland_scattered_2005 theorem 7.14].
+Since these tools are out of scope I refer to [@wendland_scattered_2005 theorem 7.14].
 
-A first formal proof of a positive definite function was completed for the multiquadratics function by [@micchelli_interpolation_1986].
+A first formal proof of a positive definite (pd) function was completed for the multiquadratics function by [@micchelli_interpolation_1986].
 Multiquadratics are not completely monotone but rather one can show that it actually suffices that the first derivative of $\phi$ is 
 completely monotone [@buhmann_radial_2003 theorem 2.2].
 
-Complete monotonicity of only some derivative motivates a weaker concept called conditionally positive definiteness and requires an added polynomial for unisolvence.
+Complete monotonicity of only some derivative motivates a weaker concept called conditionally positive definiteness (cpd) and requires an added polynomial for unisolvence.
 This is described in the Appendix [@sec:conditional].
 
 ### Commonly used Radial basis functions 
-I now state some of the more often used RBFs and give some detail on the local functions that were used for the actual implementation.
-During the course of writing the interpolation program it became clear that only local basis functions would be good 
+I now state some of the more often used radial basis functions and give some detail on the ones with local support that were used for the actual implementation.
+During the course of writing the program it became clear that only local basis functions would be good 
 candidates for a surface interpolation due to the number of vertices used in most triangular meshes
 and the resulting size of a dense interpolation matrix.
-But also the conditon number of the interpolation matrix is problematic for large interpolation sets.
+But also the conditon number of the interpolation matrix of globally supported functions is problematic for large interpolation sets.
 To this end the compactly supported basis functions are also much more forgiving. 
 I recite some estimates of the condition number in the Appendix.
 
 Local, piecewise polynomial RBFs are generally dimension dependent in that they are not positive definite 
 for $d>d_0$ in $\mathbb{R}^d$ where $d_0$ depends on the function. For this application $d_0 = 3$ is required and 
-reflected in the chosen Wendland function.
+reflected in the chosen Wendland function $\phi_{3,1}$.
 
-Now commonly used are the Wendland functions [see @wendland_piecewise_1995] which are of 
-minimal degree with respect to the space dimension and smoothness and are positive definite. 
+The Wendland functions [see @wendland_piecewise_1995] are positive definite and of 
+minimal degree with respect to the space dimension and smoothness. 
 For the surface interpolation I use the twice continuously differentiable function and it's derivative in table [@tbl:local_RBF]
 
 function             name                     definiteness 
@@ -545,25 +544,27 @@ $(1-r)_+^8(32r^3+25r^2+8r+1)$    $\phi_{3,3}(r)$           pd           $C^6$
 Table: Local RBF functions introduced by Wendland [@wendland_piecewise_1995]{#tbl:local_RBF}
 
 
-![Comparison of different RBF functions. Note that multiquadratics are special in their growth to infinity.
-The Wendland functions become zero after r=1](source/figures/rbf_functions.png){#fig:rbf_funcs width=100%}
+![Comparison of different RBF functions. Note that some RBFs can grow to infinity.
+However, the Wendland functions become zero after r=1](source/figures/rbf_functions.png){#fig:rbf_funcs width=100%}
 
 ### Scaling of RBF functions, ambiguities and interpolation properties {#sec:rbf_interpol}
 The Wendland RBF functions have a fixed support radius of 1 as seen in @fig:rbf_funcs.
-Since spacing of the interpolation data is not fixed, a scaling of the radial argument needs to be introduced that scales $r$ such that the RBFs
+Since spacing of the interpolation data is not fixed between models, a scaling of the radial argument needs to be introduced that scales $r$ such that the RBFs
  extend into the space between the data sites. Otherwise the interpolant might just have, in the exteme case, spikes at the sites to attain the required values.
-To this end I scale $r$ with a scale parameter $c > 0$ as $r' = r/c$ since that makes the Wendland functions extend to exactly the value of this scale parameter.
+To this end I scale $r$ with a scale parameter $c > 0$ as $r' = r/c$ since that makes the Wendland functions extend to exactly the value of $r'$.
 
 
-This scaling parameter, in general can be nonuniform over the interpolated values but this comes with uncertainty for the solvability of the interpolation system.
+This scaling parameter, in general could be nonuniform over the interpolated values but this comes with uncertainty for the solvability of the interpolation system.
 
-Moreover, it cannot be generally stated which value of a scale parameter is more accurate in an interpolation unless there is a target to which the interpolant can be compared. See @fig:wendland_scales
+Moreover, as previously noted, it cannot be generally assessed which value of a scale parameter is more accurate in an interpolation unless there is a target to which the interpolant can be compared. See @fig:wendland_scales for an illustration.
 
 ![Wendland C2 functions for different scaling parameters c. The interpolation values were set to (1,2,1,2,1) at (0,1,2,3,4).
 ](source/figures/wendland_scale_factors.png){#fig:wendland_scales width=100%}
 
+[@fig:MQ_2D] aims to illustrate the validity of the interpolation condition for a special case of a 2d interpolant.
+
 ![Different Radial-Basis-Funtions may have different behaviours for off-site values. Multiquadratics can even grow toward infinity.
-Displayed is a 1-2 comb in two dimensions](source/figures/MQ_2D_comb.png){#fig:MQ_2D width=100%}
+Displayed is a an alternating 1-2 sequence of along a line in $\mathbb{R}^2$](source/figures/MQ_2D_comb.png){#fig:MQ_2D width=100%}
 
 ### surface interpolation {#sec:surface_interpol}
 Surface descriptions are either explicit or implicit. Explicit means that the surface is the graph of a function
@@ -575,18 +576,23 @@ easier to construct but is harder to visualise. Common methods for visualization
 
 For the surface interpolation with an implicit function this translates to the interpolant being zero at the data sites: $S(x_i) = 0$.
 Since the zero function would be a trivial solution to this, off-surface constraints must be given.
-This is usually done with points generated from normalvectors to the original surface if such surface exists.
-The pointvalues are then assigned the valuea of the signed distance function to the surface:
+This is usually done with points generated from unit-normalvectors to the original surface if such a surface exists.
+The pointvalues are then assigned the values of the signed distance function to the surface:
 
 $$ S(\mathbf{x}_i + \epsilon \mathbf{n}_i) = F(\mathbf{x}_i+\epsilon \mathbf{n}_i) = \epsilon  
 $${#eq:off_surface_points}
-For a stronger falloff(rise) of the interpolant larger values than $\epsilon$ can be chosen as interpolation values on the right hand side.
-If not available, the normalvectors can be generated from a cotangent plane that is constructed via  a principal component analysis of nearest neighbors. 
+For a stronger falloff(rise) of the interpolant multiples of $\epsilon$ may be chosen as interpolation values on the right hand side.
+If normalvectors are not available, they can be generated from a cotangent plane that is constructed via  a principal component analysis of nearest neighbors [@wendland_scattered_2005, p.3]. 
 
-In my case the vectors could be obtained from an average of the normals of the adjacent triangles scaled with the inverse of the corresponding edgelengths:
-$$\vec{n} = \sum_{T \in \mathcal{N}_T} \frac{1}{\lVert \vec{n}_T \rVert} \vec{n}_T$$
+In my case the vectors could be obtained from an average of the normals of the adjacent triangles that a vertex takes part in scaled 
+with the inverse of the distance to the respective triangle centroids:
+
+$$\vec{n_v} = \sum_{T \in \mathcal{N}_T} \frac{1}{\lVert \vec{v} - \vec{v^T_\text{cent}} \rVert} \vec{n}_T$$
+
+where $\vec{v^T_{\text{cent}}}$ is the centroid of the triangle.
+
 These offset-points were generated for every vertex of the original mesh and in both directions (on the inside and on the outside) such as to have
-a guaranteed area of convergence of a gradient descent projection.
+a guaranteed area of convergence for a gradient descent projection.
 
 
 ## Remeshing operations{#sec:remeshing_ops}
@@ -596,34 +602,35 @@ Different approaches exist to remesh a surface. Most fall into one of the follow
 - incremental triangulation, with new nodes inserted or removed one at a time. 
 - local mesh modifications / pliant remeshing 
 
-Additionally most methods utilize some form of vertex-smoothing as this is an straightforward iterative procedure that improves themesh globally and is guaranteed to converge. 
+Additionally most methods utilize some form of vertex-smoothing as this is an straightforward iterative procedure that improves the mesh globally and is guaranteed to converge. 
 
-The approach used here falls into the latter category and uses consecutive loops of local mesh modifications of the following kinds:
+The approach used here falls into the last category above and uses consecutive loops of local mesh modifications of the following kinds:
 
 - Edge collapse
 - Edge split
 - Edge flip
 - Vertex smoothing
 
-Which of the modification is applied depends on an edges length in comparison to a target-edge-length.
+Which of the modifications is applied depends on the length of an edge in comparison to a target length.
+These modifications are now exemplified shortly.
 
 
 ### Edge collapse
 
-Edge collapse, as the name suggests removes an edge from the mesh thereby deleting two adjacent triangles and removing one point.
+Edge collapse, as the name suggests, removes an edge from the mesh thereby deleting two adjacent triangles and removing one point.
 Special conditions have to be checked as there are certain configurations that would result in an illegal triangulation.
-See figures [@fig:collapse_e2] and [@fig:collapse_e1].
+See [@fig:collapse_e2] and [@fig:collapse_e1].
 To avoid having to project a new midpoint to the surface, the two vertices of the edge are joined at either one of them.
 
-![Edge collapse with the new point at one of the endpoints](source/figures/edge_collapse.svg){#fig:collapse}
+![Edge collapse with the new point at one of the endpoints.](source/figures/edge_collapse.svg){#fig:collapse}
 
-![Illegal edge collapse with more than two common neighbors for the edges endpoints](source/figures/edge_collapse_error2.svg){#fig:collapse_e2 width=95%}
+![Illegal edge collapse with more than two common neighbors of the edges endpoints.](source/figures/edge_collapse_error2.svg){#fig:collapse_e2 width=95%}
 
-![Illegal edge collapse with a triangle flip](source/figures/edge_collapse_error1.svg){#fig:collapse_e1}
+![Illegal edge collapse with a triangle flip.](source/figures/edge_collapse_error1.svg){#fig:collapse_e1}
 
 Both cases are easily cared for.
 The case of more than two common neighbors can be checked in a graph datastructure
-and to check if a triangle was flipped the normal before and after the operation have to be compared.
+and to check if a triangle was flipped the normals before and after the operation have to be compared.
 
 ### Edge split
 The edge split is a straightforward operation as no special cases have to be taken care of. 
@@ -631,69 +638,64 @@ A new vertex is put at the surface projected midpoint of the existing edge and 4
 
 The only pitfall than can occur is that the projection of the midpoint with a gradient descent can sometimes project inside another
 triangle therefore yielding flipped triangles.
-This again need to be checked with a normal-flip check
+This again needs to be checked with a normal-flip check.
 
 ### Edge flip{#sec:edge_flip}
 
-![Edge flip ](source/figures/edge_flip.svg){#fig:edge_flip}
+![Edge flip.](source/figures/edge_flip.svg){#fig:edge_flip}
 
 An edge flip can dramatically increase the aspect ratio of a triangle if the right conditions are met.
-Consider the edge in [@fig:edge_flip].
-Such an edge is flippable if:
+Consider the setup in [@fig:edge_flip].
+The edge AB is flippable if:
 
 - The edge does not belong to the boundary of the mesh
 - The edge CD does not already belong to the mesh
-- $\phi_{ABC} + \phi_{ABD} < \pi \quad \text{and} \quad \phi_{BAC}+ \phi_{BAD} < \pi$  
+- $\alpha + \beta < \pi \quad \text{and} \quad \gamma + \delta < \pi$  
 - The angle between the normals of the triangles is not too big to not cast "ridges"
 
-I do a flip according to [@dassi_novel_2016] if the 6d angles of the points opposing the to-be flipped edge $\phi_{BDA} \text{ and } \phi_{ACB}$ together are larger than $\pi$:
+I do a flip according to [@dassi_novel_2016] if the 6d versions of the angles opposite the to-be flipped edge. namely $\theta \text{ and } \rho$ together are larger than $\pi$:
 
-$$\phi_{BDA}^{6d} + \phi_{ACB}^{6d} \geq \pi$$
+$$\theta^{6d} + \rho^{6d} \geq \pi$$
 
-For the definition of those angles see [@sec:HDE].
-A value of $\kappa$ near one is problematic in conjunction with the higher dimensional embedding
-since the HDE angle seldom takes on values of $\pi/2$ or larger due to the surface-normals
-in the 6d-scalar product not being orthogonal. This results in flips not actually taking place.
-
+For the definition of 6d angles see [@sec:HDE].
 
 ### Vertex smoothing
 
-![Vertex smoothing \label{fig:vertex_smooth}](source/figures/vertex_smoothing.svg){width=70%}
+![Vertex smoothing.](source/figures/vertex_smoothing.svg){width=70%}
 
 Vertex smoothing finds a new position for a given vertex based on the distance to its neighbors
 according to the following formula:
 $$\vec{p}' = \vec{p} + \alpha \sum_{j \in \mathcal{N}} f(\lVert\vec{p} - \vec{p}_j \rVert) (\vec{p}-\vec{p}_j)$$
 
 Wherein $\mathcal{N}$ stands for the neighbors, $\alpha$ is a normalization constant and $f$ is a weight function.
-Different weights have been investigated in [@bossen_pliant_1998] where they constructed a well performing weight function.
+Different weights have been investigated in [@bossen_pliant_1998] where they constructed a weight function that results in very isotropic grids.
 Given a target edge length $t$ and an actual edge length $l$ a normalized edge length is defined as $d=l/t$ and the weight function reads:
 $$f(d) = (1-d^4)\cdot e^{-d^4}$$
 
-This function pushes if $l < t$ and slightly pulls if $t>l$ as opposed to the frequently used Laplace-smoothing which only pulls.
-The function is plotted in figure \ref{fig:smoothing_weights} versus Laplace weights.
-Additionally, I clipped the movedistance to 80% of the minium of the  adjacent triangles heights.
-This is done because moves that exceed this distance are likely to cause triangles that are excessively tilted against the surface yet not flipped. 
-These might then cause problems in later operations. 
+This function pushes if $l < t$ and slightly pulls if $t>l$ as opposed to the frequently used Laplace-smoothing which pulls proportional to the distance.
+The function is plotted in [@fig:smoothing_weights] versus the Laplace weights.
+Additionally, I clip the shiftdistance $p' - p$ to 80% of the minimal heights of the  adjacent triangles.
+This is done because moves that exceed this distance are likely to cause triangles that are excessively tilted against the surface or even flipped. 
+These then cause problems in later operations. 
 
 One of those problems occurs due to the pushing nature of the smoothing that tends to squish larger 
 triangles into thin strips when attached short
 edges are pushing the vertex into the direction of least resistance. 
 Thin strip triangles should then usually be flipped and consequently push back but this can fail due to the requirements 
-for the edge flip and consequently yield distorted triangles.
+for the edge flip and consequently very thin triangles that I call thin strip triangles may persist.
 
 
-![The weight function used compared to the laplace weights \label{fig:smoothing_weights}](source/figures/weight_funcs.png){width=70%}
+![The weight function used compared to the Laplace weights.](source/figures/weight_funcs.png){#fig:smoothing_weights width=70%}
 
 
 
 ### Projection of vertices onto the surface
 
 Both in an edge split as well as in vertex smoothing a constructed new vertex must be projected onto the surface.
-To this end I use a simple gradient descent iterations with a fixed steplength of one. This
-has proven much faster convergence than the exact steplength.
-This is due to the fact that around the surface the slope of the function is one by construction.
-
-The descent algorithm reads as follows
+For this I use a gradient descent iteration with a fixed steplength of one. This steplength
+has proven much faster convergence than the exact steplength and is due to the fact that around
+the surface the slope of the interpolant is one by construction.
+The projection algorithm works as follows.
 
 \begin{algorithm}[H]
 \DontPrintSemicolon
@@ -719,22 +721,24 @@ i=0 \;
 
 ## Higher dimensional embedding{#sec:HDE} 
 
-The term higher dimensional embedding may sound a bit exaggerated for what is actually done. 
+The higher dimensional embedding causes a change in geometry that effectuates the isotropy of the mesh.
 Namely, the pointnormals are included in an edges length calculation as to enlarge the edge when the normals differ.
 Thereby, the the enlarged edges are remeshed more finely. 
 Formally this reads as follows.
-Given a vertex $x$ on the surface, it is concatenated with the surface normal $n$ at this point:
+Given a vertex $x$ on the surface, it is concatenated with the surface normal $n$ at this point to a 6 dimensional vector via the following embedding:
 
 $$\Psi(x) = (x,y,z, \sigma n_x, \sigma n_y, \sigma n_z)^T$$
 
-Here $\sigma$ is a parameter of the embedding and in effect controls how much an edge will be enlarged.
-With this new $\Psi$ the edgelength between two points $a$ and $b$ will now be defined with the 6d Euclidean scalar product as:
+Here $\sigma$ is a parameter of the embedding and in effect controls how much an edge with differing normals will be enlarged.
+With $\Psi$ the edgelength between two points $a$ and $b$ are defined with the 6d Euclidean scalar product as:
 $$l_{ab}^{6d}= \lVert \Psi(a) - \Psi(b)\rVert_{6d} = \sqrt{(\Psi(a)-\Psi(b), \Psi(a)-\Psi(b))_{6d}}$$
 
 And in the same manner an angle between the points $a,b,c$ is defined via:
 $$cos(\theta^{6d}_{abc})= \frac{(\Psi(a)-\Psi(c), \Psi(b)-\Psi(c))_{6d}}{l_{ac}^{6d}l_{bc}^{6d}}$$
 
-These edgelengths are subsequently used as the regulator for the local mesh modifications in the remeshing algorithm.
-The 6d angles are therein used in the edge flips.
+These edgelengths are subsequently used as the regulator for the local mesh modifications in the remeshing algorithm while
+the 6d angles are used in the edge flips.
+
+The overall idea of this embedding is then that a curvature adapted mesh corresponds to an isotropic mesh in the 6d space.
 
 
