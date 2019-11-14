@@ -1,4 +1,4 @@
-# Appendix 1{.unnumbered}
+# Appendix{.unnumbered}
 
 ## Non manifold-errors of meshes
 

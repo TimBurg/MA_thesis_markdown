@@ -52,10 +52,10 @@ $\gamma = 6.25\cdot 10^{-5}$ and $\epsilon = 0.00175$
 
 
 <div id="fig:bridge_grid">
-![](./source/figures/bridge_grid_front.png){#fig:bridge_gridA width=50%}
-![](./source/figures/bridge_grid_back.png){#fig:bridge_gridB width=50%}
+![](./source/figures/bridge_grid1.png){#fig:bridge_gridA width=50%}
+![](./source/figures/bridge_grid3.png){#fig:bridge_gridB width=50%}
 
-The mesh for the bridge model from the front and the back
+The mesh for the bridge model from the top-front and the bottom-back.
 </div>
 
 After 60 iterations the mesh in [@fig:bridge_raw] was extracted.
@@ -71,7 +71,7 @@ Subsequently the mesh was mirrored at the symmetry axes and merged into one stl 
 
 The mesh was remeshed with 10 iterations and the target edge length set to
 two times the longest edgelength of the original mesh.
-The embedding parameter $\sigma$ was automatically set to the value of $\sigma=0.014$.
+The embedding parameter $\sigma$ was automatically set to the value of $\sigma=1.28$.
 The low value is due to the fact that the domain dimensions are expressed in meters and are therefor very small.
 The sparse interpolation matrix that resulted had a size of 128628 x 128628 with 58 million values in the case of an RBF scale factor of 2.5 times
 the longest edge length (of the input mesh) and 20 million values when set to 1.5 (of the longest edge length).
@@ -81,12 +81,15 @@ The remeshed mesh is shown in [@fig:bridge_remeshed] where the chosen target edg
 
 ![After remeshing with $l^{6d} =$ 2x longest edge and doing 10 iterations](./source/figures/bridge_with_zoom2.png){#fig:bridge_remeshed}
 
+![Closeup of the remeshed bridge](./source/figures/bridge_closeup.png){#fig:bridge_closeup}
+
+
 ### The table
-The table model has a large force rectangle with non-homogeneous neumann conditions on top and 4 Dirichlet conditions on the bottom.
+The table domain has a large force rectangle with a non-homogeneous Neumann condition on top and 4 Dirichlet conditions on the bottom.
 On the Dirichlet part only the z-direction was penalized(clamped) which results in the inclusion of x-y support structures.
 This is called a sliding condition.
 
-The domain has size 9.6cm(x) by 2.8cm(y) by 2cm(z) and the force square is 8 x 2cm with a force density of 2400 N/m² resulting in a load of 
+The domain is sizeed 9.6cm(x) by 2.8cm(y) by 2cm(z) and the force square is 8cm x 2cm with a force density of 2400N/m² resulting in a load of 
 3.84N or approximately 384g in graviational terms.
 
 <div id="fig:table_grid">
@@ -104,7 +107,16 @@ $\gamma = 0.008$ and $\epsilon = 0.0035$
 
 ![The extracted table isosurface](./source/figures/table_raw.png){#fig:tisch_raw}
 
-The remeshed surface did display erronous behaviour. oughening and 
+![Zoom in on the smoothed table isosurface](./source/figures/table_smoothed_section.png){#fig:table_smoothed}
+
+The surface was remeshed with $\sigma = 0.014$ and ran for 10 iterations.
+However, the remeshed surface did display erroneous behaviour in form of a roughening and strongly distorted triangles.
+Why this happend was not known at the time of finishing this thesis.
+As can be seen the smoothed input mesh in [@fig:table_smoothed] is not unusual and the condition number of the interpolation matrix was 
+calculated to be 21401790124 which seemed acceptable. 
+
+Unfortunately since the remeshing was conducted on the WIAS servers, the programmed graphic tools were unavailable during the remeshing procedure.
+To know exactly what happend further analysis is needed.
 
 ![The remeshed table model.](./source/figures/table_remeshed.png){#fig:tisch_remeshed}
 
@@ -117,10 +129,9 @@ The tower model has a similar layout to the table model above. A small force squ
 The dimensions of the domain are 6cm by 2cm by 2cm and the force and Dirichlet squares were each sized .4cm by .4cm.
 The load density was set to 240000 N/m² such that again a resulting load of 3.84N or ~384g was applied.
 
-
 <div id="fig:tower_grid">
-![From the bottom](./source/figures/turm_bottom_grid.png){width=50%}
-![From the top](./source/figures/turm_top_grid.png){width=50%}\
+![From the bottom](./source/figures/turm_grid2.png){width=50%}
+![From the top](./source/figures/turm_grid1.png){width=50%}\
 
 The grid for the tower model.
 </div>
@@ -135,16 +146,18 @@ To see this consider the ear of the cat model from [@sec:surf_cond] in [@fig:cat
 in the same direction as the ones on the top of the ear. Furthermore the long neighboring edges then exibit a sawtooth or cliff like pattern stemming from
 strong normal variations of the triangle normals. This feature is depicted in [@fig:cat_ear2].
 
+However this problem was lessend when the edge flips were set to flip based on the normal angles instead of the 6d angles. 
+This prevented elongated triangles by applying flips but in effect the flips then compete with the remaining meshoperations.
 
 ![Coinciding normals at the bottom and the top of the cat ear.](./source/figures/cat_ear.png){#fig:cat_ear}
 
-![The cat ear in rendered with triangle normal based lightning.](./source/figures/cat_ear_cliff.png){#fig:cat_ear2}
+![The cat ear in rendered with triangle normal based lightning that highlights the obliqueness of the triangles.](./source/figures/cat_ear_cliff.png){#fig:cat_ear2}
 
 
-Another possibility to generate an adaptive mesh without relying on the normals would be to use the interpolants values as an indicator for
-accuracy of meshpoints. This is possible because close to the surface the interpolant has the shape of the signed distance function.
+Another possibility to generate a well adapted mesh without relying on the normals would be to use the interpolants values as an indicator for
+accuracy of triangles. This is possible because close to the surface the interpolant has the shape of the signed distance function.
 Using quadrature points on triangles/edges the volume/area under the surface defined by the approximant/interpolant and the mesh entity could be calculated. 
-However this would rely heavily on evaluations of the interpolant.
+However this would rely heavily on evaluations of the interpolant which therefor has to be cheap to evaluate.
 
 ![In the case of parallel normals a refinement is inhibited and the mesh error pertains.](./source/figures/cat_foot.png){#fig:cat_foot}
 
