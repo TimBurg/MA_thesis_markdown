@@ -522,7 +522,6 @@ candidates for a surface interpolation due to the number of vertices used in mos
 and the resulting size of a dense interpolation matrix.
 But also the conditon number of the interpolation matrix of globally supported functions is problematic for large interpolation sets.
 To this end the compactly supported basis functions are also much more forgiving. 
-I recite some estimates of the condition number in the Appendix.
 
 Local, piecewise polynomial RBFs are generally dimension dependent in that they are not positive definite 
 for $d>d_0$ in $\mathbb{R}^d$ where $d_0$ depends on the function. For this application $d_0 = 3$ is required and 

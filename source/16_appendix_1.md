@@ -2,7 +2,14 @@
 
 ## Non manifold-errors of meshes
 
-Triangluar meshes can have a multitude of minor errors that unfortunately are very much tolerated in cad-programs and 3D-software but can cause issues with 
+Triangluar meshes can have a multitude of minor errors that unfortunately are very much tolerated in cad-programs and 
+3D-software but can cause issues with additive manufacturing and algorithms that rely on contiguous surfaces or closed volumes.
+Among the common errors are:
+
+- duplicate vertices/edges/triangles
+- a surface that is not closed i.e has a boundary
+- incoherent triangle normals (flipped triangles)
+- self intersection or overlapping triangles
 
 ## Interpolation with conditionally positive definite functions {#sec:conditional}
 
