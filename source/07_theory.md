@@ -99,18 +99,20 @@ $$\Sigma(C) = \lambda (\mathrm{tr}E)I + 2\mu E + o(\lVert E \rVert)$$
 
 Here, $\lambda$ and $\mu$ are the Lamé coefficients of the material and $I$ is the identity tensor.
 In the linear theory that is used as the basis for the topology optimization, the strain $E$ is replaced with 
-its linearized version $\varepsilon$: 
+its linearized version $\epsilon$: 
 $$\varepsilon = \frac{1}{2}( \nabla u^T + \nabla u )$$
 
 this yields the following even simpler form of the tensor which is referred to as $\sigma$:
 
 $$\sigma = \lambda ( \nabla u) I + \mu \left(\nabla u + \nabla u^T \right)$$
 The more prominent form of which is called Hooks-law and written with the 4th order stiffness tensor that is unfortunately also named $C$ in some literature:
-\begin{equation} \sigma = C : \varepsilon \qquad \text{or} \qquad \sigma = C \varepsilon \label{eq:stiffness}\end{equation}
+\begin{equation} \sigma = C : \epsilon \qquad \text{or} \qquad \sigma = C \epsilon \label{eq:stiffness}\end{equation}
 
 Here, the second form is written in vector notation for the components of the tensors and
 the following tensoroperation for rank 2 tensors  is introduced that will be used in the coming sections:
 $$G:V :=  \sum_{i,j} G_{ij} V_{ij}$$
+
+Furthermore, in the following sections $\cdot$ denotes the Euclidean scalar product.
 
 ### Variational formulation
 For finite-element simulations and reduced smoothness requirements of the displacement, a variational formulation of the equilibrium equations \eqref{eq:equilibrium} must be formulated.
@@ -190,7 +192,7 @@ This can manifest itself as a checkerboard like pattern in the phasefield.
 ### Compliance minimization
 
 Compliance is a very common goal function for topology optimization and defined as in equation \eqref{eq:compliance}:
-$$F(u) = \int_{\bar{\Omega}} f \cdot u + \int_\Gamma g \cdot u $$
+$$F(u) = \int_{\bar{\Omega}} f \cdot u \: dx + \int_\Gamma g \cdot u \: da$$
 
 Here, $u$ is the displacement solution of the mechanical system in the left-hand side of equation \eqref{eq:compliance}
 
@@ -215,19 +217,20 @@ For an understanding of the convergence of the induced dynamics I consider the o
 Since integrating the phase field over a region gives the volume, a volume constraint
 is imposed by requiring the integral to be equal to a parameter $m$ which then
 dictates how much of the design domain is allowed to be material:
-$$\int_\Omega \varphi \: dx = m \cdot \text{vol}(\Omega)$$
+$$\int_\Omega \varphi \: dx = m \: \text{vol}(\Omega)$$
 
 Bear in mind that values in the intermediate range of $\varphi$ distort this relationship.
 However, since they only occur in the interfacial region that will be forced to occupy a neglible portion of the domain, this is can be neglected.
 
 For the reading convenience I stipulate the requirements on $\varphi$ in the following space:
-$$\mathcal{G}^m = \big\{\varphi \in H^1(\Omega, \mathbb{R})) \quad \big| \quad 0\leq \varphi \leq 1 \quad \text{and} \quad \int_\Omega \varphi dx = m \cdot \text{vol}(\Omega) \big\}$$
+$$\mathcal{G}^m = \big\{\varphi \in H^1(\Omega, \mathbb{R})) \quad \big| \quad 0\leq \varphi \leq 1 \quad \text{and} 
+\quad \int_\Omega \varphi dx = m \: \text{vol}(\Omega) \big\}$$
 These requirements are later taken care of by terms from the Karush-Kuhn-Tucker theory, namely the complementary slackness and a Lagrange multiplier.
 
 As stated, an additional term has to be added to the compliance functional as to enforce a condensation of the phasefield and 
 regularize the occurence of jumps. The term used is due to [@takezawa_shape_2010] and is called the Ginzburg-Landau Energy:
 
-$$ E^\varepsilon = \int_\Omega \frac{\varepsilon}{2} |\nabla \varphi|^2 + \frac{1}{\varepsilon} \Psi(\varphi) dx $$
+$$ E^\epsilon = \int_\Omega \frac{\epsilon}{2} |\nabla \varphi|^2 + \frac{1}{\epsilon} \Psi(\varphi) dx $$
 
 The potential $\Psi(\varphi)$ serves as the condensation potential that forces the phase field to either 0 or 1.
 Here, an obstacle potential is used while for the analysis, a differentiable double-well potential is considered:
@@ -248,11 +251,14 @@ transition function $t(\varphi) = \varphi^3$ is used:
 $$C(\varphi) = C_\text{mat} t(\varphi) + C_{void} (1- t(\varphi)) $$
 
 Also, the force $f$ occuring in the mechanical system can now be made concrete.
-Namely the phasefield acts as a direct scaling factor for the mass density $\rho_{\text{mat}}$ and excludes the void from contributing any forces:
+Namely the phasefield acts as a direct scaling factor for the mass density $\rho_{\text{mat}}$ and excludes the void from contributing any forces.
+The gravitational force is here exemplary taken to act in the z-direction. This may change depening on the coordinates of the domain.
 
-$$f = \varphi \cdot \rho_\text{mat} \cdot G_z \quad \text{with} \  G_z=9.81 \cdot [0, 0, 1]^T \: "N"$$
+$$f = \varphi \: \rho_\text{mat} \: G_z \quad \text{with} \  G_z=9.81 \: [0, 0, 1]^T$$
 
-$$F(u, \varphi) = \int_{\bar{\Omega}} \varphi \cdot \rho_\text{mat} \cdot G_z \cdot  u + \int_{\Gamma_g} g \cdot u $$
+and the units of $G_z$ are in Newton('N').
+
+$$F(u, \varphi) = \int_{\bar{\Omega}} \varphi \: \rho_\text{mat} \: G_z \cdot  u \: dx + \int_{\Gamma_g} g \cdot u \: da$$
 
 ### The optimal control problem
 I now state the first order necessary optimality conditions for a minimum which are provided by the Karush-Kuhn-Tucker theory.  
@@ -267,7 +273,7 @@ To write down the optimality conditions in a concise form, consider the control-
 $S(\varphi) = u$ defined implicitly by equation \eqref{eq:compliance}. 
 Its directional derivative in the direction $h \in H^1(\Omega, \mathbb{R})$, $S'(\varphi)h = p$ is given by the solution to:
 \begin{equation}\langle \varepsilon(p), \varepsilon(\eta)\rangle_{C(\varphi)} =
- \langle \varepsilon(u), \varepsilon(\eta)\rangle_{C'(\varphi)h} - \int_{\bar{\Omega}} h \cdot f \cdot \eta  \quad \forall \eta \in H^1_D
+ \langle \varepsilon(u), \varepsilon(\eta)\rangle_{C'(\varphi)h} - \int_{\bar{\Omega}} h \: f \cdot \eta \: dx  \quad \forall \eta \in H^1_D
  \label{eq:control_to_state}
  \end{equation}
 where $p$ is also a function from $H^1_D$.[see @blank_relating_2014 theorem 3.3]. 
@@ -290,20 +296,20 @@ Now using equation \eqref{eq:control_to_state} with $u$ as a test function this 
 
 \begin{align}
 \frac{\partial}{\partial u} J(u, \varphi) p &= F(p,\varphi)=\langle \varepsilon(u), \varepsilon(p)\rangle_{C(\varphi)} 
-&= -\langle \varepsilon(u), \varepsilon(u)\rangle_{C'(\varphi)h} -  \int_{\bar{\Omega}} h \cdot f \cdot u
+&= -\langle \varepsilon(u), \varepsilon(u)\rangle_{C'(\varphi)h} -  \int_{\bar{\Omega}} h \: f \cdot u \: dx
 \end{align}
 
 The calculation of the partial derivative of $J$ in the direction $\xi \in H^1(\Omega, \mathbb{R})$ with respect to $\varphi$ is straightforward:
 
-$$\frac{\partial}{\partial \varphi}J(u,\varphi) \xi = \gamma \varepsilon \int_\Omega (\nabla \varphi , \nabla \xi) \ dx +
-\gamma \int_\Omega \frac{1}{\varepsilon} \Psi'(\varphi) \xi \ dx  + F(u,\xi)$$
+$$\frac{\partial}{\partial \varphi}J(u,\varphi) \xi = \gamma \epsilon \int_\Omega \nabla \varphi \cdot \nabla \xi \ dx +
+\gamma \int_\Omega \frac{1}{\epsilon} \Psi'(\varphi) \xi \ dx  + F(u,\xi)$$
 
 Summing up and using $\xi = h$ as the direction in which to 
 derive, the reduced functional has the following
 directional derivative:
 \begin{equation}
-\frac{d}{d \varphi} \tilde{J}(\varphi) \xi = 2 \cdot F(u, \xi) + \gamma \int_\Omega \varepsilon (\nabla \varphi, \nabla \xi) +
-\frac{1}{\varepsilon} \Psi'(\varphi) \xi \ dx 
+\frac{d}{d \varphi} \tilde{J}(\varphi) \xi = 2 \: F(u, \xi) + \gamma \int_\Omega \epsilon \nabla \varphi \cdot \nabla \xi +
+\frac{1}{\epsilon} \Psi'(\varphi) \xi \ dx 
  - \langle \varepsilon(u), \varepsilon(u)\rangle_{C'(\varphi)\xi}
 \end{equation}
 
@@ -333,6 +339,7 @@ Introducing Lagrange multipliers $\kappa \in \mathbb{R}, \text{ and } \mu_+, \mu
 \end{alignat}
 
 Where the last three conditions arise due to complementarity.
+The existence of a minimizer to this problem is shown in [@blank_relating_2014, Theorem 4.1].
 
 ### Numerial soution
 
@@ -350,8 +357,8 @@ Expanding the functional gives:
 
 \begin{equation}
 \begin{split}
-\left( \partial_t \varphi, \omega \right) =&  \gamma  \int_\Omega \varepsilon \nabla \varphi \nabla \omega
-+ \frac{1}{\varepsilon} \Psi'(\varphi) \omega \: dx + 2 \cdot F(u, \omega) \\
+\left( \partial_t \varphi, \omega \right) =&  \gamma  \int_\Omega \epsilon \nabla \varphi \nabla \omega
++ \frac{1}{\epsilon} \Psi'(\varphi) \omega \: dx + 2 \: F(u, \omega) \\
  &- \langle \varepsilon(u), \varepsilon(u)\rangle_{C'(\varphi)\omega} + \kappa \int_\Omega \omega \ dx + \mu_+ \omega - \mu_- \omega  
 \end{split} \label{eq:gradflow}
 \end{equation}
@@ -362,9 +369,9 @@ and using $\nabla \varphi^{k+1}$ for $\nabla \varphi$ we end up with:
 
 \begin{equation}
 \begin{split}
-\frac{1}{\tau} \int_\Omega \varphi^{k+1} \omega dx + \gamma \varepsilon \int_\Omega \nabla \varphi^{k+1} \nabla\omega dx =&
+\frac{1}{\tau} \int_\Omega \varphi^{k+1} \omega dx + \gamma \epsilon \int_\Omega \nabla \varphi^{k+1} \nabla\omega dx =&
 \frac{1}{\tau} \int_\Omega \varphi^{k} \omega dx \\
-&+ \frac{\gamma}{\varepsilon} \int_\Omega \Psi'(\varphi^k) \omega dx + \langle \varepsilon(u), \varepsilon(u)\rangle_{C'(\varphi^k)\omega} \\
+&+ \frac{\gamma}{\epsilon} \int_\Omega \Psi'(\varphi^k) \omega dx + \langle \varepsilon(u), \varepsilon(u)\rangle_{C'(\varphi^k)\omega} \\
 &- 2 \int_\Omega \omega \rho_0 g u dx + \kappa \int_\Omega \omega \ dx + \mu_+ \omega - \mu_- \omega
 \end{split}
 \label{eq:descent_iteration}
@@ -404,7 +411,7 @@ Note that due to the definition, $\mathcal{I}$ is synonymous to the interfacial 
 thereby making this calculation efficient.
 
 Subsequently the Lagrange multiplier $\mu$ is updated on $\mathcal{A}^\pm$ with a dual formulation given by [@blank_primal-dual_2013 (PDAS-I)] as follows:
-$$\mu = \kappa - \frac{1}{\tau}(\varphi^{k+1} - \varphi^k) + \varepsilon \gamma \Delta \varphi^{k+1} + \frac{\gamma}{\varepsilon} \varphi^{k+1} $$
+$$\mu = \kappa - \frac{1}{\tau}(\varphi^{k+1} - \varphi^k) + \epsilon \gamma \Delta \varphi^{k+1} + \frac{\gamma}{\epsilon} \varphi^{k+1} $$
 
 With this updated $\mu$, the active and inactive sets are recalculated and if no change is detected the descent step is complete.
 Otherwise reiterate the primal problem (using the same $u$) with the new different sets until a convergence is reached.

@@ -26,35 +26,40 @@ The parameters $\gamma$ and $\varepsilon$ as well as the Lamé-coefficients were
 For reference, the models were calculated with the Lamé-coefficients set to those of the 3d-printing plastic PLA:
 $$\lambda = 1599 \cdot 10^6 \quad \mu = 685 \cdot 10^6$$
 
-The parameters for the Ginzburg-Landau term were set to:
-$\gamma = 6.25e^{-5}$ and $\epsilon = 0.00175$ with the time stepping parameter $\tau = 0.01$.
 
+For the calculations the gravitational volume force was set to zero since it had no visible influence for the small sized structures 
+that were calculated.
+The time stepping parameter $\tau$ was generally set to $\tau = 0.01$.
 
 ### The bridge
-The bride model posesses an x-y mirror symmetry and has a force square on top, visible in figure [@fig:bridge_grid].
+The mesh for the bridge model posesses an x-y mirror symmetry and has a force square on top. 
 The force square with a Neumann load is depicted as the green square on the top of the domain in [@fig:bridge_gridA].
 The symmetry is imposed by a homogeneous Dirichlet condition in the x direction on the orange and in the y-direction on the green part of the domain
 also visible in the first picture.
-The second picture shows the Dirichlet clamp on the bottom (in blue) where x and y displacements are penalized.
+[@fig:bridge_gridB] shows the Dirichlet clamp on the bottom (in blue) where x and y displacements are penalized.
 
 
 The dimensions of the domain are 5cm in the x-direction, 1.5cm in the y-direction and 2cm in the z-direction.
-The force square has a size of 1 by 1 cm and a load density of 2400 N/m² in the z-direction resulting in a total load of 0.24N or approximately 24g.
+The force square has a size of 1cm by 1cm and a load density of 2400 N/m² in the z-direction resulting in a total load of 0.24N or approximately 24g.
 
-The model was calculated using 294231 tetrahedra.
+The model was calculated using 294231 tetrahedra
+with the parameters for the Ginzburg-Landau term set to:
+$\gamma = 6.25\cdot 10^{-5}$ and $\epsilon = 0.00175$ 
 
+
+<!--$\gamma = 6.25e^{-5}$ and $\epsilon = 0.00175$ -->
 
 
 
 <div id="fig:bridge_grid">
 ![](./source/figures/bridge_grid_front.png){#fig:bridge_gridA width=50%}
-![](./source/figures/bridge_grid_back.png){width=50%}
+![](./source/figures/bridge_grid_back.png){#fig:bridge_gridB width=50%}
 
 The mesh for the bridge model from the front and the back
 </div>
 
 After 60 iterations the mesh in [@fig:bridge_raw] was extracted.
-In the closeup [@fig:closeup_bridge] the it can be seen that the triangle size and shape is very unregular.
+In the closeup [@fig:closeup_bridge] the it can be seen that the triangle size and shape is very unregular and not curvature adapted.
 
 ![Isosurface of the bridge model after extraction. The Dirichlet clamp is located on the bottom right part](./source/figures/bridge_solo_raw.png){#fig:bridge_raw width=90%}
 
@@ -65,32 +70,53 @@ Subsequently the mesh was mirrored at the symmetry axes and merged into one stl 
 ![Bridge model after accounting for the mirror symmetry](./source/figures/bridge_raw.png){#fig:bridge_merged}
 
 The mesh was remeshed with 10 iterations and the target edge length set to
-two times that of the original mesh.
-The remeshed mesh is shown in [@fig:bridge_remeshed] where the target edge length 
+two times the longest edgelength of the original mesh.
+The embedding parameter $\sigma$ was automatically set to the value of $\sigma=0.014$.
+The low value is due to the fact that the domain dimensions are expressed in meters and are therefor very small.
+The sparse interpolation matrix that resulted had a size of 128628 x 128628 with 58 million values in the case of an RBF scale factor of 2.5 times
+the longest edge length (of the input mesh) and 20 million values when set to 1.5 (of the longest edge length).
+Consequently the evaluation of the interpolant was slow and the remeshing took over 12 hours.
+The remeshed mesh is shown in [@fig:bridge_remeshed] where the chosen target edge length
  is reflected in the triangle sizes of the flat areas.
- Again in 
 
 ![After remeshing with $l^{6d} =$ 2x longest edge and doing 10 iterations](./source/figures/bridge_with_zoom2.png){#fig:bridge_remeshed}
 
 ### The table
-The table model has a large force rectangle with non-homogeneous neumann conditions on top and 4 z-homogeneous Dirichlet conditions in the on the bottom (in the normal direction to the boundary).
-The rest of the boundary has a homogeneous Neumann condition.
+The table model has a large force rectangle with non-homogeneous neumann conditions on top and 4 Dirichlet conditions on the bottom.
+On the Dirichlet part only the z-direction was penalized(clamped) which results in the inclusion of x-y support structures.
+This is called a sliding condition.
 
-The domain has size 9.6cm(x) by 2.8cm(y) by 2cm(z) and the force square is 8 x 2cm with a force density of 2400 N/m² resulting in a load of 384g.
+The domain has size 9.6cm(x) by 2.8cm(y) by 2cm(z) and the force square is 8 x 2cm with a force density of 2400 N/m² resulting in a load of 
+3.84N or approximately 384g in graviational terms.
 
-The domain was meshed with 1120591 tetrahedra and the topology optimization ran for 60 timesteps.
-
+<div id="fig:table_grid">
 ![](./source/figures/tisch3d_grid_bottom.png){width=50%}
 ![](./source/figures/tisch3d_grid_top.png){width=50%}
-\begin{figure}[!h]
-\caption{The table model with a large force rectangle on the top and 4 x-y sliding Dirichlet conditions on the bottom}
-\label{fig:table_grid}
-\end{figure}
+
+The table mesh with a large force rectangle on the top and 4 x-y sliding Dirichlet conditions on the bottom.
+</div>
+
+The resulting isosurface is depicted in [@fig:tisch_raw].
+The model was calculated using 1120591 tetrahedra
+with the parameters for the Ginzburg-Landau term set to:
+$\gamma = 0.008$ and $\epsilon = 0.0035$ 
 
 
-![The extracted table isosurface](./source/figures/tisch_raw.png){#fig:tisch_raw}
+![The extracted table isosurface](./source/figures/table_raw.png){#fig:tisch_raw}
+
+The remeshed surface did display erronous behaviour. oughening and 
+
+![The remeshed table model.](./source/figures/table_remeshed.png){#fig:tisch_remeshed}
+
+![Closeup of the problematic remeshed table mesh.](./source/figures/table_fuckup.png){#fig:table_fuckup}
 
 ### The tower
+The tower model has a similar layout to the table model above. A small force square on top applies a pressing force in the negative x-direction and
+4 clamped Dirichlet squares function as force sinks.
+
+The dimensions of the domain are 6cm by 2cm by 2cm and the force and Dirichlet squares were each sized .4cm by .4cm.
+The load density was set to 240000 N/m² such that again a resulting load of 3.84N or ~384g was applied.
+
 
 <div id="fig:tower_grid">
 ![From the bottom](./source/figures/turm_bottom_grid.png){width=50%}
@@ -101,4 +127,25 @@ The grid for the tower model.
 
 
 ## Analysis of the results and problem 
+
+### General problems with normals as refinement markers
+A general problem with normal based refinement is that normals are not a reliable marker
+for the mesh error i.e. the difference between interpolant and the triangular mesh.
+To see this consider the ear of the cat model from [@sec:surf_cond] in [@fig:cat_ear]. The normals at the bottom of the ear point
+in the same direction as the ones on the top of the ear. Furthermore the long neighboring edges then exibit a sawtooth or cliff like pattern stemming from
+strong normal variations of the triangle normals. This feature is depicted in [@fig:cat_ear2].
+
+
+![Coinciding normals at the bottom and the top of the cat ear.](./source/figures/cat_ear.png){#fig:cat_ear}
+
+![The cat ear in rendered with triangle normal based lightning.](./source/figures/cat_ear_cliff.png){#fig:cat_ear2}
+
+
+Another possibility to generate an adaptive mesh without relying on the normals would be to use the interpolants values as an indicator for
+accuracy of meshpoints. This is possible because close to the surface the interpolant has the shape of the signed distance function.
+Using quadrature points on triangles/edges the volume/area under the surface defined by the approximant/interpolant and the mesh entity could be calculated. 
+However this would rely heavily on evaluations of the interpolant.
+
+![In the case of parallel normals a refinement is inhibited and the mesh error pertains.](./source/figures/cat_foot.png){#fig:cat_foot}
+
 

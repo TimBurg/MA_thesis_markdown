@@ -1,14 +1,10 @@
-# Appendix 1: Some extra stuff {.unnumbered}
+# Appendix 1{.unnumbered}
 
-<!-- 
-This could be a list of papers by the author for example 
--->
-
-# Non manifold-errors of meshes
+## Non manifold-errors of meshes
 
 Triangluar meshes can have a multitude of minor errors that unfortunately are very much tolerated in cad-programs and 3D-software but can cause issues with 
 
-# Interpolation with conditionally positive definite functions {#sec:conditional}
+## Interpolation with conditionally positive definite functions {#sec:conditional}
 
 Definition:
   ~ A continuous even function $\Phi:\mathbb{R}^d \mapsto \mathbb{R}$ is conditionally positive (semi) definite
@@ -55,6 +51,7 @@ With $P = p_k(k_j) \in \mathbb{R}^{Q \times N}$
 This system is solvable if $\Phi$ is conditionally positive definite [@wendland_scattered_2005 theorem 8.21]
 
 
-# References
+# References{.unnumbered}
 
 <div id="refs"></div>
+

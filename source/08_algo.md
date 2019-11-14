@@ -79,7 +79,7 @@ For models with very close proximity of parts (in relation to the spacing of the
 given by equation \eqref{eq:offsites} should be adapted.
 
 
-![An 2d section through the interpolant of the cat model with 7 isolines around 0.](./source/figures/cat_isolines.png){#fig:cat_isolines}
+![An 2d section through the interpolant of the cat model with 7 isolines from -1 to 1.](./source/figures/cat_isolines.png){#fig:cat_isolines}
 
 ## Smoothing
 The resulting isosurfaces of the topology optimization generally had rough surfaces with seemingly random small 
@@ -114,9 +114,9 @@ in the tangent plane to the isosurface
 and the tangent planes are mostly parallel. This is seen in [@fig:cat_isolines].
 However this no requirement since consecutive vertex smoothing will adjust the positions of the vertices on the surface.
 
-![Fast convergence of the gradient descent onto the surface for a steplength of 1.](./source/figures/projection_steps.png){#fig:projection} 
+![Fast convergence of the gradient descent onto the surface for a steplength of 1. On the right side the corresponding triangle is shown.](./source/figures/projection_steps.png){#fig:projection} 
 
-The convergence of this projection was generally very fast and stayed within 5 iterations for all test cases to give an interpolant value of $1e^{-4}$.
+The convergence of this projection was generally fast and stayed within 8 iterations for all test cases to give an interpolant value of $1e^{-4}$.
 The convergence is depicted in [@fig:projection].
 
 
